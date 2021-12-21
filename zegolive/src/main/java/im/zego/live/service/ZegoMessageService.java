@@ -1,5 +1,8 @@
 package im.zego.live.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
@@ -11,8 +14,6 @@ import im.zego.zim.entity.ZIMMessage;
 import im.zego.zim.entity.ZIMTextMessage;
 import im.zego.zim.enums.ZIMErrorCode;
 import im.zego.zim.enums.ZIMMessageType;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * manage room text message.
@@ -44,7 +45,7 @@ public class ZegoMessageService {
                 messageList.add(textMessage);
             }
             if (callback != null) {
-                callback.roomCallback(errorInfo.code.value());
+                callback.onRoomCallback(errorInfo.code.value());
             }
         });
     }

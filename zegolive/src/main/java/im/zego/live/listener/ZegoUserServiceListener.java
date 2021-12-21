@@ -17,5 +17,4 @@ public interface ZegoUserServiceListener {
     // receive user leave room command
     void onRoomUserLeave(List<ZegoUserInfo> memberList);
 
-    void onReceiveTakeSeatInvitation();
 }

@@ -3,27 +3,22 @@ package im.zego.live.service;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
+import im.zego.live.callback.ZegoOnlineRoomUserListCallback;
+import im.zego.live.callback.ZegoOnlineRoomUsersNumCallback;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.listener.ZegoUserServiceListener;
-import im.zego.live.model.ZegoCustomCommand;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoRoomUserRole;
-import im.zego.live.model.ZegoSpeakerSeatModel;
-import im.zego.live.model.ZegoSpeakerSeatStatus;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.zim.ZIM;
-import im.zego.zim.entity.ZIMCustomMessage;
-import im.zego.zim.entity.ZIMMessage;
 import im.zego.zim.entity.ZIMUserInfo;
 import im.zego.zim.enums.ZIMErrorCode;
-import im.zego.zim.enums.ZIMMessageType;
 
 /**
  * Created by rocket_wang on 2021/12/14.
@@ -53,7 +48,7 @@ public class ZegoUserService {
                 localUserInfo.setUserName(userInfo.getUserName());
             }
             if (callback != null) {
-                callback.roomCallback(errorInfo.code.value());
+                callback.onRoomCallback(errorInfo.code.value());
             }
         });
     }
@@ -65,9 +60,63 @@ public class ZegoUserService {
         leaveRoom();
     }
 
-    void leaveRoom(){
+    void leaveRoom() {
         userList.clear();
         userMap.clear();
+    }
+
+    // get online room users list
+    public void getOnlineRoomUsers(int page, ZegoOnlineRoomUserListCallback callback) {
+
+    }
+
+    // get online room users num
+    public void getOnlineRoomUsersNum(ZegoOnlineRoomUsersNumCallback callback) {
+
+    }
+
+    // send an invitation message to add Co-Host
+    public void addCoHostWithUserID(String userID, ZegoRoomCallback callback) {
+
+    }
+
+    // Respond to the co-host invitation
+    public void respondCoHostInvitation(boolean accept, ZegoRoomCallback callback) {
+
+    }
+
+    // Request to co-host
+    public void requestToCoHostWithCallback(ZegoRoomCallback callback) {
+
+    }
+
+    public void cancelRequestToCoHostWithCallback(ZegoRoomCallback callback) {
+
+    }
+
+    // Respond to the co-host request
+    public void respondCoHostRequest(boolean accept, ZegoRoomCallback callback) {
+
+    }
+
+    // Prohibit turning on the camera microphone
+    public void mute(String userID, ZegoRoomCallback callback) {
+
+    }
+
+    // Microphone operation
+    public void micOperation(boolean open) {
+
+    }
+
+    // Camera operation
+    public void cameraOperation(boolean open) {
+
+    }
+
+    // Remove co-host
+    public void removeCoHostWithCallBack(ZegoRoomCallback callback) {
+
     }
 
     public void setListener(ZegoUserServiceListener listener) {
@@ -94,21 +143,6 @@ public class ZegoUserService {
         if (listener != null) {
             listener.onRoomUserLeave(leaveUsers);
         }
-        ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
-        if (userInfo.getRole() == ZegoRoomUserRole.Host) {
-            ZegoSpeakerSeatService seatService = ZegoRoomManager.getInstance().speakerSeatService;
-            List<ZegoSpeakerSeatModel> seatList = seatService.getSpeakerSeatList();
-            for (ZegoUserInfo leaveUser : leaveUsers) {
-                String leaveUserID = leaveUser.getUserID();
-                for (ZegoSpeakerSeatModel model : seatList) {
-                    if (model.userID.equals(leaveUserID) && model.status == ZegoSpeakerSeatStatus.Occupied) {
-                        seatService.removeUserFromSeat(model.seatIndex, errorCode -> {
-
-                        });
-                    }
-                }
-            }
-        }
     }
 
     private List<ZegoUserInfo> generateRoomUsers(List<ZIMUserInfo> memberList) {
@@ -123,7 +157,7 @@ public class ZegoUserService {
             if (userInfo.userID.equals(roomInfo.getHostID())) {
                 roomUser.setRole(ZegoRoomUserRole.Host);
             } else {
-                roomUser.setRole(ZegoRoomUserRole.Listener);
+                roomUser.setRole(ZegoRoomUserRole.Participant);
             }
             roomUsers.add(roomUser);
         }
@@ -140,47 +174,6 @@ public class ZegoUserService {
             return zegoUserInfo.getUserName();
         } else {
             return "";
-        }
-    }
-
-    /**
-     * send invitation to room user.
-     *
-     * @param userID   userID
-     * @param callback operation result callback
-     */
-    public void sendInvitation(String userID, ZegoRoomCallback callback) {
-        ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
-        ZegoCustomCommand command = new ZegoCustomCommand();
-        command.actionType = ZegoCustomCommand.INVITATION;
-        command.target = Collections.singletonList(userID);
-        command.userID = localUserInfo.getUserID();
-        command.toJson();
-        String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
-        ZegoZIMManager.getInstance().zim.sendRoomMessage(command, roomID, (message, errorInfo) -> {
-            if (callback != null) {
-                callback.roomCallback(errorInfo.code.value());
-            }
-        });
-    }
-
-    public void onReceiveRoomMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromRoomID) {
-        for (ZIMMessage zimMessage : messageList) {
-            if (zimMessage.type == ZIMMessageType.CUSTOM) {
-                ZIMCustomMessage zimCustomMessage = (ZIMCustomMessage) zimMessage;
-                ZegoCustomCommand command = new ZegoCustomCommand();
-                command.type = zimCustomMessage.type;
-                command.userID = zimCustomMessage.userID;
-                command.fromJson(zimCustomMessage.message);
-                if (command.actionType == ZegoCustomCommand.INVITATION) {
-                    ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
-                    if (command.target.contains(localUserInfo.getUserID())) {
-                        if (listener != null) {
-                            listener.onReceiveTakeSeatInvitation();
-                        }
-                    }
-                }
-            }
         }
     }
 }

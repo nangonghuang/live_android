@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.zego.live.callback.ZegoRoomCallback;
-import im.zego.live.service.ZegoGiftService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomService;
-import im.zego.live.service.ZegoSpeakerSeatService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.callback.IZegoEventHandler;
@@ -54,16 +52,12 @@ public class ZegoRoomManager {
 
     public ZegoRoomService roomService;
     public ZegoUserService userService;
-    public ZegoSpeakerSeatService speakerSeatService;
     public ZegoMessageService messageService;
-    public ZegoGiftService giftService;
 
     public void init(long appID, String appSign, Application application) {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
-        speakerSeatService = new ZegoSpeakerSeatService();
         messageService = new ZegoMessageService();
-        giftService = new ZegoGiftService();
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
         profile.appID = appID;
@@ -75,26 +69,17 @@ public class ZegoRoomManager {
             public void onNetworkQuality(String userID, ZegoStreamQualityLevel upstreamQuality,
                 ZegoStreamQualityLevel downstreamQuality) {
                 super.onNetworkQuality(userID, upstreamQuality, downstreamQuality);
-                if (speakerSeatService != null) {
-                    speakerSeatService.onNetworkQuality(userID, upstreamQuality, downstreamQuality);
-                }
             }
 
             @Override
             public void onCapturedSoundLevelUpdate(float soundLevel) {
                 super.onCapturedSoundLevelUpdate(soundLevel);
-                if (speakerSeatService != null) {
-                    speakerSeatService.updateLocalUserSoundLevel(soundLevel);
-                }
             }
 
 
             @Override
             public void onRemoteSoundLevelUpdate(HashMap<String, Float> soundLevels) {
                 super.onRemoteSoundLevelUpdate(soundLevels);
-                if (speakerSeatService != null) {
-                    speakerSeatService.updateRemoteUsersSoundLevel(soundLevels);
-                }
             }
 
             @Override
@@ -136,12 +121,6 @@ public class ZegoRoomManager {
             @Override
             public void onReceiveRoomMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromRoomID) {
                 super.onReceiveRoomMessage(zim, messageList, fromRoomID);
-                if (userService != null) {
-                    userService.onReceiveRoomMessage(zim, messageList, fromRoomID);
-                }
-                if (giftService != null) {
-                    giftService.onReceiveRoomMessage(zim, messageList, fromRoomID);
-                }
                 if (messageService != null) {
                     messageService.onReceiveRoomMessage(zim, messageList, fromRoomID);
                 }
@@ -175,9 +154,6 @@ public class ZegoRoomManager {
                 if (roomService != null) {
                     roomService.onRoomAttributesUpdated(zim, info, roomID);
                 }
-                if (speakerSeatService != null) {
-                    speakerSeatService.onRoomAttributesUpdated(zim, info, roomID);
-                }
             }
 
             @Override
@@ -195,6 +171,6 @@ public class ZegoRoomManager {
 
     public void uploadLog(final ZegoRoomCallback callback) {
         ZegoZIMManager.getInstance().zim
-            .uploadLog(errorInfo -> callback.roomCallback(errorInfo.code.value()));
+            .uploadLog(errorInfo -> callback.onRoomCallback(errorInfo.code.value()));
     }
 }

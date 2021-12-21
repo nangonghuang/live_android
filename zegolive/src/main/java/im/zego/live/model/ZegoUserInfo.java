@@ -1,5 +1,7 @@
 package im.zego.live.model;
 
+import androidx.annotation.DrawableRes;
+
 import java.util.Objects;
 
 /**
@@ -12,6 +14,18 @@ public class ZegoUserInfo {
     private String userName;
     // user role
     private ZegoRoomUserRole role;
+
+    // local property
+    // user avatar
+    @DrawableRes
+    private int avatar;
+    // user blurred avatar
+    @DrawableRes
+    private int blurredAvatar;
+    // has request to co-host
+    private boolean hasRequestedCoHost;
+    // has Add co-hosts
+    private boolean hasInvited;
 
     public String getUserID() {
         return userID;
@@ -35,6 +49,40 @@ public class ZegoUserInfo {
 
     public void setRole(ZegoRoomUserRole role) {
         this.role = role;
+    }
+
+    @DrawableRes
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(@DrawableRes int avatar) {
+        this.avatar = avatar;
+    }
+
+    @DrawableRes
+    public int getBlurredAvatar() {
+        return blurredAvatar;
+    }
+
+    public void setBlurredAvatar(@DrawableRes int blurredAvatar) {
+        this.blurredAvatar = blurredAvatar;
+    }
+
+    public boolean isHasRequestedCoHost() {
+        return hasRequestedCoHost;
+    }
+
+    public void setHasRequestedCoHost(boolean hasRequestedCoHost) {
+        this.hasRequestedCoHost = hasRequestedCoHost;
+    }
+
+    public boolean isHasInvited() {
+        return hasInvited;
+    }
+
+    public void setHasInvited(boolean hasInvited) {
+        this.hasInvited = hasInvited;
     }
 
     @Override
@@ -61,6 +109,10 @@ public class ZegoUserInfo {
                 "userID='" + userID + '\'' +
                 ", userName='" + userName + '\'' +
                 ", role=" + role +
+                ", avatar=" + avatar +
+                ", blurredAvatar=" + blurredAvatar +
+                ", hasRequestedCoHost=" + hasRequestedCoHost +
+                ", hasInvited=" + hasInvited +
                 '}';
     }
 }

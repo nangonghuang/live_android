@@ -7,14 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import im.zego.live.ZegoRoomManager;
-import im.zego.live.constants.ZegoRoomErrorCode;
-import im.zego.live.model.ZegoSpeakerSeatModel;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.room.adapter.MemberListAdapter;
@@ -22,24 +18,18 @@ import im.zego.livedemo.feature.room.model.MemberInfo;
 import im.zego.livedemo.helper.DialogHelper;
 
 public class MemberListDialog extends BaseBottomDialog {
-    private List<ZegoSpeakerSeatModel> usersInSeat;
-    private List<ZegoUserInfo> userIDs;
+    private List<ZegoUserInfo> userInfoList;
 
     private RecyclerView recyclerView;
     private TextView tvTitle;
-    private boolean canNotTakeSeat;
 
-    public MemberListDialog(Context context, boolean canNotTakeSeat, List<ZegoSpeakerSeatModel> usersInSeat, List<ZegoUserInfo> userList) {
+    public MemberListDialog(Context context, List<ZegoUserInfo> userList) {
         super(context);
-        this.canNotTakeSeat = canNotTakeSeat;
-        this.usersInSeat = usersInSeat;
-        this.userIDs = userList;
+        this.userInfoList = userList;
     }
 
-    public void updateInfo(boolean canNotTakeSeat, List<ZegoSpeakerSeatModel> usersInSeat, List<ZegoUserInfo> userList) {
-        this.canNotTakeSeat = canNotTakeSeat;
-        this.usersInSeat = usersInSeat;
-        this.userIDs = userList;
+    public void updateInfo(List<ZegoUserInfo> userList) {
+        this.userInfoList = userList;
         initData();
     }
 
@@ -58,21 +48,9 @@ public class MemberListDialog extends BaseBottomDialog {
     @Override
     protected void initData() {
         super.initData();
-        int onSeatMemberCounts = 0;
         ArrayList<MemberInfo> arrayList = new ArrayList<>();
-        for (ZegoUserInfo user : userIDs) {
+        for (ZegoUserInfo user : userInfoList) {
             MemberInfo info = new MemberInfo();
-            for (ZegoSpeakerSeatModel seat : usersInSeat) {
-                String user_id = seat.userID;
-                if (user_id != null && !"".equals(user_id) && user.getUserID().equals(user_id)) {
-                    info.showInvitation = false;
-                    info.index = seat.seatIndex;
-                    ++onSeatMemberCounts;
-                    break;
-                } else {
-                    info.showInvitation = true;
-                }
-            }
             info.userID = user.getUserID();
             info.userName = user.getUserName();
             arrayList.add(info);
@@ -83,24 +61,8 @@ public class MemberListDialog extends BaseBottomDialog {
         MemberListAdapter adapter = new MemberListAdapter(arrayList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(linearLayoutManager);
-        int finalOnSeatMemberCounts = onSeatMemberCounts;
         adapter.setItemOnClick(userID -> {
             DialogHelper.showToastDialog(getContext(), StringUtils.getString(R.string.room_page_invite_take_seat), dialog -> {
-                if (canNotTakeSeat) {
-                    ToastUtils.showShort(R.string.member_list_send_invitation_failed);
-                } else {
-                    if (finalOnSeatMemberCounts < 8) {
-                        ZegoRoomManager.getInstance().userService.sendInvitation(userID, errorCode -> {
-                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                ToastUtils.showShort(R.string.room_page_invitation_has_sent);
-                            } else {
-                                ToastUtils.showShort(R.string.member_list_send_invitation_error, errorCode);
-                            }
-                        });
-                    } else {
-                        ToastUtils.showShort(R.string.room_page_no_more_seat_available);
-                    }
-                }
             });
         });
     }
