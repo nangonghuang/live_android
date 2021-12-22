@@ -11,6 +11,7 @@
     <string name="login_page_login">Log In</string>
 
     <string name="room_list_page_create_live">Create Live</string>
+    <string name="room_list_page_empty">No room online, \nplease create a live room~</string>
 
     <string name="toast_userid_login_fail">Please enter your user ID.</string>
     <string name="toast_user_id_error">User ID can only contain letters and numbers.</string>

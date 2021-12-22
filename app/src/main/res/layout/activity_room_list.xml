@@ -14,6 +14,34 @@
         app:common_settings_btn_visible="true"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/room_list_page_empty"
+                android:textColor="#ffcccccc"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
     <FrameLayout
         android:id="@+id/fl_create_live"
         android:layout_width="170dp"
