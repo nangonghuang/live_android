@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CommonTitleView">
+        <attr name="common_title" format="reference" />
+        <attr name="common_back_btn_visible" format="boolean" />
+        <attr name="common_settings_btn_visible" format="boolean" />
+    </declare-styleable>
+</resources>

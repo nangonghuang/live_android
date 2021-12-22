@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">ZEGOLive</string>
+    <string name="app_name" translatable="false">ZEGO Live</string>
+    <string name="live_show_description">Online video interaction，support reverb/voice change/beauty and other multiple effects</string>
+    <string name="welcome_page_get_more">Get more…</string>
+    <string name="welcome_page_sign_up">Sign Up</string>
+    <string name="welcome_page_contact_us">Contact Us</string>
+
     <string name="login_page_title">ZEGOCLOUD\nLive Audio Room</string>
     <string name="login_page_user_id">User ID</string>
     <string name="login_page_user_name">User name</string>
     <string name="login_page_login">Log In</string>
+
+    <string name="room_list_page_create_live">Create Live</string>
+
     <string name="toast_userid_login_fail">Please enter your user ID.</string>
     <string name="toast_user_id_error">User ID can only contain letters and numbers.</string>
     <string name="toast_login_fail">Failed to log in. Error code: %d.</string>

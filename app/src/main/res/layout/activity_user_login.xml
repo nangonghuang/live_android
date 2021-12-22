@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/login_bg">
 
     <TextView
         android:id="@+id/tv_title"
@@ -12,9 +13,9 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="37dp"
         android:layout_marginTop="72dp"
-        android:text="@string/login_page_title"
-        android:textColor="#000"
-        android:textSize="32sp"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,14 +23,15 @@
     <EditText
         android:id="@+id/et_user_id"
         style="@style/InputEditTextBackground"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="40dp"
         android:digits="01234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM"
         android:ems="10"
         android:hint="@string/login_page_user_id"
         android:maxLength="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="Test" />
 
     <EditText
         android:id="@+id/et_user_name"
@@ -45,7 +47,7 @@
 
     <Button
         android:id="@+id/btn_login"
-        style="@style/BlueBtnBackground"
+        style="@style/LoginBtnBackground"
         android:layout_marginTop="35dp"
         android:text="@string/login_page_login"
         app:layout_constraintEnd_toEndOf="parent"
