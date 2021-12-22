@@ -1,16 +1,16 @@
-package im.zego.livedemo.feature;
+package im.zego.livedemo.base;
 
 import android.os.Bundle;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewbinding.ViewBinding;
 
 import com.gyf.immersionbar.ImmersionBar;
 
 import im.zego.livedemo.R;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingActivity<VB> {
     private static final String TAG = "BaseActivity";
 
     @Override
@@ -18,14 +18,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ImmersionBar.with(this)
-                .fitsSystemWindows(true)
                 .statusBarColor(getStatusBarColor())
-                .statusBarDarkFont(true)
+                .fitsSystemWindows(true)
+                .statusBarDarkFont(false)
                 .init();
     }
 
     @ColorRes
     protected int getStatusBarColor() {
-        return R.color.white;
+        return R.color.common_bg;
     }
 }
