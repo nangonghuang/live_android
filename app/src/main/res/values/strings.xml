@@ -104,4 +104,6 @@
     <string name="member_list_send_invitation_error">Failed to send the invitation. Error code: %s</string>
     <string name="network_connect_failed">Network connection failed.  Please leave the room and retry.</string>
     <string name="network_connect_failed_title">Network Error</string>
+
+    <string name="action">ACTION</string>
 </resources>

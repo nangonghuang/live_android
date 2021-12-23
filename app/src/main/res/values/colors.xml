@@ -31,4 +31,11 @@
     <color name="bg_gray">#b8b8b8</color>
     <color name="common_bg">#1A1726</color>
     <color name="login_dark_bg">#0F0B18</color>
+    <color name="light_red">#BD5454</color>
+    <color name="light_green">#55BC9E</color>
+
+    <color name="default_bg_color">#ab47bc</color>
+    <color name="default_title_color">#ffffff</color>
+    <color name="default_message_color">#ffffff</color>
+    <color name="default_action_color">#26a69a</color>
 </resources>

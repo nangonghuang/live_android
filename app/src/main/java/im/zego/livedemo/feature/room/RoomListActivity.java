@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.blankj.utilcode.util.SizeUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.livedemo.R;
@@ -61,7 +62,8 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
         binding.commonTitleView.setBackBtnClickListener(v -> onBackPressed());
         binding.commonTitleView.setSettingsBtnClickListener(v -> SettingsActivity.start(this));
         binding.flCreateLive.setOnClickListener(v -> {
-
+//            showErrorToast(StringUtils.getString(R.string.toast_create_room_fail, 666));
+            showTipsToast(StringUtils.getString(R.string.toast_create_room_fail, 666));
         });
         binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
 //                refreshLayout.finishRefresh();

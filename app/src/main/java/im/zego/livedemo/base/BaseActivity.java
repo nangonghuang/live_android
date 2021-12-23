@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding;
 import com.gyf.immersionbar.ImmersionBar;
 
 import im.zego.livedemo.R;
+import im.zego.livedemo.view.toast.CookieBar;
 
 public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingActivity<VB> {
     private static final String TAG = "BaseActivity";
@@ -27,5 +28,29 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
     @ColorRes
     protected int getStatusBarColor() {
         return R.color.common_bg;
+    }
+
+    protected void showErrorToast(String content) {
+        CookieBar.build(this)
+                .setTitle(content)
+                .setBackgroundColor(R.color.light_red)
+                .setEnableAutoDismiss(true)
+                .setSwipeToDismiss(false)
+                .setCookiePosition(CookieBar.TOP)
+                .show();
+    }
+
+    protected void showTipsToast(String content) {
+        CookieBar.build(this)
+                .setTitle(content)
+                .setBackgroundColor(R.color.light_green)
+                .setEnableAutoDismiss(false)
+                .setSwipeToDismiss(false)
+                .setCookiePosition(CookieBar.TOP)
+                .show();
+    }
+
+    protected void dismissAllToast() {
+        CookieBar.dismiss(this);
     }
 }
