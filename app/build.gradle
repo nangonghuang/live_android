@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "im.zego.livedemo"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+
+    signingConfigs {
+        config {
+            storeFile file("your_app_key.jks")
+            storePassword "your_keystore_password"
+            keyAlias "your_key_alias"
+            keyPassword "your_key_password"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'com.google.android.material:material:1.4.0'
+
+    // utils library
+    implementation 'com.blankj:utilcodex:1.30.6'
+
+    // permission
+    implementation 'com.guolindev.permissionx:permissionx:1.6.1'
+
+    // Immersive status bar
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    // retrofit-converter-gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    // okhttp-http-log
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
+
+    // refresh
+    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.3'
+    implementation 'com.scwang.smart:refresh-header-material:2.0.3'
+    implementation 'com.scwang.smart:refresh-footer-ball:2.0.3'
+
+    // view binding extension
+    implementation 'com.github.DylanCaiCoding.ViewBindingKTX:viewbinding-base:1.2.6'
+
+    // webView
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx'
+
+    implementation project(':zegolive')
+}

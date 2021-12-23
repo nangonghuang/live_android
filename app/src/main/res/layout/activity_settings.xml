@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    tools:context=".feature.settings.SettingsActivity">
+
+    <im.zego.livedemo.view.CommonTitleView
+        android:id="@+id/common_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_back_btn_visible="true"
+        app:common_title="@string/room_page_settings"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_rtc_sdk_version"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="16dp"
+        android:background="#0AFFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/common_title_view">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/setting_page_sdk_version"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_rtc_sdk_version"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#80FFFFFF"
+            android:textSize="14sp"
+            tools:text="v1.0.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_zim_sdk_version"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="1dp"
+        android:background="#0AFFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_rtc_sdk_version">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/setting_page_zim_sdk_version"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_zim_sdk_version"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#80FFFFFF"
+            android:textSize="14sp"
+            tools:text="v1.0.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_share_log"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="10dp"
+        android:background="#0AFFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_zim_sdk_version">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/setting_page_upload_log"
+            android:textColor="#fff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_logout"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="60dp"
+        android:background="#0AFFFFFF"
+        android:gravity="center"
+        android:text="@string/setting_page_logout"
+        android:textColor="@color/light_red"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_share_log" />
+</androidx.constraintlayout.widget.ConstraintLayout>
