@@ -1,13 +1,11 @@
 package im.zego.livedemo.helper;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.StringUtils;
-
+import im.zego.livedemo.feature.room.dialog.CommonDialog;
 import im.zego.livedemo.feature.room.dialog.ConfirmDialog;
 
 public final class DialogHelper {
@@ -20,16 +18,14 @@ public final class DialogHelper {
             DialogInterface.OnClickListener positiveClickListener,
             DialogInterface.OnClickListener negativeClickListener
     ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if (!StringUtils.isTrimEmpty(title)) {
-            builder.setTitle(title);
-        }
-        builder.setMessage(content);
+        CommonDialog.Builder builder = new CommonDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setContent(content);
 
         builder.setPositiveButton(positiveText, positiveClickListener);
         builder.setNegativeButton(negativeText, negativeClickListener);
 
-        AlertDialog dialog = builder.create();
+        CommonDialog dialog = builder.create();
         dialog.show();
     }
 
