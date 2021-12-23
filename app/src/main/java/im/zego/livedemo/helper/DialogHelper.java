@@ -18,12 +18,11 @@ public final class DialogHelper {
             DialogInterface.OnClickListener positiveClickListener,
             DialogInterface.OnClickListener negativeClickListener
     ) {
-        CommonDialog.Builder builder = new CommonDialog.Builder(context);
-        builder.setTitle(title);
-        builder.setContent(content);
-
-        builder.setPositiveButton(positiveText, positiveClickListener);
-        builder.setNegativeButton(negativeText, negativeClickListener);
+        CommonDialog.Builder builder = new CommonDialog.Builder(context)
+                .setTitle(title)
+                .setContent(content)
+                .setPositiveButton(positiveText, positiveClickListener)
+                .setNegativeButton(negativeText, negativeClickListener);
 
         CommonDialog dialog = builder.create();
         dialog.show();
