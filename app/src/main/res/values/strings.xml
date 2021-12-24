@@ -13,6 +13,12 @@
     <string name="room_list_page_create_live">Create Live</string>
     <string name="room_list_page_empty">No room online, \nplease create a live room~</string>
 
+    <string name="room_page_start">Start</string>
+
+    <string name="room_page_apply_to_connect">Apply to connect</string>
+    <string name="room_page_cancel_apply">Cancel apply</string>
+    <string name="room_page_end_connect">End</string>
+
     <string name="toast_userid_login_fail">Please enter your user ID.</string>
     <string name="toast_user_id_error">User ID can only contain letters and numbers.</string>
     <string name="toast_login_fail">Failed to log in. Error code: %d.</string>
