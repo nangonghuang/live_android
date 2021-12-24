@@ -11,9 +11,9 @@ import com.permissionx.guolindev.PermissionX;
  * Created by rocket_wang on 2021/12/10.
  */
 public class PermissionHelper {
-    public static void requestRecordAudio(FragmentActivity activity, @Nullable IPermissionCallback permissionCallback) {
+    public static void requestCameraAndAudio(FragmentActivity activity, @Nullable IPermissionCallback permissionCallback) {
         PermissionX.init(activity)
-                .permissions(Manifest.permission.RECORD_AUDIO)
+                .permissions(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
                 .onExplainRequestReason((scope, deniedList) -> scope.showRequestReasonDialog(deniedList, "Core fundamental are based on these permissions", "OK", "Cancel"))
                 .onForwardToSettings((scope, deniedList) -> scope.showForwardToSettingsDialog(deniedList, "You need to allow necessary permissions in Settings manually", "OK", "Cancel"))
                 .request((allGranted, grantedList, deniedList) -> {
