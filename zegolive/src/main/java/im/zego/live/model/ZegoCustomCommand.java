@@ -5,41 +5,49 @@ import com.google.gson.annotations.SerializedName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import im.zego.zim.entity.ZIMCustomMessage;
 
-/**
- * send gift or invitation.
- */
 public class ZegoCustomCommand extends ZIMCustomMessage {
 
-    public static final int INVITATION = 1;
-    public static final int Gift = 2;
-
-    /**
-     * [actionType] == 1 means invitation, [actionType] == 2 means gift
-     */
     @SerializedName("actionType")
-    public int actionType;
+    public CustomCommandType actionType;
 
     @SerializedName("target")
-    public List<String> target = new ArrayList<>();
+    public List<String> targetUserIDs = new ArrayList<>();
 
     @SerializedName("content")
-    public Map<String, String> content = new HashMap<>();
+    public CustomCommandContent content;
 
     public void toJson() {
         message = new Gson().toJson(this).getBytes(StandardCharsets.UTF_8);
     }
 
     public void fromJson(byte[] message) {
-        ZegoCustomCommand zegoCustomCommand = new Gson().fromJson(new String(message), ZegoCustomCommand.class);
-        message = zegoCustomCommand.message;
-        actionType = zegoCustomCommand.actionType;
-        target = zegoCustomCommand.target;
-        content = zegoCustomCommand.content;
+        ZegoCustomCommand command = new Gson().fromJson(new String(message), ZegoCustomCommand.class);
+        this.message = command.message;
+        actionType = command.actionType;
+        targetUserIDs = command.targetUserIDs;
+        content = command.content;
+    }
+
+    public static class CustomCommandContent {
+        public boolean accept;
+
+        public CustomCommandContent(boolean accept) {
+            this.accept = accept;
+        }
+    }
+
+    public enum CustomCommandType {
+        Invitation(1),
+        RespondInvitation(2);
+
+        private final int value;
+
+        CustomCommandType(int value) {
+            this.value = value;
+        }
     }
 }

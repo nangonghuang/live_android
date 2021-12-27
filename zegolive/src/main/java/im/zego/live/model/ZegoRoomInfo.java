@@ -15,6 +15,8 @@ public class ZegoRoomInfo {
     // host user ID
     @SerializedName("hostID")
     private String hostID;
+    @SerializedName("num")
+    private int seatNum;
 
     public String getRoomID() {
         return roomID;
@@ -40,12 +42,21 @@ public class ZegoRoomInfo {
         this.hostID = hostID;
     }
 
+    public int getSeatNum() {
+        return seatNum;
+    }
+
+    public void setSeatNum(int seatNum) {
+        this.seatNum = seatNum;
+    }
+
     @Override
     public String toString() {
         return "ZegoRoomInfo{" +
                 "roomID='" + roomID + '\'' +
                 ", roomName='" + roomName + '\'' +
                 ", hostID='" + hostID + '\'' +
+                ", seatCount=" + seatNum +
                 '}';
     }
 }
