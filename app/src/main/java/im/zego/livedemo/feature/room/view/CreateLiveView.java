@@ -2,6 +2,7 @@ package im.zego.livedemo.feature.room.view;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,12 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ToastUtils;
+
+import im.zego.livedemo.R;
 import im.zego.livedemo.databinding.LayoutCreateLiveBinding;
 
 public class CreateLiveView extends ConstraintLayout {
 
     private final LayoutCreateLiveBinding binding;
     private CreateViewListener listener;
+    private boolean isCameraFront = true;
 
     public CreateLiveView(@NonNull Context context) {
         this(context, null);
@@ -49,10 +55,20 @@ public class CreateLiveView extends ConstraintLayout {
             }
         });
         binding.ivBack.setOnClickListener(v -> listener.onBackClick());
-        binding.ivFlipCamera.setOnClickListener(v -> listener.onFlipCameraClick());
+        binding.ivFlipCamera.setOnClickListener(v -> {
+            isCameraFront = !isCameraFront;
+            listener.onCameraFlip(isCameraFront);
+        });
         binding.ivBeauty.setOnClickListener(v -> listener.onBeautyClick());
         binding.ivSettings.setOnClickListener(v -> listener.onSettingsClick());
-        binding.tvStartLive.setOnClickListener(v -> listener.onStartLiveClick());
+        binding.tvStartLive.setOnClickListener(v -> {
+            String roomName = binding.etRoomName.toString();
+            if (TextUtils.isEmpty(roomName)) {
+                ToastUtils.showShort(StringUtils.getString(R.string.toast_room_name_error));
+                return;
+            }
+            listener.onStartLiveClick(roomName);
+        });
     }
 
     private void enableStartLiveBtn(boolean enable) {
@@ -67,12 +83,12 @@ public class CreateLiveView extends ConstraintLayout {
     public interface CreateViewListener {
         void onBackClick();
 
-        void onFlipCameraClick();
+        void onCameraFlip(boolean isCameraFront);
 
         void onBeautyClick();
 
         void onSettingsClick();
 
-        void onStartLiveClick();
+        void onStartLiveClick(String roomName);
     }
 }

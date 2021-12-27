@@ -140,12 +140,12 @@ public class LiveBottomView extends ConstraintLayout {
         }
     }
 
-    private void enableMic(boolean enable) {
+    public void enableMic(boolean enable) {
         binding.ivMic.setImageResource(enable ? R.drawable.icon_bottom_mic_on : R.drawable.icon_bottom_mic_off);
         isMicEnable = !enable;
     }
 
-    private void enableCamera(boolean enable) {
+    public void enableCamera(boolean enable) {
         binding.ivCamera.setImageResource(enable ? R.drawable.icon_bottom_camera_on : R.drawable.icon_bottom_camera_off);
         isCameraEnable = !enable;
     }
