@@ -4,17 +4,19 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomConstants;
+import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.live.listener.ZegoRoomServiceListener;
+import im.zego.live.model.OperationAction;
 import im.zego.live.model.OperationCommand;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoRoomUserRole;
@@ -31,7 +33,6 @@ import im.zego.zim.entity.ZIMRoomInfo;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
-import im.zego.zim.enums.ZIMRoomAttributesUpdateAction;
 
 /**
  * Created by rocket_wang on 2021/12/14.
@@ -60,7 +61,7 @@ public class ZegoRoomService {
         zimRoomInfo.roomName = roomName;
 
         HashMap<String, String> roomAttributes = new HashMap<>();
-        roomAttributes.put(ZegoRoomConstants.KEY_ROOM_INFO, new Gson().toJson(roomInfo));
+        roomAttributes.put(ZegoRoomConstants.KEY_ROOM_INFO, ZegoRoomAttributesHelper.gson.toJson(roomInfo));
         ZIMRoomAdvancedConfig config = new ZIMRoomAdvancedConfig();
         config.roomAttributes = roomAttributes;
 
@@ -96,7 +97,7 @@ public class ZegoRoomService {
         ZegoRoomConfig roomConfig = new ZegoRoomConfig();
         roomConfig.token = token;
         ZegoExpressEngine.getEngine().loginRoom(roomID, user, roomConfig);
-        ZegoExpressEngine.getEngine().startSoundLevelMonitor(500);
+        ZegoExpressEngine.getEngine().startSoundLevelMonitor(1000);
     }
 
     // leave the room
@@ -143,22 +144,46 @@ public class ZegoRoomService {
                 "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["
                         + info.roomAttributes + "], roomID = [" + roomID
                         + "]");
-        if (info.action == ZIMRoomAttributesUpdateAction.SET) {
-            Set<String> keys = info.roomAttributes.keySet();
-            for (String key : keys) {
-                if (key.equals(ZegoRoomConstants.KEY_ROOM_INFO)) {
-                    ZegoRoomInfo roomInfo = new Gson().fromJson(info.roomAttributes.get(key), ZegoRoomInfo.class);
-                    this.roomInfo = roomInfo;
-                    if (listener != null) {
-                        listener.onReceiveRoomInfoUpdate(roomInfo);
-                    }
-                }
-            }
-        } else {
+        Gson gson = ZegoRoomAttributesHelper.gson;
+        String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
+        if (StringUtils.isNotEmpty(roomJson)) {
+            ZegoRoomInfo roomInfo = gson.fromJson(roomJson, ZegoRoomInfo.class);
+            this.roomInfo = roomInfo;
             if (listener != null) {
-                listener.onReceiveRoomInfoUpdate(null);
+                listener.onReceiveRoomInfoUpdate(roomInfo);
             }
         }
+
+        String actionJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ACTION);
+        if (StringUtils.isNotEmpty(actionJson)) {
+            OperationAction action = gson.fromJson(actionJson, OperationAction.class);
+            // if the seq is invalid
+            if (!operation.isSeqValid(action.getSeq())) {
+                resendRoomAttributes(info.roomAttributes, action);
+                return;
+            } else {
+                operation.setAction(action);
+            }
+        }
+
+        // update seat list & requestCoHostList
+        operation.update(info.roomAttributes);
+
+        List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+        for (ZegoUserInfo zegoUserInfo : userInfoList) {
+            zegoUserInfo.setHasRequestedCoHost(operation.getRequestCoHostList().contains(zegoUserInfo.getUserID()));
+        }
+
+        ZegoUserService userService = ZegoRoomManager.getInstance().userService;
+        if (userService != null) {
+            userService.onRoomAttributesUpdated(info.roomAttributes, operation);
+        }
+    }
+
+    private void resendRoomAttributes(HashMap<String, String> roomAttributes, OperationAction action) {
+        // only the host can resent the room attributes
+        if (!ZegoRoomManager.getInstance().userService.isSelfHost()) return;
+
     }
 
     public void onConnectionStateChanged(ZIM zim, ZIMConnectionState state, ZIMConnectionEvent event,
@@ -169,12 +194,15 @@ public class ZegoRoomService {
     }
 
     public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
-        for (ZegoStream zegoStream : streamList) {
-            if (updateType == ZegoUpdateType.ADD) {
-                ZegoExpressEngine.getEngine().startPlayingStream(zegoStream.streamID, null);
-            } else {
-                ZegoExpressEngine.getEngine().stopPlayingStream(zegoStream.streamID);
-            }
+        if (listener != null) {
+            listener.onRoomStreamUpdate(roomID, updateType, streamList);
         }
+//        for (ZegoStream zegoStream : streamList) {
+//            if (updateType == ZegoUpdateType.ADD) {
+//                ZegoExpressEngine.getEngine().startPlayingStream(zegoStream.streamID, null);
+//            } else {
+//                ZegoExpressEngine.getEngine().stopPlayingStream(zegoStream.streamID);
+//            }
+//        }
     }
 }

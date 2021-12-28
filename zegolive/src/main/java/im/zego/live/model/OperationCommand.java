@@ -77,15 +77,13 @@ public class OperationCommand {
                     this.action.setSeq(action.getSeq());
                     break;
                 case ZegoRoomConstants.KEY_SEAT:
-                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<List<ZegoCoHostSeatModel>>() {
-                    }.getType());
+                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<List<ZegoCoHostSeatModel>>() {}.getType());
                     if (seatList != null && !seatList.isEmpty()) {
                         this.seatList = seatList;
                     }
                     break;
                 case ZegoRoomConstants.KEY_REQUEST_CO_HOST:
-                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<List<String>>() {
-                    }.getType());
+                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<List<String>>() {}.getType());
                     if (requestCoHostList != null && !requestCoHostList.isEmpty()) {
                         this.requestCoHostList = requestCoHostList;
                     }

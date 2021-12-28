@@ -1,12 +1,12 @@
 package im.zego.live.model;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.zim.entity.ZIMCustomMessage;
 
 public class ZegoCustomCommand extends ZIMCustomMessage {
@@ -21,11 +21,11 @@ public class ZegoCustomCommand extends ZIMCustomMessage {
     public CustomCommandContent content;
 
     public void toJson() {
-        message = new Gson().toJson(this).getBytes(StandardCharsets.UTF_8);
+        message = ZegoRoomAttributesHelper.gson.toJson(this).getBytes(StandardCharsets.UTF_8);
     }
 
     public void fromJson(byte[] message) {
-        ZegoCustomCommand command = new Gson().fromJson(new String(message), ZegoCustomCommand.class);
+        ZegoCustomCommand command = ZegoRoomAttributesHelper.gson.fromJson(new String(message), ZegoCustomCommand.class);
         this.message = command.message;
         actionType = command.actionType;
         targetUserIDs = command.targetUserIDs;
