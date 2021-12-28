@@ -60,6 +60,9 @@
     <string name="room_page_more_data">Data</string>
     <string name="room_page_more_settings">Settings</string>
 
+    <string name="toast_operate_camera_fail">Failed to operate Camera. Error code: %d.</string>
+    <string name="toast_operate_mic_fail">Failed to operate Mic. Error code: %d.</string>
+
     <string name="room_tips_reconnect">You are disconnected from the room. Do you want to reconnect?</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>
     <string name="room_page_mic_cant_open">The Mic is off.</string>

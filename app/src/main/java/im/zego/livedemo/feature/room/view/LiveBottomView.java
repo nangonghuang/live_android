@@ -56,13 +56,13 @@ public class LiveBottomView extends ConstraintLayout {
         });
 
         binding.ivCamera.setOnClickListener(v -> {
-            enableCamera(isCameraEnable);
-            listener.onCameraEnable(isCameraEnable);
+            enableCameraView(!isCameraEnable);
+            listener.onCameraEnable(!isCameraEnable);
         });
 
         binding.ivMic.setOnClickListener(v -> {
-            enableMic(isMicEnable);
-            listener.onMicEnable(isMicEnable);
+            enableMicView(!isMicEnable);
+            listener.onMicEnable(!isMicEnable);
         });
 
         binding.layoutApplyConnection.setOnClickListener(v -> {
@@ -140,14 +140,14 @@ public class LiveBottomView extends ConstraintLayout {
         }
     }
 
-    public void enableMic(boolean enable) {
+    public void enableMicView(boolean enable) {
         binding.ivMic.setImageResource(enable ? R.drawable.icon_bottom_mic_on : R.drawable.icon_bottom_mic_off);
-        isMicEnable = !enable;
+        isMicEnable = enable;
     }
 
-    public void enableCamera(boolean enable) {
+    public void enableCameraView(boolean enable) {
         binding.ivCamera.setImageResource(enable ? R.drawable.icon_bottom_camera_on : R.drawable.icon_bottom_camera_off);
-        isCameraEnable = !enable;
+        isCameraEnable = enable;
     }
 
     public void setListener(BottomViewListener listener) {
