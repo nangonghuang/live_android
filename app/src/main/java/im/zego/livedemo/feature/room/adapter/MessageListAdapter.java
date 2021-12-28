@@ -61,12 +61,11 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                 builder.append(context.getString(R.string.room_page_host));
             }
             builder.append(fromUserName);
-            builder.append(": ");
             builder.append(content);
             String source = builder.toString();
             SpannableString string = new SpannableString(source);
             RoundBackgroundColorSpan backgroundColorSpan = new RoundBackgroundColorSpan(
-                ContextCompat.getColor(context, R.color.yellow),
+                ContextCompat.getColor(context, R.color.purple_dark),
                 ContextCompat.getColor(context, R.color.white));
             if (isHostMessage) {
                 AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(10));
@@ -78,7 +77,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(context, R.color.blue_text)
+                ContextCompat.getColor(context, R.color.teal)
             );
             int indexOfUser = source.indexOf(fromUserName);
             string.setSpan(foregroundColorSpan, indexOfUser, indexOfUser + fromUserName.length(),
@@ -91,7 +90,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         } else {
             SpannableString string = new SpannableString(content);
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(context, R.color.blue_text)
+                ContextCompat.getColor(context, R.color.teal)
             );
             AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(12));
             string.setSpan(foregroundColorSpan, 0, content.length(),
@@ -100,7 +99,6 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                 .setSpan(absoluteSizeSpan, 0, content.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             holder.tvSendMessage.setText(string);
         }
-
     }
 
     @Override
