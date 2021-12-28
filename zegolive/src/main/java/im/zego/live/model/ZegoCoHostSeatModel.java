@@ -1,12 +1,20 @@
 package im.zego.live.model;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Objects;
+
 /**
  * Created by rocket_wang on 2021/12/21.
  */
 public class ZegoCoHostSeatModel {
+    @SerializedName("id")
     private String userID;
+    @SerializedName("mute")
     private boolean isMuted;
+    @SerializedName("mic")
     private boolean mic;
+    @SerializedName("cam")
     private boolean camera;
 
     // local property
@@ -59,6 +67,21 @@ public class ZegoCoHostSeatModel {
 
     public void setNetwork(float network) {
         this.network = network;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ZegoCoHostSeatModel that = (ZegoCoHostSeatModel) o;
+
+        return Objects.equals(userID, that.userID);
+    }
+
+    @Override
+    public int hashCode() {
+        return userID != null ? userID.hashCode() : 0;
     }
 
     @Override

@@ -5,4 +5,7 @@ package im.zego.live.constants;
  */
 public class ZegoRoomConstants {
     public static final String KEY_ROOM_INFO = "roomInfo";
+    public static final String KEY_SEAT = "seat";
+    public static final String KEY_REQUEST_CO_HOST = "requestCoHost";
+    public static final String KEY_ACTION = "action";
 }

@@ -12,10 +12,10 @@ import java.util.Set;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
-import im.zego.live.callback.ZegoOnlineRoomUsersNumCallback;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomConstants;
 import im.zego.live.listener.ZegoRoomServiceListener;
+import im.zego.live.model.OperationCommand;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoRoomUserRole;
 import im.zego.live.model.ZegoUserInfo;
@@ -41,12 +41,13 @@ public class ZegoRoomService {
     private ZegoRoomServiceListener listener;
     // room info object
     public ZegoRoomInfo roomInfo = new ZegoRoomInfo();
+    public OperationCommand operation = new OperationCommand();
 
     private static final String TAG = "ZegoRoomService";
 
     // create a room
     public void createRoom(String roomID, String roomName, final String token,
-        final ZegoRoomCallback callback) {
+                           final ZegoRoomCallback callback) {
         ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
         localUserInfo.setRole(ZegoRoomUserRole.Host);
 
@@ -128,16 +129,6 @@ public class ZegoRoomService {
         roomInfo.setHostID("");
     }
 
-    // query the number of chat rooms available online
-    public void queryOnlineRoomUsers(final ZegoOnlineRoomUsersNumCallback callback) {
-        ZegoZIMManager.getInstance().zim
-            .queryRoomOnlineMemberCount(roomInfo.getRoomID(), (count, errorInfo) -> {
-                if (callback != null) {
-                    callback.onUserCountCallback(errorInfo.code.value(), count);
-                }
-            });
-    }
-
     public void setListener(ZegoRoomServiceListener listener) {
         this.listener = listener;
     }
@@ -149,9 +140,9 @@ public class ZegoRoomService {
      */
     public void onRoomAttributesUpdated(ZIM zim, ZIMRoomAttributesUpdateInfo info, String roomID) {
         Log.d(TAG,
-            "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["
-                + info.roomAttributes + "], roomID = [" + roomID
-                + "]");
+                "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["
+                        + info.roomAttributes + "], roomID = [" + roomID
+                        + "]");
         if (info.action == ZIMRoomAttributesUpdateAction.SET) {
             Set<String> keys = info.roomAttributes.keySet();
             for (String key : keys) {
@@ -171,7 +162,7 @@ public class ZegoRoomService {
     }
 
     public void onConnectionStateChanged(ZIM zim, ZIMConnectionState state, ZIMConnectionEvent event,
-        JSONObject extendedData) {
+                                         JSONObject extendedData) {
         if (listener != null) {
             listener.onConnectionStateChanged(state, event);
         }
