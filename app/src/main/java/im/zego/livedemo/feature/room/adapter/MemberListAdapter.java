@@ -9,10 +9,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import com.blankj.utilcode.util.ColorUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import im.zego.live.ZegoRoomManager;
+import im.zego.live.model.ZegoRoomUserRole;
+import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
-import im.zego.livedemo.feature.room.model.MemberInfo;
 import im.zego.livedemo.helper.UserInfoHelper;
 
 
@@ -20,10 +26,11 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
 
     private IItemOnClickListener itemOnClickListener = null;
 
-    private List<MemberInfo> userListInRoom;
+    private List<ZegoUserInfo> userListInRoom;
 
-    public MemberListAdapter(List<MemberInfo> userListInRoom) {
-        this.userListInRoom = userListInRoom;
+    public MemberListAdapter(List<ZegoUserInfo> userListInRoom) {
+        this.userListInRoom = new ArrayList<>();
+        this.userListInRoom.addAll(userListInRoom);
     }
 
     @NonNull
@@ -35,34 +42,51 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
 
     @Override
     public void onBindViewHolder(@NonNull UserListHolder holder, int position) {
-        final MemberInfo memberInfo = userListInRoom.get(position);
+        final ZegoUserInfo userInfo = userListInRoom.get(position);
 
-        holder.ivUserAvatar.setImageDrawable(UserInfoHelper.getAvatarByUserName(memberInfo.userName));
-        holder.tvUserName.setText(memberInfo.userName);
-        if (memberInfo.showInvitation) {
-            holder.tvUserInfo.setVisibility(View.GONE);
-            // Audience
-            if (UserInfoHelper.isSelfOwner()) {
-                holder.ivInvite.setVisibility(View.VISIBLE);
-            } else {
-                holder.ivInvite.setVisibility(View.GONE);
-            }
-        } else {
-            // On Seat: Speaker or Owner
-            holder.ivInvite.setVisibility(View.GONE);
-            holder.tvUserInfo.setVisibility(View.VISIBLE);
-            if (UserInfoHelper.isUserOwner(memberInfo.userID)) {
+        holder.ivUserAvatar.setImageDrawable(UserInfoHelper.getAvatarByUserName(userInfo.getUserName()));
+        holder.tvUserName.setText(userInfo.getUserName());
+        holder.ivInvite.setVisibility(View.GONE);
+        holder.tvUserInfo.setVisibility(View.GONE);
+        holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray));
+
+        switch (getRoleType(userInfo)) {
+            case Host:
+                holder.tvUserInfo.setVisibility(View.VISIBLE);
                 holder.tvUserInfo.setText(R.string.room_page_host);
-            } else {
-                holder.tvUserInfo.setText(R.string.room_page_role_speaker);
-            }
+                break;
+            case CoHost:
+                holder.tvUserInfo.setVisibility(View.VISIBLE);
+                holder.tvUserInfo.setText(R.string.room_page_co_host);
+                holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
+                break;
+            case InvitedCoHost:
+                holder.tvUserInfo.setVisibility(View.VISIBLE);
+                holder.tvUserInfo.setText(R.string.room_page_invited_co_host);
+                holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
+                break;
+            case Me:
+                holder.tvUserInfo.setVisibility(View.VISIBLE);
+                holder.tvUserInfo.setText(R.string.room_page_me);
+                break;
+            case Participant:
+                if (UserInfoHelper.isSelfOwner()) {
+                    holder.ivInvite.setVisibility(View.VISIBLE);
+                }
+                break;
         }
 
         holder.ivInvite.setOnClickListener(v -> {
             if (itemOnClickListener != null) {
-                itemOnClickListener.onClick(memberInfo.userID);
+                itemOnClickListener.onClick(userInfo);
             }
         });
+    }
+
+    public void updateUserList(List<ZegoUserInfo> userList) {
+        userListInRoom.clear();
+        userListInRoom.addAll(userList);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -75,10 +99,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     }
 
     public interface IItemOnClickListener {
-        void onClick(String userID);
+
+        void onClick(ZegoUserInfo userInfo);
     }
 
     static class UserListHolder extends RecyclerView.ViewHolder {
+
         public ImageView ivUserAvatar;
         public TextView tvUserName;
         public TextView tvUserInfo;
@@ -91,5 +117,28 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
             tvUserInfo = itemView.findViewById(R.id.tv_user_info);
             ivInvite = itemView.findViewById(R.id.iv_invite);
         }
+    }
+
+    private RoleType getRoleType(ZegoUserInfo userInfo) {
+        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
+        if (Objects.equals(selfUser.getUserID(), userInfo.getUserID())) {
+            return RoleType.Me;
+        } else if (userInfo.getRole() == ZegoRoomUserRole.Host) {
+            return RoleType.Host;
+        } else if (userInfo.getRole() == ZegoRoomUserRole.CoHost) {
+            return RoleType.CoHost;
+        } else if (userInfo.getRole() == ZegoRoomUserRole.Participant && userInfo.isHasInvited()) {
+            return RoleType.InvitedCoHost;
+        } else {
+            return RoleType.Participant;
+        }
+    }
+
+    enum RoleType {
+        Host,
+        Participant,
+        CoHost,
+        InvitedCoHost,
+        Me
     }
 }
