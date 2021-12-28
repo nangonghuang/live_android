@@ -1,5 +1,6 @@
 package im.zego.live.service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +17,18 @@ import im.zego.zim.enums.ZIMErrorCode;
 import im.zego.zim.enums.ZIMMessageType;
 
 /**
- * manage room text message.
+ * Class IM message management.
+ * <p>Description: This class contains the logics of the IM messages management, such as send or receive messages.</>
  */
 public class ZegoMessageService {
 
+    /**
+     * The listener related to message updates.
+     */
     private ZegoMessageServiceListener messageServiceListener;
+    /**
+     * The message list.
+     */
     private List<ZegoTextMessage> messageList;
 
     public ZegoMessageService() {
@@ -28,10 +36,13 @@ public class ZegoMessageService {
     }
 
     /**
-     * send text message to room.
+     * Send IM text message.
+     * <p>Description: This method can be used to send IM text message, and all users in the room will receive the
+     * message notification.</>
+     * <p>Call this method at:  After joining the room</>
      *
-     * @param text     message text
-     * @param callback operation result callback
+     * @param text     refers to the text message content, which is limited to 1kb.
+     * @param callback refers to the callback for send text messages.
      */
     public void sendTextMessage(String text, ZegoRoomCallback callback) {
         ZegoUserInfo localUserInfo = ZegoRoomManager
@@ -39,6 +50,7 @@ public class ZegoMessageService {
         ZegoTextMessage textMessage = new ZegoTextMessage();
         textMessage.message = text;
         textMessage.userID = localUserInfo.getUserID();
+        textMessage.timestamp = System.currentTimeMillis();
         String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
         ZegoZIMManager.getInstance().zim.sendRoomMessage(textMessage, roomID, (message, errorInfo) -> {
             if (errorInfo.code == ZIMErrorCode.SUCCESS) {
@@ -61,9 +73,9 @@ public class ZegoMessageService {
                 textMessage.type = zimTextMessage.type;
                 textMessage.priority = zimTextMessage.priority;
                 textMessage.timestamp = zimTextMessage.timestamp;
-                messageList.add(textMessage);
+                this.messageList.add(textMessage);
                 if (messageServiceListener != null) {
-                    messageServiceListener.onReceiveTextMessage(textMessage, fromRoomID);
+                    messageServiceListener.onReceiveTextMessage(textMessage);
                 }
             }
         }

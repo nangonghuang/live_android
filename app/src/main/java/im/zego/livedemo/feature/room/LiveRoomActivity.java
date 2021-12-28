@@ -15,6 +15,9 @@ import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
+import im.zego.livedemo.feature.room.adapter.MessageListAdapter;
+import im.zego.livedemo.feature.room.dialog.IMInputDialog;
+import im.zego.livedemo.feature.room.dialog.MemberListDialog;
 import im.zego.livedemo.feature.room.view.CreateLiveView;
 import im.zego.livedemo.feature.room.view.LiveBottomView;
 import im.zego.livedemo.feature.room.view.LiveHeadView;
@@ -46,6 +49,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     private LiveRoomViewModel liveRoomViewModel;
 
+    private MessageListAdapter messageListAdapter;
+
+    private IMInputDialog imInputDialog;
+    private MemberListDialog memberListDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +67,21 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private void initData() {
+        messageListAdapter = new MessageListAdapter();
+        binding.rvMessageList.setAdapter(messageListAdapter);
+
         liveRoomViewModel.onlineRoomUsersNum.observe(this, nums -> {
             binding.liveHeadView.updateOnlineNum(String.valueOf(nums));
+        });
+        liveRoomViewModel.isCameraOpen.observe(this, open -> {
+            binding.liveBottomView.enableCameraView(open);
+        });
+        liveRoomViewModel.isMicOpen.observe(this, open -> {
+            binding.liveBottomView.enableMicView(open);
+        });
+        liveRoomViewModel.textMessageList.observe(this, messages -> {
+            messageListAdapter.setMessages(messages);
+            binding.rvMessageList.scrollToPosition(messageListAdapter.getItemCount() - 1);
         });
     }
 
@@ -78,14 +99,16 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         binding.createLiveView.setVisibility(View.VISIBLE);
         binding.liveHeadView.setVisibility(View.GONE);
         binding.liveBottomView.setVisibility(View.GONE);
-        binding.audienceList.setVisibility(View.GONE);
+        binding.rvMessageList.setVisibility(View.GONE);
+        binding.rvCoHostList.setVisibility(View.GONE);
     }
 
     private void showLiveUI() {
         binding.createLiveView.setVisibility(View.GONE);
         binding.liveHeadView.setVisibility(View.VISIBLE);
         binding.liveBottomView.setVisibility(View.VISIBLE);
-        binding.audienceList.setVisibility(View.VISIBLE);
+        binding.rvMessageList.setVisibility(View.VISIBLE);
+        binding.rvCoHostList.setVisibility(View.VISIBLE);
     }
 
     private void initUIListener() {
@@ -154,7 +177,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         binding.liveBottomView.setListener(new LiveBottomView.BottomViewListener() {
             @Override
             public void onImClick() {
-
+                imInputDialog = new IMInputDialog(LiveRoomActivity.this);
+                imInputDialog.setOnSendListener(imText -> liveRoomViewModel.sendTextMessage(imText));
+                imInputDialog.show();
             }
 
             @Override
@@ -184,22 +209,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onCameraEnable(boolean isCameraEnable) {
-                liveRoomViewModel.enableCamera(isCameraEnable, errorCode -> {
-                    if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        // roll back
-                        binding.liveBottomView.enableCamera(!isCameraEnable);
-                    }
-                });
+                liveRoomViewModel.enableCamera(isCameraEnable);
             }
 
             @Override
             public void onMicEnable(boolean isMicEnable) {
-                liveRoomViewModel.enableMic(isMicEnable, errorCode -> {
-                    if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        // roll back
-                        binding.liveBottomView.enableMic(!isMicEnable);
-                    }
-                });
+                liveRoomViewModel.enableMic(isMicEnable);
             }
 
             @Override

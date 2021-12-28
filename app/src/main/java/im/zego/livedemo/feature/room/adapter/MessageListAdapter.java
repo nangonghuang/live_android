@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SizeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
@@ -32,10 +33,22 @@ import im.zego.livedemo.helper.RoundBackgroundColorSpan;
  */
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageHolder> {
 
-    List<ZegoTextMessage> messageList;
+    private List<ZegoTextMessage> messageList = new ArrayList<>();
 
-    public MessageListAdapter(List<ZegoTextMessage> messageList) {
-        this.messageList = messageList;
+    public void setMessages(List<ZegoTextMessage> messages) {
+        messageList.clear();
+        messageList.addAll(messages);
+        notifyDataSetChanged();
+    }
+
+    public void updateMessages(List<ZegoTextMessage> messages) {
+        messageList.addAll(messages);
+        notifyDataSetChanged();
+    }
+
+    public void insertMessage(ZegoTextMessage message) {
+        messageList.add(message);
+        notifyItemInserted(messageList.size());
     }
 
     @NonNull
