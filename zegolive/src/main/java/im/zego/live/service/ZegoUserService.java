@@ -124,9 +124,20 @@ public class ZegoUserService {
     public void addCoHost(String userID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.Invitation;
+        command.userID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(userID);
         command.toJson();
         ZegoZIMManager.getInstance().zim.sendPeerMessage(command, userID, (message, errorInfo) -> {
+            if (errorInfo.code.value() == ZegoRoomErrorCode.SUCCESS) {
+                List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+                for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                    if (Objects.equals(userID, zegoUserInfo.getUserID())) {
+                        zegoUserInfo.setHasInvited(true);
+                        break;
+                    }
+                }
+            }
+
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
             }
@@ -139,6 +150,7 @@ public class ZegoUserService {
         String hostID = roomInfo.getHostID();
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
+        command.userID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(hostID);
         command.content = new ZegoCustomCommand.CustomCommandContent(accept);
         command.toJson();
@@ -373,6 +385,14 @@ public class ZegoUserService {
                 } else {
                     ZegoCustomCommand.CustomCommandContent content = command.content;
                     if (content == null) continue;
+                    List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+                    for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                        if (Objects.equals(command.userID, zegoUserInfo.getUserID())) {
+                            zegoUserInfo.setHasInvited(false);
+                            break;
+                        }
+                    }
+
                     if (listener != null) {
                         listener.onReceiveAddCoHostRespond(content.accept);
                     }

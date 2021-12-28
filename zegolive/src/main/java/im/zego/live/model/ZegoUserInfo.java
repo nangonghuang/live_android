@@ -12,10 +12,10 @@ public class ZegoUserInfo {
     private String userID;
     // user name
     private String userName;
-    // user role
-    private ZegoRoomUserRole role;
 
     // local property
+    // user role
+    private ZegoRoomUserRole role;
     // user avatar
     @DrawableRes
     private int avatar;
