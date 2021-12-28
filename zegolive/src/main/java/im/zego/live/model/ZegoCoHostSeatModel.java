@@ -37,7 +37,7 @@ public class ZegoCoHostSeatModel {
         isMuted = muted;
     }
 
-    public boolean isMic() {
+    public boolean isMicEnable() {
         return mic;
     }
 
@@ -45,7 +45,7 @@ public class ZegoCoHostSeatModel {
         this.mic = mic;
     }
 
-    public boolean isCamera() {
+    public boolean isCameraEnable() {
         return camera;
     }
 

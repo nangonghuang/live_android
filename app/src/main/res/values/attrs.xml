@@ -17,4 +17,9 @@
         <attr name="cookieActionSize" format="dimension"/>
         <attr name="cookiePadding" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="MoreSettingView">
+        <attr name="moreSetting_name" format="string" />
+        <attr name="moreSetting_src" format="reference" />
+    </declare-styleable>
 </resources>

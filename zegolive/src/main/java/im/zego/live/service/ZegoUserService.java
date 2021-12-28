@@ -2,11 +2,16 @@ package im.zego.live.service;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
@@ -16,6 +21,9 @@ import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.live.listener.ZegoUserServiceListener;
+import im.zego.live.model.OperationAction;
+import im.zego.live.model.OperationActionType;
+import im.zego.live.model.OperationCommand;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoCustomCommand;
 import im.zego.live.model.ZegoRoomInfo;
@@ -25,11 +33,14 @@ import im.zego.live.util.Triple;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zim.ZIM;
 import im.zego.zim.callback.ZIMMemberQueriedCallback;
+import im.zego.zim.entity.ZIMCustomMessage;
 import im.zego.zim.entity.ZIMError;
+import im.zego.zim.entity.ZIMMessage;
 import im.zego.zim.entity.ZIMQueryMemberConfig;
 import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
 import im.zego.zim.entity.ZIMUserInfo;
 import im.zego.zim.enums.ZIMErrorCode;
+import im.zego.zim.enums.ZIMMessageType;
 
 /**
  * Created by rocket_wang on 2021/12/14.
@@ -45,6 +56,12 @@ public class ZegoUserService {
     private final List<ZegoUserInfo> userList = new ArrayList<>();
     private final List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
     private final Map<String, ZegoUserInfo> userMap = new HashMap<>();
+
+    public boolean isSelfHost() {
+        String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
+        String userID = localUserInfo.getUserID();
+        return Objects.equals(hostID, userID) && StringUtils.isNotEmpty(hostID);
+    }
 
     // user login
     public void login(ZegoUserInfo userInfo, String token, final ZegoRoomCallback callback) {
@@ -107,9 +124,20 @@ public class ZegoUserService {
     public void addCoHost(String userID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.Invitation;
+        command.userID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(userID);
         command.toJson();
         ZegoZIMManager.getInstance().zim.sendPeerMessage(command, userID, (message, errorInfo) -> {
+            if (errorInfo.code.value() == ZegoRoomErrorCode.SUCCESS) {
+                List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+                for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                    if (Objects.equals(userID, zegoUserInfo.getUserID())) {
+                        zegoUserInfo.setHasInvited(true);
+                        break;
+                    }
+                }
+            }
+
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
             }
@@ -122,6 +150,7 @@ public class ZegoUserService {
         String hostID = roomInfo.getHostID();
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
+        command.userID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(hostID);
         command.content = new ZegoCustomCommand.CustomCommandContent(accept);
         command.toJson();
@@ -148,12 +177,12 @@ public class ZegoUserService {
     // Respond to the co-host request
     public void respondCoHostRequest(boolean agree, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getRespondCoHostRequestParameters(agree, userID);
+                = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
     // Prohibit turning on the camera microphone
-    public void mute(boolean isMuted, String userID, ZegoRoomCallback callback) {
+    public void muteUser(boolean isMuted, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
                 = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 0);
         if (triple != null) {
@@ -199,14 +228,30 @@ public class ZegoUserService {
     public void takeCoHostSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
                 = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(true);
-        ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
+        ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
+            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                ZegoExpressEngine.getEngine().startPublishingStream(getSelfStreamID());
+            } else {
+                if (callback != null) {
+                    callback.onRoomCallback(errorCode);
+                }
+            }
+        });
     }
 
     // Leave co-host seat
     public void leaveCoHostSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
                 = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(false);
-        ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
+        ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
+            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                ZegoExpressEngine.getEngine().stopPublishingStream();
+            } else {
+                if (callback != null) {
+                    callback.onRoomCallback(errorCode);
+                }
+            }
+        });
     }
 
     public void setListener(ZegoUserServiceListener listener) {
@@ -254,6 +299,13 @@ public class ZegoUserService {
         return roomUsers;
     }
 
+    @NonNull
+    private String getSelfStreamID() {
+        String selfUserID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
+        String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
+        return String.format("%s_%s_%s", roomID, selfUserID, "main");
+    }
+
     public List<ZegoUserInfo> getUserList() {
         return userList;
     }
@@ -264,6 +316,88 @@ public class ZegoUserService {
             return zegoUserInfo.getUserName();
         } else {
             return "";
+        }
+    }
+
+    public void onRoomAttributesUpdated(HashMap<String, String> roomAttributes, OperationCommand command) {
+        String myUserID = localUserInfo.getUserID();
+        OperationAction action = command.getAction();
+
+        if (!Objects.equals(myUserID, action.getTargetID())) return;
+
+        switch (action.getType()) {
+            case RequestToCoHost:
+                if (listener != null) {
+                    listener.onReceiveToCoHostRequest();
+                }
+                break;
+            case CancelRequestCoHost:
+                if (listener != null) {
+                    listener.onReceiveCancelToCoHostRequest();
+                }
+                break;
+            case AgreeToCoHost:
+                if (listener != null) {
+                    listener.onReceiveToCoHostRespond(true);
+                }
+                break;
+            case DeclineToCoHost:
+                if (listener != null) {
+                    listener.onReceiveToCoHostRespond(false);
+                }
+                break;
+        }
+
+        ZegoCoHostSeatModel seat = null;
+        for (ZegoCoHostSeatModel model : command.getSeatList()) {
+            if (Objects.equals(model.getUserID(), myUserID)) {
+                seat = model;
+            }
+        }
+
+        if (seat == null) return;
+
+        if (action.getType() == OperationActionType.Mic) {
+            ZegoExpressEngine.getEngine().muteMicrophone(!seat.isMicEnable());
+        }
+        if (action.getType() == OperationActionType.Camera) {
+            ZegoExpressEngine.getEngine().enableCamera(!seat.isCameraEnable());
+        }
+
+        if (action.getType() == OperationActionType.Mute && seat.isMuted()) {
+            ZegoExpressEngine.getEngine().muteMicrophone(true);
+            micOperate(false, null);
+        }
+    }
+
+    public void onReceivePeerMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromUserID) {
+        for (ZIMMessage zimMessage : messageList) {
+            if (zimMessage.type == ZIMMessageType.CUSTOM) {
+                ZIMCustomMessage zimCustomMessage = (ZIMCustomMessage) zimMessage;
+                ZegoCustomCommand command = new ZegoCustomCommand();
+                command.type = zimCustomMessage.type;
+                command.userID = zimCustomMessage.userID;
+                command.fromJson(zimCustomMessage.message);
+                if (command.actionType == ZegoCustomCommand.CustomCommandType.Invitation) {
+                    if (listener != null) {
+                        listener.onReceiveAddCoHostInvitation();
+                    }
+                } else {
+                    ZegoCustomCommand.CustomCommandContent content = command.content;
+                    if (content == null) continue;
+                    List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+                    for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                        if (Objects.equals(command.userID, zegoUserInfo.getUserID())) {
+                            zegoUserInfo.setHasInvited(false);
+                            break;
+                        }
+                    }
+
+                    if (listener != null) {
+                        listener.onReceiveAddCoHostRespond(content.accept);
+                    }
+                }
+            }
         }
     }
 }

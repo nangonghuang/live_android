@@ -49,6 +49,17 @@
     <string name="toast_logout_fail">Failed to log out. Error code: %s.</string>
 
     <string name="room_page_host">Host</string>
+    <string name="room_page_co_host">Connected</string>
+    <string name="room_page_invited_co_host">Invited</string>
+    <string name="room_page_me">Me</string>
+
+    <string name="room_page_more_title">More</string>
+    <string name="room_page_more_flip">Flip</string>
+    <string name="room_page_more_camera">Camera</string>
+    <string name="room_page_more_mic">Mic</string>
+    <string name="room_page_more_data">Data</string>
+    <string name="room_page_more_settings">Settings</string>
+
     <string name="room_tips_reconnect">You are disconnected from the room. Do you want to reconnect?</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>
     <string name="room_page_mic_cant_open">The Mic is off.</string>

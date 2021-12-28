@@ -9,16 +9,13 @@ import java.security.NoSuchAlgorithmException;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.model.ZegoRoomInfo;
-import im.zego.live.model.ZegoRoomUserRole;
-import im.zego.live.model.ZegoUserInfo;
 
 public final class UserInfoHelper {
 
     private static final int MAX_INDEX = 8;
 
     public static boolean isSelfOwner() {
-        ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
-        return userInfo.getRole() == ZegoRoomUserRole.Host;
+        return ZegoRoomManager.getInstance().userService.isSelfHost();
     }
 
     public static boolean isUserOwner(String userId) {

@@ -116,6 +116,9 @@ public class ZegoRoomManager {
             @Override
             public void onReceivePeerMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromUserID) {
                 super.onReceivePeerMessage(zim, messageList, fromUserID);
+                if (userService != null) {
+                    userService.onReceivePeerMessage(zim, messageList, fromUserID);
+                }
             }
 
             @Override

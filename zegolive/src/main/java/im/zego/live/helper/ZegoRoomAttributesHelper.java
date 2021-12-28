@@ -1,5 +1,7 @@
 package im.zego.live.helper;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -20,6 +22,8 @@ import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
  * Created by rocket_wang on 2021/12/14.
  */
 public class ZegoRoomAttributesHelper {
+    private static final String TAG = "ZegoRoomAttributes";
+
     public static Gson gson = new Gson();
 
     public static ZIMRoomAttributesSetConfig getAttributesSetConfig() {
@@ -55,30 +59,30 @@ public class ZegoRoomAttributesHelper {
                 getAttributesSetConfig());
     }
 
-    public static Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> getRespondCoHostRequestParameters(boolean isAgree, String targetUserID) {
+    public static Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> getRespondCoHostParameters(boolean isAgree, String targetUserID) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
+        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         String roomID = roomInfo.getRoomID();
-        String hostID = roomInfo.getHostID();
+        String myUserID = selfUser.getUserID();
 
         OperationCommand operation = ZegoRoomManager.getInstance().roomService.operation.copy();
         operation.getAction().setSeq(operation.getAction().getSeq() + 1);
-        operation.getAction().setOperatorID(hostID);
+        operation.getAction().setOperatorID(myUserID);
         operation.getAction().setTargetID(targetUserID);
 
-        ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
-        model.setUserID(targetUserID);
-        model.setMic(true);
-        model.setCamera(true);
+        if (!operation.getRequestCoHostList().contains(targetUserID)) {
+            Log.e(TAG, "the user ID did not in coHost list.");
+            return null;
+        }
+
         if (isAgree) {
             operation.getAction().setType(OperationActionType.AgreeToCoHost);
-            operation.getSeatList().add(model);
         } else {
             operation.getAction().setType(OperationActionType.DeclineToCoHost);
-            operation.getSeatList().remove(model);
         }
         operation.getRequestCoHostList().remove(targetUserID);
 
-        return Triple.create(operation.getAttributes(OperationCommand.OperationAttributeTypeSeat),
+        return Triple.create(operation.getAttributes(OperationCommand.OperationAttributeTypeRequestCoHost),
                 roomID,
                 getAttributesSetConfig());
     }
