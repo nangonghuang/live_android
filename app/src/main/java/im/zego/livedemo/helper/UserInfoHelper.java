@@ -24,13 +24,16 @@ public final class UserInfoHelper {
     }
 
     public static Drawable getAvatarByUserName(String userName) {
-        int index = getIndex(userName);
-        return getUserAvatar(index);
+        return ResourceUtils.getDrawable(getAvatarIdByUserName(userName));
     }
 
-    private static Drawable getUserAvatar(int position) {
-        return ResourceUtils.getDrawable(
-                ResourceUtils.getDrawableIdByName("icon_avatar_" + (position % MAX_INDEX + 1)));
+    public static int getAvatarIdByUserName(String userName) {
+        int index = getIndex(userName);
+        return getUserAvatarId(index);
+    }
+
+    private static int getUserAvatarId(int position) {
+        return ResourceUtils.getDrawableIdByName("icon_avatar_" + (position % MAX_INDEX + 1));
     }
 
     private static int getIndex(String userName) {

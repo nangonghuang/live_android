@@ -1,19 +1,13 @@
-package im.zego.live.listener;
+package im.zego.livedemo.feature.room.viewmodel;
 
-import java.util.List;
-
-import im.zego.live.model.ZegoUserInfo;
+import im.zego.zim.enums.ZIMConnectionEvent;
+import im.zego.zim.enums.ZIMConnectionState;
 
 /**
- * Created by rocket_wang on 2021/12/14.
+ * Created by rocket_wang on 2021/12/29.
  */
-public interface ZegoUserServiceListener {
-
-    // receive user join room command
-    void onRoomUserJoin(List<ZegoUserInfo> memberList);
-
-    // receive user leave room command
-    void onRoomUserLeave(List<ZegoUserInfo> memberList);
+public interface ILiveRoomViewModelListener {
+    void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event);
 
     // receive add co-host invitation
     void onReceiveAddCoHostInvitation();

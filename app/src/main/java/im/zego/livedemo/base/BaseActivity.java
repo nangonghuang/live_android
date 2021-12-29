@@ -41,10 +41,14 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
     }
 
     protected void showTipsToast(String content) {
+        this.showTipsToast(content, true);
+    }
+
+    protected void showTipsToast(String content, boolean autoDismiss) {
         CookieBar.build(this)
                 .setTitle(content)
                 .setBackgroundColor(R.color.light_green)
-                .setEnableAutoDismiss(false)
+                .setEnableAutoDismiss(autoDismiss)
                 .setSwipeToDismiss(false)
                 .setCookiePosition(CookieBar.TOP)
                 .show();

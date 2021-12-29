@@ -16,8 +16,9 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
     private MoreSettingView mSettings;
 
     private ISettingMoreListener listener;
-    private boolean isMicOpen = true;
-    private boolean isCamOpen = true;
+    private boolean isMicEnable = true;
+    private boolean isCameraEnable = true;
+    private boolean isCameraFront = true;
 
     public MoreSettingDialog(@NonNull Context context) {
         super(context);
@@ -42,21 +43,16 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
         mSettingData.setOnClickListener(this);
         mSettings.setOnClickListener(this);
 
-        setMic(isMicOpen);
-        setCamara(isCamOpen);
+        enableMicView(isMicEnable);
+        enableCamaraView(isCameraEnable);
     }
 
-    public void setMic(boolean isMicOpen) {
+    public void enableMicView(boolean isMicOpen) {
         mSettingMic.setMic(isMicOpen);
     }
 
-    public void setCamara(boolean isCamOpen) {
+    public void enableCamaraView(boolean isCamOpen) {
         mSettingCamera.setCamara(isCamOpen);
-    }
-
-    public void setMicAndCamara(boolean isMicOpen, boolean isCamOpen) {
-        this.isCamOpen = isCamOpen;
-        this.isMicOpen = isMicOpen;
     }
 
     @Override
@@ -66,11 +62,14 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
         }
         int id = v.getId();
         if (id == R.id.setting_flip) {
-            listener.onClickFlip();
+            isCameraFront = !isCameraFront;
+            listener.onCameraFlip(isCameraFront);
         } else if (id == R.id.setting_camera) {
-            listener.onClickCamera();
+            enableCamaraView(!isCameraEnable);
+            listener.onCameraEnable(!isCameraEnable);
         } else if (id == R.id.setting_mic) {
-            listener.onClickMic();
+            enableMicView(!isMicEnable);
+            listener.onMicEnable(!isMicEnable);
         } else if (id == R.id.setting_data) {
             listener.onClickData();
         } else if (id == R.id.settings) {
@@ -83,11 +82,12 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
     }
 
     public interface ISettingMoreListener {
-        void onClickFlip();
 
-        void onClickCamera();
+        void onCameraFlip(boolean isCameraFront);
 
-        void onClickMic();
+        void onCameraEnable(boolean isCameraEnable);
+
+        void onMicEnable(boolean isMicEnable);
 
         void onClickData();
 
