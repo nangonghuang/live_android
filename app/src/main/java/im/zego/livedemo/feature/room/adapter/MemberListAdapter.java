@@ -98,11 +98,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         this.itemOnClickListener = itemOnClickListener;
     }
 
-    public interface IItemOnClickListener {
-
-        void onClick(ZegoUserInfo userInfo);
-    }
-
     static class UserListHolder extends RecyclerView.ViewHolder {
 
         public ImageView ivUserAvatar;
