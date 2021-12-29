@@ -15,7 +15,10 @@ public interface ZegoRoomServiceListener {
     // room info update
     void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo);
 
+    void onReceiveCoHostListUpdate();
+
     void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event);
 
     void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList);
+
 }

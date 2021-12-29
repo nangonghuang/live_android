@@ -51,11 +51,13 @@ public class ZegoUserService {
 
     public ZegoUserInfo localUserInfo;
     private ZegoUserServiceListener listener;
+
     // local login user info
     // room member list
     private final List<ZegoUserInfo> userList = new ArrayList<>();
-    private final List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
     private final Map<String, ZegoUserInfo> userMap = new HashMap<>();
+
+    public List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
 
     public boolean isSelfHost() {
         String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
@@ -227,7 +229,7 @@ public class ZegoUserService {
     // take a co-host seat
     public void takeCoHostSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(true);
+                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ZegoExpressEngine.getEngine().startPublishingStream(getSelfStreamID());
@@ -240,9 +242,9 @@ public class ZegoUserService {
     }
 
     // Leave co-host seat
-    public void leaveCoHostSeat(ZegoRoomCallback callback) {
+    public void leaveCoHostSeat(String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(false);
+                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ZegoExpressEngine.getEngine().stopPublishingStream();
@@ -310,6 +312,10 @@ public class ZegoUserService {
         return userList;
     }
 
+    public ZegoUserInfo getUserInfo(String userID) {
+        return userMap.get(userID);
+    }
+
     public String getUserName(String userID) {
         ZegoUserInfo zegoUserInfo = userMap.get(userID);
         if (zegoUserInfo != null) {
@@ -328,12 +334,12 @@ public class ZegoUserService {
         switch (action.getType()) {
             case RequestToCoHost:
                 if (listener != null) {
-                    listener.onReceiveToCoHostRequest();
+                    listener.onReceiveToCoHostRequest(action.getOperatorID());
                 }
                 break;
             case CancelRequestCoHost:
                 if (listener != null) {
-                    listener.onReceiveCancelToCoHostRequest();
+                    listener.onReceiveCancelToCoHostRequest(action.getOperatorID());
                 }
                 break;
             case AgreeToCoHost:

@@ -4,6 +4,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -87,16 +90,20 @@ public class ZegoRoomAttributesHelper {
                 getAttributesSetConfig());
     }
 
-    public static Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> getTakeOrLeaveSeatParameters(boolean isTake) {
+    public static Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> getTakeOrLeaveSeatParameters(String userID, boolean isTake) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
         ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         String roomID = roomInfo.getRoomID();
         String myUserID = selfUser.getUserID();
+        String targetID = myUserID;
+        if (StringUtils.isNotEmpty(userID)) {
+            targetID = userID;
+        }
 
         OperationCommand operation = ZegoRoomManager.getInstance().roomService.operation.copy();
         operation.getAction().setSeq(operation.getAction().getSeq() + 1);
         operation.getAction().setOperatorID(myUserID);
-        operation.getAction().setTargetID(myUserID);
+        operation.getAction().setTargetID(targetID);
 
         if (isTake) {
             operation.getAction().setType(OperationActionType.TakeCoHostSeat);
@@ -161,6 +168,10 @@ public class ZegoRoomAttributesHelper {
 
     public static void setRoomAttributes(HashMap<String, String> roomAttributes, String roomID, ZIMRoomAttributesSetConfig config, ZegoRoomCallback callback) {
         ZegoZIMManager.getInstance().zim.setRoomAttributes(roomAttributes, roomID, config, errorInfo -> {
+            Log.d(TAG, "setRoomAttributes() called with: roomAttributes = [" + Collections.singletonList(roomAttributes) + "]," +
+                    " roomID = [" + roomID + "]," +
+                    " config = [" + config + "]," +
+                    " errorInfo = [" + errorInfo.code + "]");
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
             }

@@ -22,10 +22,10 @@ public interface ZegoUserServiceListener {
     void onReceiveAddCoHostRespond(boolean accept);
 
     // receive request to co-host request
-    void onReceiveToCoHostRequest();
+    void onReceiveToCoHostRequest(String requestUserID);
 
     // receive cancel  request to co-host
-    void onReceiveCancelToCoHostRequest();
+    void onReceiveCancelToCoHostRequest(String requestUserID);
 
     // receive response to  request to co-host
     void onReceiveToCoHostRespond(boolean agree);

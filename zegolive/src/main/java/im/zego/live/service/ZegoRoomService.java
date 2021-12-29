@@ -164,19 +164,26 @@ public class ZegoRoomService {
             } else {
                 operation.setAction(action);
             }
-        }
 
-        // update seat list & requestCoHostList
-        operation.update(info.roomAttributes);
+            // update seat list & requestCoHostList
+            operation.update(info.roomAttributes);
 
-        List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
-        for (ZegoUserInfo zegoUserInfo : userInfoList) {
-            zegoUserInfo.setHasRequestedCoHost(operation.getRequestCoHostList().contains(zegoUserInfo.getUserID()));
-        }
+            if (info.roomAttributes.containsKey(ZegoRoomConstants.KEY_SEAT)) {
+                ZegoRoomManager.getInstance().userService.coHostList = operation.getSeatList();
+                if (listener != null) {
+                    listener.onReceiveCoHostListUpdate();
+                }
+            }
 
-        ZegoUserService userService = ZegoRoomManager.getInstance().userService;
-        if (userService != null) {
-            userService.onRoomAttributesUpdated(info.roomAttributes, operation);
+            List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+            for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                zegoUserInfo.setHasRequestedCoHost(operation.getRequestCoHostList().contains(zegoUserInfo.getUserID()));
+            }
+
+            ZegoUserService userService = ZegoRoomManager.getInstance().userService;
+            if (userService != null) {
+                userService.onRoomAttributesUpdated(info.roomAttributes, operation);
+            }
         }
     }
 
