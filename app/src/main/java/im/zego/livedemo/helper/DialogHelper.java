@@ -1,5 +1,6 @@
 package im.zego.livedemo.helper;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
@@ -9,7 +10,7 @@ import im.zego.livedemo.feature.room.dialog.CommonDialog;
 import im.zego.livedemo.feature.room.dialog.ConfirmDialog;
 
 public final class DialogHelper {
-    public static void showAlertDialog(
+    public static Dialog showAlertDialog(
             Context context,
             String title,
             String content,
@@ -26,6 +27,7 @@ public final class DialogHelper {
 
         CommonDialog dialog = builder.create();
         dialog.show();
+        return dialog;
     }
 
     public static void showToastDialog(
