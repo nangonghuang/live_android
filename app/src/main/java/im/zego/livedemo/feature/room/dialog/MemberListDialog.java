@@ -8,25 +8,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.room.adapter.IItemOnClickListener;
 import im.zego.livedemo.feature.room.adapter.MemberListAdapter;
-import im.zego.livedemo.helper.DialogHelper;
 
 
 public class MemberListDialog extends BaseBottomDialog {
 
-    private List<ZegoUserInfo> userList;
+    private List<ZegoUserInfo> userList = new ArrayList<>();
 
     private RecyclerView recyclerView;
     private TextView tvTitle;
     private MemberListAdapter memberListAdapter;
 
-    public MemberListDialog(Context context, List<ZegoUserInfo> userList) {
+    private IItemOnClickListener itemOnClickListener;
+
+    public MemberListDialog(Context context, IItemOnClickListener itemOnClickListener) {
         super(context);
-        this.userList = userList;
+        this.itemOnClickListener = itemOnClickListener;
     }
 
     @Override
@@ -45,11 +48,7 @@ public class MemberListDialog extends BaseBottomDialog {
         memberListAdapter = new MemberListAdapter(userList);
         recyclerView.setAdapter(memberListAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
-        memberListAdapter.setItemOnClick(userInfo -> {
-            String string = StringUtils.getString(R.string.room_page_invite_take_seat);
-            DialogHelper.showToastDialog(getContext(), string, dialog -> {
-            });
-        });
+        memberListAdapter.setItemOnClick(itemOnClickListener);
     }
 
     public void updateUserList(List<ZegoUserInfo> userList) {
