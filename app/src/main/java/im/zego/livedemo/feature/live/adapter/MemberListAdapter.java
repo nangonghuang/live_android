@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.adapter;
+package im.zego.livedemo.feature.live.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

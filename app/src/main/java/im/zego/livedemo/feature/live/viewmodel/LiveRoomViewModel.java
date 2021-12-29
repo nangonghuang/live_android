@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.viewmodel;
+package im.zego.livedemo.feature.live.viewmodel;
 
 import android.view.TextureView;
 

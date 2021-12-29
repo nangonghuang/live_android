@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
 import android.widget.TextView;
@@ -13,8 +13,9 @@ import java.util.List;
 
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
-import im.zego.livedemo.feature.room.adapter.IItemOnClickListener;
-import im.zego.livedemo.feature.room.adapter.MemberListAdapter;
+import im.zego.livedemo.feature.live.adapter.IItemOnClickListener;
+import im.zego.livedemo.feature.live.adapter.MemberListAdapter;
+import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 
 
 public class MemberListDialog extends BaseBottomDialog {

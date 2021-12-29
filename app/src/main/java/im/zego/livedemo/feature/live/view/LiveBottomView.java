@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.view;
+package im.zego.livedemo.feature.live.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

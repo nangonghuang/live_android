@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog.base;
 
 import android.app.Dialog;
 import android.content.Context;

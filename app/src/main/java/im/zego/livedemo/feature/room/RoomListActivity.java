@@ -9,14 +9,15 @@ import android.view.View;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.blankj.utilcode.util.SizeUtils;
-import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityRoomListBinding;
+import im.zego.livedemo.feature.live.LiveRoomActivity;
 import im.zego.livedemo.feature.room.adapter.RoomListAdapter;
 import im.zego.livedemo.feature.settings.SettingsActivity;
+import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.view.GridLayoutItemDecoration;
 
 public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
@@ -62,8 +63,11 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
         binding.commonTitleView.setBackBtnClickListener(v -> onBackPressed());
         binding.commonTitleView.setSettingsBtnClickListener(v -> SettingsActivity.start(this));
         binding.flCreateLive.setOnClickListener(v -> {
-//            showErrorToast(StringUtils.getString(R.string.toast_create_room_fail, 666));
-            showTipsToast(StringUtils.getString(R.string.toast_create_room_fail, 666));
+            PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
+                if (isAllGranted) {
+                    LiveRoomActivity.start(this);
+                }
+            });
         });
         binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
 //                refreshLayout.finishRefresh();

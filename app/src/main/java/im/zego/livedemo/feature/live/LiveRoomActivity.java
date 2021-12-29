@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room;
+package im.zego.livedemo.feature.live;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,29 +6,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.blankj.utilcode.util.StringUtils;
-import com.gyf.immersionbar.ImmersionBar;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
-import im.zego.livedemo.feature.room.adapter.CoHostListAdapter;
-import im.zego.livedemo.feature.room.adapter.MessageListAdapter;
-import im.zego.livedemo.feature.room.dialog.IMInputDialog;
-import im.zego.livedemo.feature.room.dialog.MemberListDialog;
-import im.zego.livedemo.feature.room.dialog.MicManagerDialog;
-import im.zego.livedemo.feature.room.dialog.MoreSettingDialog;
-import im.zego.livedemo.feature.room.view.CreateLiveView;
-import im.zego.livedemo.feature.room.view.LiveBottomView;
-import im.zego.livedemo.feature.room.view.LiveHeadView;
-import im.zego.livedemo.feature.room.viewmodel.ILiveRoomViewModelListener;
-import im.zego.livedemo.feature.room.viewmodel.LiveRoomViewModel;
+import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
+import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
+import im.zego.livedemo.feature.live.dialog.IMInputDialog;
+import im.zego.livedemo.feature.live.dialog.MemberListDialog;
+import im.zego.livedemo.feature.live.dialog.MicManagerDialog;
+import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
+import im.zego.livedemo.feature.live.view.CreateLiveView;
+import im.zego.livedemo.feature.live.view.LiveBottomView;
+import im.zego.livedemo.feature.live.view.LiveHeadView;
+import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
+import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.helper.DialogHelper;
 import im.zego.livedemo.helper.UserInfoHelper;
 import im.zego.zim.enums.ZIMConnectionEvent;
@@ -72,6 +72,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         liveRoomViewModel = new ViewModelProvider(this).get(LiveRoomViewModel.class);
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
@@ -149,10 +150,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
         });
 
-        ImmersionBar.with(this)
-                .transparentBar()
-                .init();
-
         initUI();
         initUIListener();
         initData();
@@ -166,12 +163,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             MicManagerDialog dialog = new MicManagerDialog(LiveRoomActivity.this, seatModel, new MicManagerDialog.IMicManagerListener() {
                 @Override
                 public void onClickMuteBtn(boolean mute) {
-                    liveRoomViewModel.muteUser(mute, seatModel.getUserID(), errorCode -> {});
+                    liveRoomViewModel.muteUser(mute, seatModel.getUserID(), errorCode -> {
+                    });
                 }
 
                 @Override
                 public void onClickProhibitConnect() {
-                    liveRoomViewModel.leaveCoHostSeat(seatModel.getUserID(), errorCode -> {});
+                    liveRoomViewModel.leaveCoHostSeat(seatModel.getUserID(), errorCode -> {
+                    });
                 }
             });
             dialog.show();

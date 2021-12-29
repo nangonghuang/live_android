@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
 import android.widget.TextView;
@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 
 public class MicManagerDialog extends BaseBottomDialog {
 

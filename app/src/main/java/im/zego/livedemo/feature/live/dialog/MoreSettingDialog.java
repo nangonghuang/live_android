@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
 import android.view.View;
@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
+import im.zego.livedemo.feature.live.view.MoreSettingView;
 
 public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickListener {
 

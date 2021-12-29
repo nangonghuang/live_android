@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.view;
+package im.zego.livedemo.feature.live.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.ImageUtils;
 
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.databinding.LayoutLiveHeadViewBinding;
+import im.zego.livedemo.helper.UserInfoHelper;
 
 public class LiveHeadView extends ConstraintLayout {
 
@@ -38,7 +39,8 @@ public class LiveHeadView extends ConstraintLayout {
     }
 
     public void updateUserInfo(ZegoUserInfo userInfo) {
-        binding.ivHostAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(userInfo.getAvatar()), true));
+        int avatarId = UserInfoHelper.getAvatarIdByUserName(userInfo.getUserName());
+        binding.ivHostAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(avatarId), true));
         binding.tvHostName.setText(userInfo.getUserName());
     }
 
