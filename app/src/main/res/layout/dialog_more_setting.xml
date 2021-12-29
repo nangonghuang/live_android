@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             app:moreSetting_name="@string/room_page_more_settings"
-            app:moreSetting_src="@drawable/icon_settings" />
+            app:moreSetting_src="@drawable/setting_settings" />
 
     </LinearLayout>
 
