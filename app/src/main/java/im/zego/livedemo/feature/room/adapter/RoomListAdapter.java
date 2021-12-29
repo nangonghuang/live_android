@@ -13,7 +13,7 @@ import java.util.List;
 
 import im.zego.livedemo.R;
 import im.zego.livedemo.constants.Constants;
-import im.zego.livedemo.feature.room.dialog.RoomListItem;
+import im.zego.livedemo.feature.room.model.RoomListItem;
 
 /**
  * Created by rocket_wang on 2021/12/22.

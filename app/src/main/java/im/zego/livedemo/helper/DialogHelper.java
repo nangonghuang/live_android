@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
 
-import im.zego.livedemo.feature.room.dialog.CommonDialog;
-import im.zego.livedemo.feature.room.dialog.ConfirmDialog;
+import im.zego.livedemo.feature.live.dialog.CommonDialog;
+import im.zego.livedemo.feature.live.dialog.ConfirmDialog;
 
 public final class DialogHelper {
     public static Dialog showAlertDialog(

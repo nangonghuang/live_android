@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.live.dialog.base.BaseDialog;
 
 
 /**

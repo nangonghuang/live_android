@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
 import android.text.Editable;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.KeyboardUtils;
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.live.dialog.base.BaseDialog;
 
 public class IMInputDialog extends BaseDialog {
 

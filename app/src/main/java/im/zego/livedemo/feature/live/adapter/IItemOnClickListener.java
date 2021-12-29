@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.adapter;
+package im.zego.livedemo.feature.live.adapter;
 
 import im.zego.live.model.ZegoUserInfo;
 

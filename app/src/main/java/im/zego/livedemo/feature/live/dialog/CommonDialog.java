@@ -1,7 +1,6 @@
-package im.zego.livedemo.feature.room.dialog;
+package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.live.dialog.base.BaseDialog;
 
 public class CommonDialog extends BaseDialog {
 
@@ -64,12 +64,12 @@ public class CommonDialog extends BaseDialog {
         super.initListener();
         if (negativeButtonListener != null) {
             tvNegative.setOnClickListener(v -> {
-                negativeButtonListener.onClick(this, DialogInterface.BUTTON_NEGATIVE);
+                negativeButtonListener.onClick(this, BUTTON_NEGATIVE);
             });
         }
         if (positiveButtonListener != null) {
             tvPositive.setOnClickListener(v -> {
-                positiveButtonListener.onClick(this, DialogInterface.BUTTON_POSITIVE);
+                positiveButtonListener.onClick(this, BUTTON_POSITIVE);
             });
         }
     }

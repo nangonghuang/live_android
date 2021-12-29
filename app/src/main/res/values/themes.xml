@@ -7,6 +7,13 @@
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
+    <style name="Theme.NoActionBar" parent="@style/Theme.App">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="SCBSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">#0055ff</item>
         <!-- inactive thumb color -->
