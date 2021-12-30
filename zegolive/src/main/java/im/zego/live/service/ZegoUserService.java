@@ -2,8 +2,6 @@ package im.zego.live.service;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -19,6 +17,8 @@ import im.zego.live.callback.ZegoOnlineRoomUserListCallback;
 import im.zego.live.callback.ZegoOnlineRoomUsersNumCallback;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomErrorCode;
+import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.live.listener.ZegoUserServiceListener;
 import im.zego.live.model.OperationAction;
@@ -200,10 +200,9 @@ public class ZegoUserService {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     ZegoExpressEngine.getEngine().muteMicrophone(!open);
-                } else {
-                    if (callback != null) {
-                        callback.onRoomCallback(errorCode);
-                    }
+                }
+                if (callback != null) {
+                    callback.onRoomCallback(errorCode);
                 }
             });
         }
@@ -217,10 +216,9 @@ public class ZegoUserService {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     ZegoExpressEngine.getEngine().enableCamera(open);
-                } else {
-                    if (callback != null) {
-                        callback.onRoomCallback(errorCode);
-                    }
+                }
+                if (callback != null) {
+                    callback.onRoomCallback(errorCode);
                 }
             });
         }
@@ -232,11 +230,10 @@ public class ZegoUserService {
                 = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                ZegoExpressEngine.getEngine().startPublishingStream(getSelfStreamID());
-            } else {
-                if (callback != null) {
-                    callback.onRoomCallback(errorCode);
-                }
+                ZegoExpressEngine.getEngine().startPublishingStream(ZegoLiveHelper.getSelfStreamID());
+            }
+            if (callback != null) {
+                callback.onRoomCallback(errorCode);
             }
         });
     }
@@ -246,12 +243,11 @@ public class ZegoUserService {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
                 = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
-            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+            if (errorCode == ZegoRoomErrorCode.SUCCESS && UserInfoHelper.isUserIDSelf(userID)) {
                 ZegoExpressEngine.getEngine().stopPublishingStream();
-            } else {
-                if (callback != null) {
-                    callback.onRoomCallback(errorCode);
-                }
+            }
+            if (callback != null) {
+                callback.onRoomCallback(errorCode);
             }
         });
     }
@@ -299,13 +295,6 @@ public class ZegoUserService {
             roomUsers.add(roomUser);
         }
         return roomUsers;
-    }
-
-    @NonNull
-    private String getSelfStreamID() {
-        String selfUserID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
-        String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
-        return String.format("%s_%s_%s", roomID, selfUserID, "main");
     }
 
     public List<ZegoUserInfo> getUserList() {

@@ -7,21 +7,9 @@ import com.blankj.utilcode.util.ResourceUtils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import im.zego.live.ZegoRoomManager;
-import im.zego.live.model.ZegoRoomInfo;
-
-public final class UserInfoHelper {
+public final class AvatarHelper {
 
     private static final int MAX_INDEX = 8;
-
-    public static boolean isSelfOwner() {
-        return ZegoRoomManager.getInstance().userService.isSelfHost();
-    }
-
-    public static boolean isUserOwner(String userId) {
-        ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
-        return roomInfo.getHostID().equals(userId);
-    }
 
     public static Drawable getAvatarByUserName(String userName) {
         return ResourceUtils.getDrawable(getAvatarIdByUserName(userName));

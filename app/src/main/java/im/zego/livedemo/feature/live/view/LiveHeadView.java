@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.ImageUtils;
 
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.databinding.LayoutLiveHeadViewBinding;
-import im.zego.livedemo.helper.UserInfoHelper;
+import im.zego.livedemo.helper.AvatarHelper;
 
 public class LiveHeadView extends ConstraintLayout {
 
@@ -39,7 +39,7 @@ public class LiveHeadView extends ConstraintLayout {
     }
 
     public void updateUserInfo(ZegoUserInfo userInfo) {
-        int avatarId = UserInfoHelper.getAvatarIdByUserName(userInfo.getUserName());
+        int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
         binding.ivHostAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(avatarId), true));
         binding.tvHostName.setText(userInfo.getUserName());
     }

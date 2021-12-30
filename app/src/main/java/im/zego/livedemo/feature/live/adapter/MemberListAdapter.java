@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.Objects;
 
 import im.zego.live.ZegoRoomManager;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.model.ZegoRoomUserRole;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
-import im.zego.livedemo.helper.UserInfoHelper;
+import im.zego.livedemo.helper.AvatarHelper;
 
 
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.UserListHolder> {
@@ -44,7 +45,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     public void onBindViewHolder(@NonNull UserListHolder holder, int position) {
         final ZegoUserInfo userInfo = userListInRoom.get(position);
 
-        holder.ivUserAvatar.setImageDrawable(UserInfoHelper.getAvatarByUserName(userInfo.getUserName()));
+        holder.ivUserAvatar.setImageDrawable(AvatarHelper.getAvatarByUserName(userInfo.getUserName()));
         holder.tvUserName.setText(userInfo.getUserName());
         holder.ivInvite.setVisibility(View.GONE);
         holder.tvUserInfo.setVisibility(View.GONE);

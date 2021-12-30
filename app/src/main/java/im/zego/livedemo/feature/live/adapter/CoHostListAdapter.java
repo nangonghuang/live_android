@@ -14,19 +14,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
+import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.databinding.ItemCoHostListBinding;
-import im.zego.livedemo.helper.UserInfoHelper;
+import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
+import im.zego.livedemo.helper.AvatarHelper;
 
 public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.ViewHolder> {
 
-    public CoHostListAdapter(ICoHostClickListener listener) {
-        this.listener = listener;
-    }
-
     private List<ZegoCoHostSeatModel> seatModels = new ArrayList<>();
     private ICoHostClickListener listener;
+    private LiveRoomViewModel liveRoomViewModel;
+
+    public CoHostListAdapter(LiveRoomViewModel liveRoomViewModel, ICoHostClickListener listener) {
+        this.liveRoomViewModel = liveRoomViewModel;
+        this.listener = listener;
+    }
 
     public void setList(List<ZegoCoHostSeatModel> list) {
         seatModels.clear();
@@ -72,7 +77,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.getUserInfo(model.getUserID());
         if (userInfo == null) return;
 
-        int avatarId = UserInfoHelper.getAvatarIdByUserName(userInfo.getUserName());
+        int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
         Bitmap bitmap = ImageUtils.getBitmap(avatarId);
         Bitmap blurBitmap = ImageUtils.fastBlur(bitmap, 1F, 15F);
         Bitmap roundBitmap = ImageUtils.toRound(bitmap);
@@ -92,6 +97,8 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         } else {
             binding.ivMore.setVisibility(View.GONE);
         }
+
+        liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
     }
 
     @Override

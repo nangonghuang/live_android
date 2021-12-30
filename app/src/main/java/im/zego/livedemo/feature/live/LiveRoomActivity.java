@@ -15,6 +15,7 @@ import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
@@ -30,7 +31,6 @@ import im.zego.livedemo.feature.live.view.LiveHeadView;
 import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
 import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.helper.DialogHelper;
-import im.zego.livedemo.helper.UserInfoHelper;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -159,7 +159,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         messageListAdapter = new MessageListAdapter();
         binding.rvMessageList.setAdapter(messageListAdapter);
 
-        coHostListAdapter = new CoHostListAdapter(seatModel -> {
+        coHostListAdapter = new CoHostListAdapter(liveRoomViewModel, seatModel -> {
             MicManagerDialog dialog = new MicManagerDialog(LiveRoomActivity.this, seatModel, new MicManagerDialog.IMicManagerListener() {
                 @Override
                 public void onClickMuteBtn(boolean mute) {
