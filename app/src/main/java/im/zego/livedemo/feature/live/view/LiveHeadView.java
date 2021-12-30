@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.ImageUtils;
 
-import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.databinding.LayoutLiveHeadViewBinding;
 import im.zego.livedemo.helper.AvatarHelper;
 
@@ -38,10 +37,10 @@ public class LiveHeadView extends ConstraintLayout {
         binding.layoutOnlineNum.setOnClickListener(v -> listener.onOnlineNumClick());
     }
 
-    public void updateUserInfo(ZegoUserInfo userInfo) {
-        int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
+    public void updateHostName(String hostName) {
+        int avatarId = AvatarHelper.getAvatarIdByUserName(hostName);
         binding.ivHostAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(avatarId), true));
-        binding.tvHostName.setText(userInfo.getUserName());
+        binding.tvHostName.setText(hostName);
     }
 
     public void updateOnlineNum(String num) {

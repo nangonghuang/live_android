@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.StringUtils;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.model.ZegoRoomInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
@@ -77,6 +78,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         liveRoomViewModel = new ViewModelProvider(this).get(LiveRoomViewModel.class);
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
+            @Override
+            public void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo) {
+            }
+
             @Override
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
 
@@ -229,17 +234,26 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         liveRoomViewModel.userList.observe(this, userList -> {
             memberListDialog.updateUserList(userList);
             binding.liveHeadView.updateOnlineNum(String.valueOf(userList.size()));
+
+            ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
+            String userName = ZegoRoomManager.getInstance().userService.getUserName(roomInfo.getHostID());
+            binding.liveHeadView.updateHostName(userName);
         });
         liveRoomViewModel.coHostList.observe(this, userList -> {
             coHostListAdapter.setList(userList);
         });
-        liveRoomViewModel.isCameraOpen.observe(this, open -> {
-            binding.liveBottomView.enableCameraView(open);
-            moreSettingDialog.enableCamaraView(open);
+        liveRoomViewModel.isCameraEnable.observe(this, enable -> {
+            binding.liveBottomView.enableCameraView(enable);
+            moreSettingDialog.enableCamaraView(enable);
+            if (enable) {
+                liveRoomViewModel.startPreview(binding.textureView);
+            } else {
+                liveRoomViewModel.stopPreview();
+            }
         });
-        liveRoomViewModel.isMicOpen.observe(this, open -> {
-            binding.liveBottomView.enableMicView(open);
-            moreSettingDialog.enableMicView(open);
+        liveRoomViewModel.isMicEnable.observe(this, enable -> {
+            binding.liveBottomView.enableMicView(enable);
+            moreSettingDialog.enableMicView(enable);
         });
         liveRoomViewModel.textMessageList.observe(this, messages -> {
             messageListAdapter.setMessages(messages);
@@ -306,7 +320,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onStartLiveClick(String roomName) {
-                liveRoomViewModel.createRoom("456", roomName, errorCode -> {
+                String roomID = String.valueOf((int) (100 + Math.random() * 900));
+                liveRoomViewModel.createRoom(roomID, roomName, errorCode -> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();
                         binding.liveBottomView.toHost();
@@ -321,22 +336,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         binding.liveHeadView.setListener(new LiveHeadView.HeadViewListener() {
             @Override
             public void onCloseRoomClick() {
-                if (UserInfoHelper.isSelfOwner()) {
-                    DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                        StringUtils.getString(R.string.room_page_destroy_room),
-                        StringUtils.getString(R.string.dialog_sure_to_destroy_room),
-                        StringUtils.getString(R.string.dialog_confirm),
-                        null,
-                        (dialog, which) -> {
-                            showTipsToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                            dialog.dismiss();
-                            onBackPressed();
-                        },
-                        null
-                    );
-                } else {
-                    onBackPressed();
-                }
+                onBackPressed();
             }
 
             @Override
@@ -372,7 +372,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onMoreClick() {
-
+                moreSettingDialog.show();
             }
 
             @Override
@@ -434,6 +434,30 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (UserInfoHelper.isSelfOwner()) {
+            DialogHelper.showAlertDialog(LiveRoomActivity.this,
+                    StringUtils.getString(R.string.room_page_destroy_room),
+                    StringUtils.getString(R.string.dialog_sure_to_destroy_room),
+                    StringUtils.getString(R.string.dialog_confirm),
+                    null,
+                    true,
+                    (dialog, which) -> {
+                        liveRoomViewModel.leaveRoom(errorCode -> {
+                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                                showTipsToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                                dialog.dismiss();
+                                super.onBackPressed();
+                            } else {
+                                showErrorToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
+                            }
+                        });
+                    },
+                    null
+            );
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     }
 }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import im.zego.livedemo.R;
 
@@ -47,19 +46,11 @@ public class MoreSettingView extends ConstraintLayout {
 
     }
 
-    public void setMic(boolean isMicOpen) {
-        if (isMicOpen) {
-            ivSettingBg.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.setting_mic_on));
-        } else {
-            ivSettingBg.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.setting_mic_off));
-        }
+    public void enableCamaraView(boolean enable) {
+        ivSettingBg.setImageResource(enable ? R.drawable.setting_cam_on : R.drawable.setting_cam_off);
     }
 
-    public void setCamara(boolean isCamOpen) {
-        if (isCamOpen) {
-            ivSettingBg.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.setting_cam_on));
-        } else {
-            ivSettingBg.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.setting_cam_off));
-        }
+    public void enableMicView(boolean enable) {
+        ivSettingBg.setImageResource(enable ? R.drawable.setting_mic_on : R.drawable.setting_mic_off);
     }
 }

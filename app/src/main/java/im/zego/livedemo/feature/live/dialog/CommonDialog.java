@@ -25,6 +25,7 @@ public class CommonDialog extends BaseDialog {
     private OnClickListener negativeButtonListener;
     private String positiveButtonText;
     private OnClickListener positiveButtonListener;
+    private boolean cancelable = false;
 
     public CommonDialog(@NonNull Context context) {
         super(context);
@@ -76,12 +77,12 @@ public class CommonDialog extends BaseDialog {
 
     @Override
     protected boolean cancelable() {
-        return false;
+        return cancelable;
     }
 
     @Override
     protected boolean canceledOnTouchOutside() {
-        return false;
+        return cancelable;
     }
 
     private void updateParams(
@@ -90,7 +91,8 @@ public class CommonDialog extends BaseDialog {
             String negativeButtonText,
             OnClickListener negativeButtonListener,
             String positiveButtonText,
-            OnClickListener positiveButtonListener
+            OnClickListener positiveButtonListener,
+            boolean cancelable
     ) {
         this.title = title;
         this.content = content;
@@ -98,6 +100,7 @@ public class CommonDialog extends BaseDialog {
         this.negativeButtonListener = negativeButtonListener;
         this.positiveButtonText = positiveButtonText;
         this.positiveButtonListener = positiveButtonListener;
+        this.cancelable = cancelable;
     }
 
     public static class Builder {
@@ -109,6 +112,7 @@ public class CommonDialog extends BaseDialog {
         private OnClickListener negativeButtonListener;
         private String positiveButtonText;
         private OnClickListener positiveButtonListener;
+        private boolean cancelable;
 
         public Builder(Context context) {
             this.context = context;
@@ -136,6 +140,11 @@ public class CommonDialog extends BaseDialog {
             return this;
         }
 
+        public Builder setCancelable(boolean cancelable) {
+            this.cancelable = cancelable;
+            return this;
+        }
+
         public CommonDialog create() {
             CommonDialog dialog = new CommonDialog(context);
             dialog.updateParams(
@@ -144,7 +153,8 @@ public class CommonDialog extends BaseDialog {
                     negativeButtonText,
                     negativeButtonListener,
                     positiveButtonText,
-                    positiveButtonListener
+                    positiveButtonListener,
+                    cancelable
             );
             return dialog;
         }

@@ -19,11 +19,25 @@ public final class DialogHelper {
             DialogInterface.OnClickListener positiveClickListener,
             DialogInterface.OnClickListener negativeClickListener
     ) {
+        return showAlertDialog(context, title, content, positiveText, negativeText, false, positiveClickListener, negativeClickListener);
+    }
+
+    public static Dialog showAlertDialog(
+            Context context,
+            String title,
+            String content,
+            String positiveText,
+            String negativeText,
+            boolean cancelable,
+            DialogInterface.OnClickListener positiveClickListener,
+            DialogInterface.OnClickListener negativeClickListener
+    ) {
         CommonDialog.Builder builder = new CommonDialog.Builder(context)
                 .setTitle(title)
                 .setContent(content)
                 .setPositiveButton(positiveText, positiveClickListener)
-                .setNegativeButton(negativeText, negativeClickListener);
+                .setNegativeButton(negativeText, negativeClickListener)
+                .setCancelable(cancelable);
 
         CommonDialog dialog = builder.create();
         dialog.show();

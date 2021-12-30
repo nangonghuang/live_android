@@ -11,11 +11,11 @@ import im.zego.livedemo.feature.live.view.MoreSettingView;
 
 public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickListener {
 
-    private MoreSettingView mSettingFlip;
-    private MoreSettingView mSettingCamera;
-    private MoreSettingView mSettingMic;
-    private MoreSettingView mSettingData;
-    private MoreSettingView mSettings;
+    private MoreSettingView moreViewFlip;
+    private MoreSettingView moreViewCamera;
+    private MoreSettingView moreViewMic;
+    private MoreSettingView moreViewData;
+    private MoreSettingView moreViewSettings;
 
     private ISettingMoreListener listener;
     private boolean isMicEnable = true;
@@ -33,28 +33,31 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
 
     @Override
     public void initView() {
-        mSettingFlip = findViewById(R.id.setting_flip);
-        mSettingCamera = findViewById(R.id.setting_camera);
-        mSettingMic = findViewById(R.id.setting_mic);
-        mSettingData = findViewById(R.id.setting_data);
-        mSettings = findViewById(R.id.settings);
+        moreViewFlip = findViewById(R.id.setting_flip);
+        moreViewCamera = findViewById(R.id.setting_camera);
+        moreViewMic = findViewById(R.id.setting_mic);
+        moreViewData = findViewById(R.id.setting_data);
+        moreViewSettings = findViewById(R.id.settings);
 
-        mSettingFlip.setOnClickListener(this);
-        mSettingCamera.setOnClickListener(this);
-        mSettingMic.setOnClickListener(this);
-        mSettingData.setOnClickListener(this);
-        mSettings.setOnClickListener(this);
-
-        enableMicView(isMicEnable);
-        enableCamaraView(isCameraEnable);
+        moreViewFlip.setOnClickListener(this);
+        moreViewCamera.setOnClickListener(this);
+        moreViewMic.setOnClickListener(this);
+        moreViewData.setOnClickListener(this);
+        moreViewSettings.setOnClickListener(this);
     }
 
-    public void enableMicView(boolean isMicOpen) {
-        mSettingMic.setMic(isMicOpen);
+    public void enableMicView(boolean enable) {
+        isMicEnable = enable;
+        if (moreViewMic != null) {
+            moreViewMic.enableMicView(enable);
+        }
     }
 
-    public void enableCamaraView(boolean isCamOpen) {
-        mSettingCamera.setCamara(isCamOpen);
+    public void enableCamaraView(boolean enable) {
+        isCameraEnable = enable;
+        if (moreViewCamera != null) {
+            moreViewCamera.enableCamaraView(enable);
+        }
     }
 
     @Override
@@ -67,11 +70,13 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
             isCameraFront = !isCameraFront;
             listener.onCameraFlip(isCameraFront);
         } else if (id == R.id.setting_camera) {
-            enableCamaraView(!isCameraEnable);
-            listener.onCameraEnable(!isCameraEnable);
+            boolean enable = !isCameraEnable;
+            enableCamaraView(enable);
+            listener.onCameraEnable(enable);
         } else if (id == R.id.setting_mic) {
-            enableMicView(!isMicEnable);
-            listener.onMicEnable(!isMicEnable);
+            boolean enable = !isMicEnable;
+            enableMicView(enable);
+            listener.onMicEnable(enable);
         } else if (id == R.id.setting_data) {
             listener.onClickData();
         } else if (id == R.id.settings) {
