@@ -41,7 +41,7 @@
 
     <im.zego.livedemo.feature.live.view.LiveBottomView
         android:id="@+id/live_bottom_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"

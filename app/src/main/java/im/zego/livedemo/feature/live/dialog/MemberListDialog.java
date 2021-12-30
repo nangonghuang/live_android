@@ -54,7 +54,11 @@ public class MemberListDialog extends BaseBottomDialog {
 
     public void updateUserList(List<ZegoUserInfo> userList) {
         this.userList = userList;
-        memberListAdapter.updateUserList(userList);
-        tvTitle.setText(StringUtils.getString(R.string.room_page_user_list, userList.size()));
+        if (memberListAdapter != null) {
+            memberListAdapter.updateUserList(userList);
+        }
+        if (tvTitle != null) {
+            tvTitle.setText(StringUtils.getString(R.string.room_page_user_list, userList.size()));
+        }
     }
 }

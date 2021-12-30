@@ -56,13 +56,15 @@ public class LiveBottomView extends ConstraintLayout {
         });
 
         binding.ivCamera.setOnClickListener(v -> {
-            enableCameraView(!isCameraEnable);
-            listener.onCameraEnable(!isCameraEnable);
+            boolean enable = !isCameraEnable;
+            enableCameraView(enable);
+            listener.onCameraEnable(enable);
         });
 
         binding.ivMic.setOnClickListener(v -> {
-            enableMicView(!isMicEnable);
-            listener.onMicEnable(!isMicEnable);
+            boolean enable = !isMicEnable;
+            enableMicView(enable);
+            listener.onMicEnable(enable);
         });
 
         binding.layoutApplyConnection.setOnClickListener(v -> {

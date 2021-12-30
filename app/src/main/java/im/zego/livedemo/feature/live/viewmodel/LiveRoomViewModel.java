@@ -2,11 +2,19 @@ package im.zego.livedemo.feature.live.viewmodel;
 
 import android.text.TextUtils;
 import android.view.TextureView;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomErrorCode;
@@ -28,19 +36,14 @@ import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import org.json.JSONException;
 
 /**
  * Created by rocket_wang on 2021/12/27.
  */
 public class LiveRoomViewModel extends ViewModel {
 
-    public MutableLiveData<Boolean> isCameraOpen = new MutableLiveData<>();
-    public MutableLiveData<Boolean> isMicOpen = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isCameraEnable = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isMicEnable = new MutableLiveData<>();
     public MutableLiveData<List<ZegoTextMessage>> textMessageList = new MutableLiveData<>();
     public MutableLiveData<List<ZegoUserInfo>> userList = new MutableLiveData<>();
     public MutableLiveData<List<ZegoCoHostSeatModel>> coHostList = new MutableLiveData<>();
@@ -51,7 +54,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().roomService.setListener(new ZegoRoomServiceListener() {
             @Override
             public void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo) {
-
+                listener.onReceiveRoomInfoUpdate(roomInfo);
             }
 
             @Override
@@ -180,21 +183,25 @@ public class LiveRoomViewModel extends ViewModel {
         }
     }
 
+    public void leaveRoom(ZegoRoomCallback callback) {
+        ZegoRoomManager.getInstance().roomService.leaveRoom(callback);
+    }
+
     public void enableCamera(boolean enable) {
-        isCameraOpen.postValue(enable);
+        isCameraEnable.postValue(enable);
         ZegoRoomManager.getInstance().userService.cameraOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                isCameraOpen.postValue(!enable);
+                isCameraEnable.postValue(!enable);
                 ToastUtils.showShort(R.string.toast_operate_camera_fail, errorCode);
             }
         });
     }
 
     public void enableMic(boolean enable) {
-        isMicOpen.postValue(enable);
+        isMicEnable.postValue(enable);
         ZegoRoomManager.getInstance().userService.micOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                isMicOpen.postValue(!enable);
+                isMicEnable.postValue(!enable);
                 ToastUtils.showShort(R.string.toast_operate_mic_fail, errorCode);
             }
         });
