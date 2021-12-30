@@ -159,6 +159,12 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoExpressEngine.getEngine().stopPreview();
     }
 
+    public void startPlayingStream(String streamID, TextureView view) {
+        ZegoCanvas zegoCanvas = new ZegoCanvas(view);
+        zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
+        ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
+    }
+
     public void useFrontCamera(boolean enable) {
         ZegoExpressEngine.getEngine().useFrontCamera(enable);
     }
@@ -254,7 +260,15 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public void takeCoHostSeat(ZegoRoomCallback callback) {
-        ZegoRoomManager.getInstance().userService.takeCoHostSeat(callback);
+        ZegoRoomManager.getInstance().userService.takeCoHostSeat(errorCode -> {
+            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                enableMic(true);
+                enableCamera(true);
+            }
+            if (callback != null) {
+                callback.onRoomCallback(errorCode);
+            }
+        });
     }
 
     public void leaveCoHostSeat(String userID, ZegoRoomCallback callback) {

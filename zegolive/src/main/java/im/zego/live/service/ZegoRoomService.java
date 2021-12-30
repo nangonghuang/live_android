@@ -9,15 +9,18 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomConstants;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.live.listener.ZegoRoomServiceListener;
 import im.zego.live.model.OperationAction;
 import im.zego.live.model.OperationCommand;
+import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoRoomUserRole;
 import im.zego.live.model.ZegoUserInfo;
@@ -117,6 +120,12 @@ public class ZegoRoomService {
 
         ZegoExpressEngine.getEngine().logoutRoom(roomInfo.getRoomID());
 
+        if (UserInfoHelper.isSelfCoHost()) {
+            ZegoRoomManager.getInstance().userService.leaveCoHostSeat(null, errorCode -> {
+
+            });
+        }
+
         ZegoZIMManager.getInstance().zim.leaveRoom(roomInfo.getRoomID(), errorInfo -> {
             Log.d(TAG, "leaveRoom() called with: errorInfo = [" + errorInfo.code + "]" + errorInfo.message);
             if (callback != null) {
@@ -168,16 +177,55 @@ public class ZegoRoomService {
             // update seat list & requestCoHostList
             operation.update(info.roomAttributes);
 
-            if (info.roomAttributes.containsKey(ZegoRoomConstants.KEY_SEAT)) {
-                ZegoRoomManager.getInstance().userService.coHostList = operation.getSeatList();
-                if (listener != null) {
-                    listener.onReceiveCoHostListUpdate();
-                }
-            }
+            ZegoRoomManager.getInstance().userService.coHostList = operation.getSeatList();
+            List<ZegoCoHostSeatModel> coHostList = ZegoRoomManager.getInstance().userService.coHostList;
 
             List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
             for (ZegoUserInfo zegoUserInfo : userInfoList) {
                 zegoUserInfo.setHasRequestedCoHost(operation.getRequestCoHostList().contains(zegoUserInfo.getUserID()));
+            }
+
+            // if coHost not in user list, this member may disconnect or already leave room
+            // we need make him leave seat actively
+            // remember only room host have this operation rights
+            if (UserInfoHelper.isSelfOwner()) {
+                for (ZegoCoHostSeatModel model : coHostList) {
+                    boolean isFound = false;
+                    for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                        if (Objects.equals(model.getUserID(), zegoUserInfo.getUserID()) && StringUtils.isNotEmpty(zegoUserInfo.getUserID())) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFound) {
+                        ZegoRoomManager.getInstance().userService.leaveCoHostSeat(model.getUserID(), errorCode -> {
+
+                        });
+                    }
+                }
+            }
+
+            switch (operation.getAction().getType()) {
+                case Mic:
+                    break;
+                case Camera:
+                    break;
+                case Mute:
+                    break;
+                case TakeCoHostSeat:
+                    if (listener != null) {
+                        listener.onReceiveCoHostListUpdate();
+                    }
+                    break;
+                case LeaveCoHostSeat:
+                    if (!UserInfoHelper.isSelfCoHost()) {
+                        ZegoExpressEngine.getEngine().stopPublishingStream();
+                    }
+                    if (listener != null) {
+                        listener.onReceiveCoHostListUpdate();
+                    }
+                    break;
             }
 
             ZegoUserService userService = ZegoRoomManager.getInstance().userService;
@@ -204,12 +252,10 @@ public class ZegoRoomService {
         if (listener != null) {
             listener.onRoomStreamUpdate(roomID, updateType, streamList);
         }
-//        for (ZegoStream zegoStream : streamList) {
-//            if (updateType == ZegoUpdateType.ADD) {
-//                ZegoExpressEngine.getEngine().startPlayingStream(zegoStream.streamID, null);
-//            } else {
-//                ZegoExpressEngine.getEngine().stopPlayingStream(zegoStream.streamID);
-//            }
-//        }
+        for (ZegoStream zegoStream : streamList) {
+            if (updateType == ZegoUpdateType.DELETE) {
+                ZegoExpressEngine.getEngine().stopPlayingStream(zegoStream.streamID);
+            }
+        }
     }
 }
