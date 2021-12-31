@@ -18,4 +18,9 @@ public class ZegoLiveHelper {
         String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
         return String.format("%s_%s_%s", roomID, userID, "main");
     }
+
+    public static boolean isHostStreamID(String streamID) {
+        String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
+        return streamID.contains(hostID);
+    }
 }
