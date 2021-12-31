@@ -137,6 +137,7 @@ public class ZegoRoomService {
     void reset() {
         roomInfo.setRoomName("");
         roomInfo.setHostID("");
+        operation = new OperationCommand();
     }
 
     public void setListener(ZegoRoomServiceListener listener) {
@@ -188,7 +189,7 @@ public class ZegoRoomService {
             // if coHost not in user list, this member may disconnect or already leave room
             // we need make him leave seat actively
             // remember only room host have this operation rights
-            if (UserInfoHelper.isSelfOwner()) {
+            if (UserInfoHelper.isSelfHost()) {
                 for (ZegoCoHostSeatModel model : coHostList) {
                     boolean isFound = false;
                     for (ZegoUserInfo zegoUserInfo : userInfoList) {
@@ -208,14 +209,11 @@ public class ZegoRoomService {
 
             switch (operation.getAction().getType()) {
                 case Mic:
-                    break;
                 case Camera:
-                    break;
                 case Mute:
-                    break;
                 case TakeCoHostSeat:
                     if (listener != null) {
-                        listener.onReceiveCoHostListUpdate();
+                        listener.onReceiveCoHostListUpdate(operation.getAction());
                     }
                     break;
                 case LeaveCoHostSeat:
@@ -223,7 +221,7 @@ public class ZegoRoomService {
                         ZegoExpressEngine.getEngine().stopPublishingStream();
                     }
                     if (listener != null) {
-                        listener.onReceiveCoHostListUpdate();
+                        listener.onReceiveCoHostListUpdate(operation.getAction());
                     }
                     break;
             }

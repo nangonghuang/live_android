@@ -94,10 +94,11 @@ public class ZegoUserService {
     void leaveRoom() {
         userList.clear();
         userMap.clear();
+        coHostList.clear();
     }
 
     // get online room users list
-    public void getOnlineRoomUsers(int page, ZegoOnlineRoomUserListCallback callback) {
+    public void getOnlineRoomUsers(ZegoOnlineRoomUserListCallback callback) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
         ZIMQueryMemberConfig config = new ZIMQueryMemberConfig();
         config.count = 1000;
@@ -186,7 +187,7 @@ public class ZegoUserService {
     // Prohibit turning on the camera microphone
     public void muteUser(boolean isMuted, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 0);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 2);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
         }
@@ -195,12 +196,9 @@ public class ZegoUserService {
     // Microphone operate
     public void micOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 0);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
-                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                    ZegoExpressEngine.getEngine().muteMicrophone(!open);
-                }
                 if (callback != null) {
                     callback.onRoomCallback(errorCode);
                 }
@@ -211,12 +209,9 @@ public class ZegoUserService {
     // Camera operate
     public void cameraOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 2);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
-                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                    ZegoExpressEngine.getEngine().enableCamera(open);
-                }
                 if (callback != null) {
                     callback.onRoomCallback(errorCode);
                 }
@@ -231,6 +226,8 @@ public class ZegoUserService {
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ZegoExpressEngine.getEngine().startPublishingStream(ZegoLiveHelper.getSelfStreamID());
+                ZegoExpressEngine.getEngine().enableCamera(true);
+                ZegoExpressEngine.getEngine().muteMicrophone(false);
             }
             if (callback != null) {
                 callback.onRoomCallback(errorCode);
@@ -356,12 +353,11 @@ public class ZegoUserService {
             ZegoExpressEngine.getEngine().muteMicrophone(!seat.isMicEnable());
         }
         if (action.getType() == OperationActionType.Camera) {
-            ZegoExpressEngine.getEngine().enableCamera(!seat.isCameraEnable());
+            ZegoExpressEngine.getEngine().enableCamera(seat.isCameraEnable());
         }
 
-        if (action.getType() == OperationActionType.Mute && seat.isMuted()) {
-            ZegoExpressEngine.getEngine().muteMicrophone(true);
-            micOperate(false, null);
+        if (action.getType() == OperationActionType.Mute) {
+            ZegoExpressEngine.getEngine().muteMicrophone(seat.isMuted());
         }
     }
 
