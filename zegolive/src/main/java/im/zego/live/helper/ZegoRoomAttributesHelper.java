@@ -3,6 +3,7 @@ package im.zego.live.helper;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -27,7 +28,9 @@ import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
 public class ZegoRoomAttributesHelper {
     private static final String TAG = "ZegoRoomAttributes";
 
-    public static Gson gson = new Gson();
+    public static Gson gson = new GsonBuilder()
+            .registerTypeAdapterFactory(new CustomTypeAdapterFactory())
+            .create();
 
     public static ZIMRoomAttributesSetConfig getAttributesSetConfig() {
         ZIMRoomAttributesSetConfig setConfig = new ZIMRoomAttributesSetConfig();
