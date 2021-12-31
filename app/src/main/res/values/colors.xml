@@ -40,4 +40,5 @@
     <color name="default_title_color">#ffffff</color>
     <color name="default_message_color">#ffffff</color>
     <color name="default_action_color">#26a69a</color>
+    <color name="create_live_dark_bg">#33000000</color>
 </resources>

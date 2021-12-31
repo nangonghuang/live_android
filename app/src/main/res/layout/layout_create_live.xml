@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#33000000">
+    android:background="@color/create_live_dark_bg">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_back"
