@@ -110,13 +110,16 @@ public class ZegoRoomAttributesHelper {
 
         if (isTake) {
             operation.getAction().setType(OperationActionType.TakeCoHostSeat);
+            // when user taking seat, we need set these default params actively
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
-            model.setUserID(myUserID);
+            model.setCamera(true);
+            model.setMic(true);
+            model.setUserID(targetID);
             operation.getSeatList().add(model);
         } else {
             operation.getAction().setType(OperationActionType.LeaveCoHostSeat);
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
-            model.setUserID(myUserID);
+            model.setUserID(targetID);
             operation.getSeatList().remove(model);
         }
 
@@ -140,7 +143,7 @@ public class ZegoRoomAttributesHelper {
 
         ZegoCoHostSeatModel seatModel = null;
         for (ZegoCoHostSeatModel model : operation.getSeatList()) {
-            if (Objects.equals(model.getUserID(), myUserID)) {
+            if (Objects.equals(model.getUserID(), targetUserID)) {
                 seatModel = model;
             }
         }
