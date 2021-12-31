@@ -71,7 +71,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
                 holder.tvUserInfo.setText(R.string.room_page_me);
                 break;
             case Participant:
-                if (UserInfoHelper.isSelfOwner()) {
+                if (UserInfoHelper.isSelfHost()) {
                     holder.ivInvite.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -121,7 +121,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
             return RoleType.Me;
         } else if (userInfo.getRole() == ZegoRoomUserRole.Host) {
             return RoleType.Host;
-        } else if (userInfo.getRole() == ZegoRoomUserRole.CoHost) {
+        } else if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
             return RoleType.CoHost;
         } else if (userInfo.getRole() == ZegoRoomUserRole.Participant && userInfo.isHasInvited()) {
             return RoleType.InvitedCoHost;

@@ -11,7 +11,7 @@ import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 
-public class MicManagerDialog extends BaseBottomDialog {
+public class SeatMoreDialog extends BaseBottomDialog {
 
     private TextView tvMicStatus;
     private TextView tvProhibitConnect;
@@ -20,7 +20,7 @@ public class MicManagerDialog extends BaseBottomDialog {
     private ZegoCoHostSeatModel seatModel;
     private IMicManagerListener listener;
 
-    public MicManagerDialog(@NonNull Context context, ZegoCoHostSeatModel seatModel, IMicManagerListener listener) {
+    public SeatMoreDialog(@NonNull Context context, ZegoCoHostSeatModel seatModel, IMicManagerListener listener) {
         super(context);
         this.seatModel = seatModel;
         this.listener = listener;
@@ -45,14 +45,14 @@ public class MicManagerDialog extends BaseBottomDialog {
 
         tvCancel.setOnClickListener(v -> dismiss());
 
-        tvProhibitConnect.setOnClickListener(v -> {
+        tvMicStatus.setOnClickListener(v -> {
             dismiss();
             if (listener != null) {
                 listener.onClickMuteBtn(!seatModel.isMuted());
             }
         });
 
-        tvMicStatus.setOnClickListener(v -> {
+        tvProhibitConnect.setOnClickListener(v -> {
             dismiss();
             if (listener != null) {
                 listener.onClickProhibitConnect();

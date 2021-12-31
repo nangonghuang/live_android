@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.model.ZegoUserInfo;
@@ -16,8 +21,6 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityUserLoginBinding;
 import im.zego.livedemo.feature.room.RoomListActivity;
 import im.zego.livedemo.helper.AuthInfoManager;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
 
