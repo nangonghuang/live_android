@@ -21,9 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.model.ZegoTextMessage;
-import im.zego.live.model.ZegoUserInfo;
-import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.helper.RoundedBackgroundSpan;
 
@@ -62,10 +61,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(@NonNull MessageHolder holder, int position) {
         ZegoTextMessage message = messageList.get(position);
-        ZegoUserService userService = ZegoRoomManager.getInstance().userService;
-        ZegoUserInfo localUserInfo = userService.localUserInfo;
-        boolean isHostMessage = localUserInfo.getUserID().equals(message.userID);
-        String fromUserName = userService.getUserName(message.userID);
+        boolean isHostMessage = UserInfoHelper.isUserIDHost(message.userID);
+        String fromUserName = ZegoRoomManager.getInstance().userService.getUserName(message.userID);
         String content = message.message;
         Context context = holder.itemView.getContext();
         if (!TextUtils.isEmpty(fromUserName)) {
