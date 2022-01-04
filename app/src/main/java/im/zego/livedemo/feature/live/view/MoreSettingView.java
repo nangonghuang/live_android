@@ -34,8 +34,8 @@ public class MoreSettingView extends ConstraintLayout {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MoreSettingView);
         View view = inflate(context, R.layout.layout_live_more_view, this);
-        String name = typedArray.getString(R.styleable.MoreSettingView_moreSetting_name);
-        Drawable bg = typedArray.getDrawable(R.styleable.MoreSettingView_moreSetting_src);
+        String name = typedArray.getString(R.styleable.MoreSettingView_moreSettingName);
+        Drawable bg = typedArray.getDrawable(R.styleable.MoreSettingView_moreSettingSrc);
         typedArray.recycle();
 
         ivSettingBg = view.findViewById(R.id.iv_setting_bg);
