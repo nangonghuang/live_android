@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="encoding_type">
+        <item>H.264</item>
+        <item>H.265</item>
+    </string-array>
+
+    <string-array name="video_resolution">
+        <item>1080×1920</item>
+        <item>720×1280</item>
+        <item>540×960</item>
+        <item>360×640</item>
+        <item>270×480</item>
+        <item>180×320</item>
+    </string-array>
+
+    <string-array name="audio_bitrate">
+        <item>48kbps</item>
+        <item>96kbps</item>
+        <item>128kbps</item>
+    </string-array>
+</resources>

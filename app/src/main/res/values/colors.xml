@@ -36,6 +36,9 @@
     <color name="light_gray">#7DFFFFFF</color>
     <color name="light_gray2">#A7A6B7</color>
 
+    <color name="item_string_selected_color">@color/white</color>
+    <color name="item_string_default_color">#cccccc</color>
+
     <color name="default_bg_color">#ab47bc</color>
     <color name="default_title_color">#ffffff</color>
     <color name="default_message_color">#ffffff</color>

@@ -19,7 +19,17 @@
     </declare-styleable>
 
     <declare-styleable name="MoreSettingView">
-        <attr name="moreSetting_name" format="string" />
-        <attr name="moreSetting_src" format="reference" />
+        <attr name="moreSettingName" format="string" />
+        <attr name="moreSettingSrc" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingCellView">
+        <attr name="cell_view_type">
+            <enum name="text_with_arrow" value="1" />
+            <enum name="text_with_switch" value="2" />
+        </attr>
+        <attr name="cell_view_title" format="string" />
+        <attr name="cell_view_content" format="string" />
+        <attr name="cell_view_switch_checked" format="boolean" />
     </declare-styleable>
 </resources>

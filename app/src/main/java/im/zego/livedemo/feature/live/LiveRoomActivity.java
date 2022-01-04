@@ -34,6 +34,7 @@ import im.zego.livedemo.feature.live.dialog.IMInputDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
 import im.zego.livedemo.feature.live.dialog.SeatMoreDialog;
+import im.zego.livedemo.feature.live.dialog.VideoSettingsDialog;
 import im.zego.livedemo.feature.live.view.CreateLiveView;
 import im.zego.livedemo.feature.live.view.LiveBottomView;
 import im.zego.livedemo.feature.live.view.LiveHeadView;
@@ -80,6 +81,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private IMInputDialog imInputDialog;
     private MemberListDialog memberListDialog;
     private MoreSettingDialog moreSettingDialog;
+    private VideoSettingsDialog videoSettingsDialog;
 
     private final ArrayMap<String, Dialog> requestDialogMap = new ArrayMap<>();
 
@@ -275,6 +277,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
         });
 
+        videoSettingsDialog = new VideoSettingsDialog(LiveRoomActivity.this);
+
         startObservingDataChange();
     }
 
@@ -408,7 +412,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onSettingsClick() {
-
+                videoSettingsDialog.show();
             }
 
             @Override
