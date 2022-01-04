@@ -82,6 +82,9 @@
     <string name="dialog_invite_to_connect_title">Invitation</string>
     <string name="dialog_invite_to_connect_descrip">The host has invited you to connect.</string>
 
+    <string name="toast_invite_to_connect_refuse">The Participant refuse to connect.</string>
+    <string name="toast_request_connect_refuse">The Host refuse you to connect.</string>
+
     <string name="dialog_invition_title">Invitation</string>
     <string name="dialog_invition_descrip">The host has invited you to speak.</string>
     <string name="dialog_confirm">OK</string>

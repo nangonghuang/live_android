@@ -5,6 +5,5 @@ package im.zego.live.model;
  */
 public enum ZegoRoomUserRole {
     Participant,
-    CoHost,
     Host
 }

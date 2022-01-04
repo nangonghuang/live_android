@@ -3,6 +3,7 @@ package im.zego.live.helper;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -27,7 +28,9 @@ import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
 public class ZegoRoomAttributesHelper {
     private static final String TAG = "ZegoRoomAttributes";
 
-    public static Gson gson = new Gson();
+    public static Gson gson = new GsonBuilder()
+            .registerTypeAdapterFactory(new CustomTypeAdapterFactory())
+            .create();
 
     public static ZIMRoomAttributesSetConfig getAttributesSetConfig() {
         ZIMRoomAttributesSetConfig setConfig = new ZIMRoomAttributesSetConfig();
@@ -107,13 +110,16 @@ public class ZegoRoomAttributesHelper {
 
         if (isTake) {
             operation.getAction().setType(OperationActionType.TakeCoHostSeat);
+            // when user taking seat, we need set these default params actively
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
-            model.setUserID(myUserID);
+            model.setCamera(true);
+            model.setMic(true);
+            model.setUserID(targetID);
             operation.getSeatList().add(model);
         } else {
             operation.getAction().setType(OperationActionType.LeaveCoHostSeat);
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
-            model.setUserID(myUserID);
+            model.setUserID(targetID);
             operation.getSeatList().remove(model);
         }
 
@@ -137,7 +143,7 @@ public class ZegoRoomAttributesHelper {
 
         ZegoCoHostSeatModel seatModel = null;
         for (ZegoCoHostSeatModel model : operation.getSeatList()) {
-            if (Objects.equals(model.getUserID(), myUserID)) {
+            if (Objects.equals(model.getUserID(), targetUserID)) {
                 seatModel = model;
             }
         }

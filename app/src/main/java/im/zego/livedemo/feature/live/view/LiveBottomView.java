@@ -123,20 +123,20 @@ public class LiveBottomView extends ConstraintLayout {
                 binding.ivApplyConnection.setVisibility(VISIBLE);
                 binding.tvApplyConnection.setVisibility(VISIBLE);
                 binding.tvCancelApplyConnection.setVisibility(GONE);
-                binding.layoutApplyConnection.setBackgroundResource(R.drawable.dark_gray_round);
+                binding.layoutApplyConnection.setBackgroundResource(R.drawable.dark_gray_round_rect);
                 binding.tvApplyConnection.setText(getContext().getString(R.string.room_page_apply_to_connect));
                 break;
             case CONNECTION_APPLYING:
                 binding.ivApplyConnection.setVisibility(GONE);
                 binding.tvApplyConnection.setVisibility(GONE);
                 binding.tvCancelApplyConnection.setVisibility(VISIBLE);
-                binding.layoutApplyConnection.setBackgroundResource(R.drawable.dark_gray_round);
+                binding.layoutApplyConnection.setBackgroundResource(R.drawable.dark_gray_round_rect);
                 break;
             case CONNECTING:
                 binding.ivApplyConnection.setVisibility(VISIBLE);
                 binding.tvApplyConnection.setVisibility(VISIBLE);
                 binding.tvCancelApplyConnection.setVisibility(GONE);
-                binding.layoutApplyConnection.setBackgroundResource(R.drawable.red_gray_round);
+                binding.layoutApplyConnection.setBackgroundResource(R.drawable.red_gray_round_rect);
                 binding.tvApplyConnection.setText(getContext().getString(R.string.room_page_end_connect));
                 break;
         }

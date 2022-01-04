@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.ImageUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
@@ -36,12 +37,25 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
     public void setList(List<ZegoCoHostSeatModel> list) {
         seatModels.clear();
         seatModels.addAll(list);
+        removeHostSeat(seatModels);
         notifyDataSetChanged();
     }
 
     public void addList(List<ZegoCoHostSeatModel> list) {
         seatModels.addAll(list);
+        removeHostSeat(seatModels);
         notifyDataSetChanged();
+    }
+
+    private void removeHostSeat(List<ZegoCoHostSeatModel> seatModels) {
+        Iterator<ZegoCoHostSeatModel> iterator = seatModels.iterator();
+        while (iterator.hasNext()) {
+            ZegoCoHostSeatModel seatModel = iterator.next();
+            if (UserInfoHelper.isUserIDHost(seatModel.getUserID())) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     @NonNull
@@ -57,21 +71,23 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         ItemCoHostListBinding binding = holder.binding;
 
         if (model.isMuted()) {
-            binding.textureView.setVisibility(View.GONE);
-            binding.ivCoHostBg.setVisibility(View.VISIBLE);
-            binding.ivCoHostHead.setVisibility(View.VISIBLE);
+            binding.ivMicOff.setVisibility(View.VISIBLE);
         } else {
             if (model.isMicEnable()) {
                 binding.ivMicOff.setVisibility(View.GONE);
             } else {
                 binding.ivMicOff.setVisibility(View.VISIBLE);
             }
+        }
 
-            if (model.isCameraEnable()) {
-                binding.textureView.setVisibility(View.GONE);
-                binding.ivCoHostBg.setVisibility(View.VISIBLE);
-                binding.ivCoHostHead.setVisibility(View.VISIBLE);
-            }
+        if (model.isCameraEnable()) {
+            binding.textureView.setVisibility(View.VISIBLE);
+            binding.ivCoHostBg.setVisibility(View.GONE);
+            binding.ivCoHostHead.setVisibility(View.GONE);
+        } else {
+            binding.textureView.setVisibility(View.GONE);
+            binding.ivCoHostBg.setVisibility(View.VISIBLE);
+            binding.ivCoHostHead.setVisibility(View.VISIBLE);
         }
 
         ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.getUserInfo(model.getUserID());
@@ -87,18 +103,22 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
 
         binding.tvCoHostName.setText(userInfo.getUserName());
 
-        if (UserInfoHelper.isSelfOwner()) {
+        if (UserInfoHelper.isSelfHost()) {
             binding.ivMore.setVisibility(View.VISIBLE);
             binding.ivMore.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onUserMicStatus(model);
+                    listener.onClickMore(model);
                 }
             });
         } else {
             binding.ivMore.setVisibility(View.GONE);
         }
 
-        liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
+        if (UserInfoHelper.isUserIDSelf(model.getUserID())) {
+            liveRoomViewModel.startPreview(binding.textureView);
+        } else {
+            liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
+        }
     }
 
     @Override
@@ -107,7 +127,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
     }
 
     public interface ICoHostClickListener {
-        void onUserMicStatus(ZegoCoHostSeatModel seatModel);
+        void onClickMore(ZegoCoHostSeatModel seatModel);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

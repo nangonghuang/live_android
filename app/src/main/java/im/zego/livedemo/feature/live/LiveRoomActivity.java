@@ -3,6 +3,7 @@ package im.zego.livedemo.feature.live;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.View;
@@ -11,11 +12,18 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.gyf.immersionbar.ImmersionBar;
+
+import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.helper.ZegoLiveHelper;
+import im.zego.live.model.OperationActionType;
+import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
@@ -24,14 +32,18 @@ import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
-import im.zego.livedemo.feature.live.dialog.MicManagerDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
+import im.zego.livedemo.feature.live.dialog.SeatMoreDialog;
 import im.zego.livedemo.feature.live.view.CreateLiveView;
 import im.zego.livedemo.feature.live.view.LiveBottomView;
 import im.zego.livedemo.feature.live.view.LiveHeadView;
 import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
 import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
+import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
+import im.zego.livedemo.helper.TestHelper;
+import im.zego.zegoexpress.constants.ZegoUpdateType;
+import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -113,7 +125,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onReceiveAddCoHostRespond(boolean accept) {
-
+                if (!accept) {
+                    showErrorToast(StringUtils.getString(R.string.toast_invite_to_connect_refuse));
+                }
             }
 
             @Override
@@ -146,13 +160,32 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onReceiveToCoHostRespond(boolean agree) {
-                liveRoomViewModel.takeCoHostSeat(errorCode -> {
-                    if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                        binding.liveBottomView.toCoHost();
-                    } else {
-                        showErrorToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                if (agree) {
+                    liveRoomViewModel.takeCoHostSeat(errorCode -> {
+                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                            binding.liveBottomView.toCoHost();
+                        } else {
+                            showErrorToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                        }
+                    });
+                } else {
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                    showErrorToast(StringUtils.getString(R.string.toast_request_connect_refuse));
+                }
+            }
+
+            @Override
+            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
+                if (!UserInfoHelper.isSelfHost()) {
+                    for (ZegoStream zegoStream : streamList) {
+                        if (updateType == ZegoUpdateType.ADD) {
+                            // if I'm not host then we need play the host stream
+                            if (ZegoLiveHelper.isHostStreamID(zegoStream.streamID)) {
+                                liveRoomViewModel.startPlayingStream(zegoStream.streamID, binding.textureView);
+                            }
+                        }
                     }
-                });
+                }
             }
         });
 
@@ -161,13 +194,28 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         initData();
     }
 
+    private void toTransparentStatusBar() {
+        ImmersionBar.with(this)
+                .reset()
+                .transparentStatusBar()
+                .init();
+    }
+
+    private void toDimStatusBar() {
+        ImmersionBar.with(this)
+                .reset()
+                .statusBarColor(R.color.create_live_dark_bg)
+                .statusBarDarkFont(false)
+                .init();
+    }
+
     private void initData() {
         messageListAdapter = new MessageListAdapter();
         binding.rvMessageList.setAdapter(messageListAdapter);
 
         coHostListAdapter = new CoHostListAdapter(liveRoomViewModel, seatModel -> {
-            MicManagerDialog dialog = new MicManagerDialog(LiveRoomActivity.this, seatModel,
-                new MicManagerDialog.IMicManagerListener() {
+            SeatMoreDialog dialog = new SeatMoreDialog(LiveRoomActivity.this, seatModel,
+                new SeatMoreDialog.IMicManagerListener() {
                     @Override
                     public void onClickMuteBtn(boolean mute) {
                         liveRoomViewModel.muteUser(mute, seatModel.getUserID(), errorCode -> {
@@ -238,27 +286,68 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
             String userName = ZegoRoomManager.getInstance().userService.getUserName(roomInfo.getHostID());
             binding.liveHeadView.updateHostName(userName);
+
+            int avatarId = AvatarHelper.getAvatarIdByUserName(userName);
+            Bitmap bitmap = ImageUtils.getBitmap(avatarId);
+            Bitmap blurBitmap = ImageUtils.fastBlur(bitmap, 1F, 15F);
+            Bitmap roundBitmap = ImageUtils.toRound(bitmap);
+
+            binding.ivHostBg.setImageBitmap(blurBitmap);
+            binding.ivHostHead.setImageBitmap(roundBitmap);
+            binding.tvHostName.setText(userName);
         });
-        liveRoomViewModel.coHostList.observe(this, userList -> {
-            coHostListAdapter.setList(userList);
+
+        liveRoomViewModel.coHostList.observe(this, coHostList -> {
+            memberListDialog.updateUserList(liveRoomViewModel.userList.getValue());
+                // if host camera/mic status change, we need update main ui
+            if (!UserInfoHelper.isSelfHost()) {
+                for (ZegoCoHostSeatModel seatModel : coHostList) {
+                    if (UserInfoHelper.isUserIDHost(seatModel.getUserID())) {
+                        toggleHostPreviewUI(seatModel.isCameraEnable());
+                        break;
+                    }
+                }
+            }
+
+            // others coHost, let adapter update
+            coHostListAdapter.setList(coHostList);
         });
+
         liveRoomViewModel.isCameraEnable.observe(this, enable -> {
             binding.liveBottomView.enableCameraView(enable);
             moreSettingDialog.enableCamaraView(enable);
-            if (enable) {
-                liveRoomViewModel.startPreview(binding.textureView);
-            } else {
-                liveRoomViewModel.stopPreview();
+            if (UserInfoHelper.isSelfHost()) {
+                toggleHostPreviewUI(enable);
+                if (enable) {
+                    liveRoomViewModel.startPreview(binding.textureView);
+                } else {
+                    liveRoomViewModel.stopPreview();
+                }
             }
         });
+
         liveRoomViewModel.isMicEnable.observe(this, enable -> {
             binding.liveBottomView.enableMicView(enable);
             moreSettingDialog.enableMicView(enable);
         });
+
         liveRoomViewModel.textMessageList.observe(this, messages -> {
             messageListAdapter.setMessages(messages);
             binding.rvMessageList.scrollToPosition(messageListAdapter.getItemCount() - 1);
         });
+
+        liveRoomViewModel.operationAction.observe(this, action -> {
+            if (UserInfoHelper.isUserIDSelf(action.getTargetID())) {
+                if (action.getType() == OperationActionType.LeaveCoHostSeat) {
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                }
+            }
+        });
+    }
+
+    private void toggleHostPreviewUI(boolean isCameraEnable) {
+        binding.textureView.setVisibility(isCameraEnable ? View.VISIBLE : View.GONE);
+        binding.layoutHostDisableCamera.setVisibility(isCameraEnable ? View.GONE : View.VISIBLE);
     }
 
     private void initUI() {
@@ -271,16 +360,19 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             liveRoomViewModel.joinRoom(roomID, errorCode -> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                    return;
                 } else if (errorCode == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
                     showErrorToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
                 } else {
                     showErrorToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                 }
+                finish();
             });
         }
     }
 
     private void showCreateRoomUI() {
+        toDimStatusBar();
         binding.createLiveView.setVisibility(View.VISIBLE);
         binding.liveHeadView.setVisibility(View.GONE);
         binding.liveBottomView.setVisibility(View.GONE);
@@ -289,6 +381,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private void showLiveUI() {
+        toTransparentStatusBar();
         binding.createLiveView.setVisibility(View.GONE);
         binding.liveHeadView.setVisibility(View.VISIBLE);
         binding.liveBottomView.setVisibility(View.VISIBLE);
@@ -423,6 +516,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                                 showErrorToast(StringUtils.getString(R.string.toast_end_connect_fail));
                                 binding.liveBottomView.toParticipant(LiveBottomView.CONNECTING);
+                            } else {
+                                binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                             }
                         });
                     },
@@ -434,7 +529,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     @Override
     public void onBackPressed() {
-        if (UserInfoHelper.isSelfOwner()) {
+        if (UserInfoHelper.isSelfHost()) {
             DialogHelper.showAlertDialog(LiveRoomActivity.this,
                     StringUtils.getString(R.string.room_page_destroy_room),
                     StringUtils.getString(R.string.dialog_sure_to_destroy_room),
@@ -455,9 +550,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     null
             );
         } else {
+            liveRoomViewModel.leaveRoom(errorCode -> {
+            });
             super.onBackPressed();
         }
-    }
-
     }
 }

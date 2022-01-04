@@ -2,6 +2,7 @@ package im.zego.live.listener;
 
 import java.util.List;
 
+import im.zego.live.model.OperationAction;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoStream;
@@ -15,7 +16,7 @@ public interface ZegoRoomServiceListener {
     // room info update
     void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo);
 
-    void onReceiveCoHostListUpdate();
+    void onReceiveCoHostListUpdate(OperationAction action);
 
     void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event);
 

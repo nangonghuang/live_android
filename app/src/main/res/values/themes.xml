@@ -7,8 +7,8 @@
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
-    <style name="Theme.NoActionBar" parent="@style/Theme.App">
-        <item name="android:windowTranslucentStatus">true</item>
+    <style name="Theme.NoActionBar" parent="@style/Theme.MaterialComponents">
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
