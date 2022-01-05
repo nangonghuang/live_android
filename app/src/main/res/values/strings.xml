@@ -21,6 +21,10 @@
     <string name="room_page_settings_video_resolution">Resolution Settings</string>
     <string name="room_page_settings_audio_bitrate">Audio bitrate</string>
 
+    <string name="room_page_more_settings_background_noise_reduction">Background noise reduction</string>
+    <string name="room_page_more_settings_echo_cancellation">Echo cancellation</string>
+    <string name="room_page_more_settings_mic_volume_auto_adjustment">Mic volume auto-adjustment</string>
+
     <string name="room_page_apply_to_connect">Apply to connect</string>
     <string name="room_page_cancel_apply">Cancel apply</string>
     <string name="room_page_end_connect">End</string>
