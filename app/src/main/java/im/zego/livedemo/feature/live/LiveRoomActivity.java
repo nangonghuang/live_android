@@ -32,6 +32,7 @@ import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
 import im.zego.livedemo.feature.live.dialog.MoreVideoSettingsDialog;
 import im.zego.livedemo.feature.live.dialog.SeatMoreDialog;
+import im.zego.livedemo.feature.live.dialog.SoundEffectsDialog;
 import im.zego.livedemo.feature.live.dialog.VideoSettingsDialog;
 import im.zego.livedemo.feature.live.view.CreateLiveView;
 import im.zego.livedemo.feature.live.view.LiveBottomView;
@@ -84,6 +85,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private MoreSettingDialog moreSettingDialog;
     private VideoSettingsDialog videoSettingsDialog;
     private MoreVideoSettingsDialog moreVideoSettingsDialog;
+    private SoundEffectsDialog soundEffectsDialog;
 
     private final ArrayMap<String, Dialog> requestDialogMap = new ArrayMap<>();
 
@@ -284,6 +286,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         videoSettingsDialog = new VideoSettingsDialog(LiveRoomActivity.this, videoConfigViewModel);
         moreVideoSettingsDialog = new MoreVideoSettingsDialog(LiveRoomActivity.this, videoConfigViewModel);
+        soundEffectsDialog = new SoundEffectsDialog(LiveRoomActivity.this);
 
         startObservingDataChange();
     }
@@ -472,7 +475,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onMusicClick() {
-
+                soundEffectsDialog.show();
             }
 
             @Override
