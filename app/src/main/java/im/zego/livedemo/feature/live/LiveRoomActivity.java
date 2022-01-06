@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
+import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
@@ -42,7 +43,6 @@ import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
 import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
-import im.zego.livedemo.helper.TestHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
@@ -198,17 +198,17 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     private void toTransparentStatusBar() {
         ImmersionBar.with(this)
-                .reset()
-                .transparentStatusBar()
-                .init();
+            .reset()
+            .transparentStatusBar()
+            .init();
     }
 
     private void toDimStatusBar() {
         ImmersionBar.with(this)
-                .reset()
-                .statusBarColor(R.color.create_live_dark_bg)
-                .statusBarDarkFont(false)
-                .init();
+            .reset()
+            .statusBarColor(R.color.create_live_dark_bg)
+            .statusBarDarkFont(false)
+            .init();
     }
 
     private void initData() {
@@ -303,7 +303,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         liveRoomViewModel.coHostList.observe(this, coHostList -> {
             memberListDialog.updateUserList(liveRoomViewModel.userList.getValue());
-                // if host camera/mic status change, we need update main ui
+            // if host camera/mic status change, we need update main ui
             if (!UserInfoHelper.isSelfHost()) {
                 for (ZegoCoHostSeatModel seatModel : coHostList) {
                     if (UserInfoHelper.isUserIDHost(seatModel.getUserID())) {
@@ -407,7 +407,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onBeautyClick() {
-
+                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
+                beautyDialog.show();
             }
 
             @Override
@@ -535,23 +536,23 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     public void onBackPressed() {
         if (UserInfoHelper.isSelfHost()) {
             DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.room_page_destroy_room),
-                    StringUtils.getString(R.string.dialog_sure_to_destroy_room),
-                    StringUtils.getString(R.string.dialog_confirm),
-                    null,
-                    true,
-                    (dialog, which) -> {
-                        liveRoomViewModel.leaveRoom(errorCode -> {
-                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                showTipsToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                                dialog.dismiss();
-                                super.onBackPressed();
-                            } else {
-                                showErrorToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
-                            }
-                        });
-                    },
-                    null
+                StringUtils.getString(R.string.room_page_destroy_room),
+                StringUtils.getString(R.string.dialog_sure_to_destroy_room),
+                StringUtils.getString(R.string.dialog_confirm),
+                null,
+                true,
+                (dialog, which) -> {
+                    liveRoomViewModel.leaveRoom(errorCode -> {
+                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                            showTipsToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                            dialog.dismiss();
+                            super.onBackPressed();
+                        } else {
+                            showErrorToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
+                        }
+                    });
+                },
+                null
             );
         } else {
             liveRoomViewModel.leaveRoom(errorCode -> {
