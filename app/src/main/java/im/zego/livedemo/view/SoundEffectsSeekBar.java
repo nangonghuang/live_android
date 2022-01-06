@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,13 +45,10 @@ public class SoundEffectsSeekBar extends ConstraintLayout {
 
     public void setProgress(int progress) {
         tvSeekbarProgress.setText(String.valueOf(progress));
+        seekBar.setProgress(progress);
     }
 
-    public AppCompatSeekBar getSeekBar() {
-        return seekBar;
-    }
-
-    public void setSeekBar(AppCompatSeekBar seekBar) {
-        this.seekBar = seekBar;
+    public void setOnSeekBarChangeListener(SeekBar.OnSeekBarChangeListener listener) {
+        seekBar.setOnSeekBarChangeListener(listener);
     }
 }

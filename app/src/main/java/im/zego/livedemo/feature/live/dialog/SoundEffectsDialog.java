@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import im.zego.live.service.SoundEffectsManager;
+import im.zego.live.ZegoRoomManager;
+import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.adapter.BackgroundSoundAdapter;
 import im.zego.livedemo.feature.live.adapter.ReverbPresetAdapter;
@@ -32,8 +33,8 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     private RecyclerView rvVoiceChange;
     private RecyclerView rvReverb;
 
-    private RecyclerView.LayoutManager layoutManager;
-    private SoundEffectsManager soundEffectsManager;
+    private final ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+    private int lastBGMPosition = -1;
 
     public SoundEffectsDialog(@NonNull Context context) {
         super(context);
@@ -51,72 +52,72 @@ public class SoundEffectsDialog extends BaseBottomDialog {
         voiceVolumeSeekbar = findViewById(R.id.voice_volume_seekbar);
         rvVoiceChange = findViewById(R.id.rv_voice_change);
         rvReverb = findViewById(R.id.rv_reverb);
+    }
 
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        soundEffectsManager = SoundEffectsManager.getInstance();
+    @Override
+    protected void initData() {
+        soundEffectService.reset();
 
         initBackgroundSound();
         initVoiceChange();
         initReverb();
-
         initMusicVolume();
         initVoiceVolume();
     }
 
+    @NonNull
+    private LinearLayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+    }
+
     private void initBackgroundSound() {
-        rvBgSound.setLayoutManager(layoutManager);
+        rvBgSound.setLayoutManager(getLayoutManager());
         BackgroundSoundAdapter adapter = new BackgroundSoundAdapter();
         adapter.setList(createBackgroundSoundList());
         adapter.setListener(position -> {
             String songPath = SoundEffectsHelper.songFileMap.get(position);
+            String lastSongPath = SoundEffectsHelper.songFileMap.get(lastBGMPosition);
 
+            soundEffectService.setBGM(lastBGMPosition, lastSongPath, true);
             if (StringUtils.isTrimEmpty(songPath) || position == null) {
-                manager().audioEffectStop(manager().getBackgroundSoundPosition());
-                manager().setBackgroundSoundPosition(-1);
+                lastBGMPosition = -1;
             } else {
-                manager().audioEffectStop(manager().getBackgroundSoundPosition());
-                manager().audioEffectPlayer(position, songPath);
-                manager().setBackgroundSoundPosition(position);
+                soundEffectService.setBGM(position, songPath, false);
+                lastBGMPosition = position;
             }
         });
         rvBgSound.setAdapter(adapter);
     }
 
     private void initVoiceChange() {
-        rvVoiceChange.setLayoutManager(layoutManager);
+        rvVoiceChange.setLayoutManager(getLayoutManager());
         VoiceChangeAdapter adapter = new VoiceChangeAdapter();
         adapter.setList(createVoiceChangeList());
-        adapter.updateSelect(manager().getVoiceChangePosition());
         adapter.setListener(position -> {
             String[] options = StringUtils.getStringArray(R.array.voicePreset);
-            manager().setVoiceChangerPreset(options[position]);
-            manager().setVoiceChangePosition(position);
+            soundEffectService.setVoiceChangerPreset(options[position]);
         });
         rvVoiceChange.setAdapter(adapter);
     }
 
     private void initReverb() {
-        rvReverb.setLayoutManager(layoutManager);
+        rvReverb.setLayoutManager(getLayoutManager());
         ReverbPresetAdapter adapter = new ReverbPresetAdapter();
         adapter.setList(createReverbPresetList());
-        adapter.updateSelect(manager().getReverbPresetPosition());
         adapter.setListener(position -> {
             String[] options = StringUtils.getStringArray(R.array.reverbPreset);
-            manager().setReverbPreset(options[position]);
-            manager().setReverbPresetPosition(position);
+            soundEffectService.setReverbPreset(options[position]);
         });
         rvReverb.setAdapter(adapter);
     }
 
     private void initMusicVolume() {
-        musicVolumeSeekbar.getSeekBar().setProgress(manager().getMusicVolume());
-        musicVolumeSeekbar.setProgress(manager().getMusicVolume());
-        musicVolumeSeekbar.getSeekBar().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        musicVolumeSeekbar.setProgress(ZegoSoundEffectService.DEFAULT_MUSIC_VOLUME);
+        musicVolumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 musicVolumeSeekbar.setProgress(progress);
-                manager().setVolume(progress);
-                manager().setMusicVolume(progress);
+                soundEffectService.setBGMVolume(progress);
             }
 
             @Override
@@ -132,14 +133,12 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     }
 
     private void initVoiceVolume() {
-        voiceVolumeSeekbar.getSeekBar().setProgress(manager().getMusicVolume());
-        voiceVolumeSeekbar.setProgress(manager().getVocalVolume());
-        voiceVolumeSeekbar.getSeekBar().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        voiceVolumeSeekbar.setProgress(ZegoSoundEffectService.DEFAULT_VOICE_VOLUME);
+        voiceVolumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 voiceVolumeSeekbar.setProgress(progress);
-                manager().setCaptureVolume(progress);
-                manager().setVocalVolume(progress);
+                soundEffectService.setVoiceVolume(progress);
             }
 
             @Override
@@ -179,13 +178,5 @@ public class SoundEffectsDialog extends BaseBottomDialog {
             list.add(new ReverbPresetInfo().setName(rpName).setIcon(rpIcon));
         }
         return list;
-    }
-
-    private SoundEffectsManager manager() {
-        if (soundEffectsManager != null) {
-            return soundEffectsManager;
-        } else {
-            return SoundEffectsManager.getInstance();
-        }
     }
 }
