@@ -9,17 +9,13 @@ import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 import im.zego.livedemo.feature.live.view.VideoSettingCellView;
 import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 
-
 public class MoreVideoSettingsDialog extends BaseBottomDialog {
 
-    private VideoSettingCellView backgroundNoiseReductionCellView;
-    private VideoSettingCellView echoCancellationCellView;
-    private VideoSettingCellView micVolumeAutoAdjustmentCellView;
     private VideoSettingCellView videoResolutionCellView;
     private VideoSettingCellView audioBitrateCellView;
 
-    private String[] videoResolutionStringArray = StringUtils.getStringArray(R.array.video_resolution);
-    private String[] audioBitrateStringArray = StringUtils.getStringArray(R.array.audio_bitrate);
+    private final String[] videoResolutionStringArray = StringUtils.getStringArray(R.array.video_resolution);
+    private final String[] audioBitrateStringArray = StringUtils.getStringArray(R.array.audio_bitrate);
 
     private final VideoConfigViewModel viewModel;
 
@@ -36,9 +32,6 @@ public class MoreVideoSettingsDialog extends BaseBottomDialog {
     @Override
     protected void initView() {
         super.initView();
-        backgroundNoiseReductionCellView = findViewById(R.id.more_settings_background_noise_reduction);
-        echoCancellationCellView = findViewById(R.id.more_settings_echo_cancellation);
-        micVolumeAutoAdjustmentCellView = findViewById(R.id.more_settings_mic_volume_auto_adjustment);
         videoResolutionCellView = findViewById(R.id.more_settings_resolution_settings);
         audioBitrateCellView = findViewById(R.id.more_settings_audio_bitrate);
     }
@@ -53,12 +46,6 @@ public class MoreVideoSettingsDialog extends BaseBottomDialog {
     @Override
     protected void initListener() {
         super.initListener();
-
-        backgroundNoiseReductionCellView.setListener(isChecked -> viewModel.getSettingConfig().setBackgroundNoiseReduction(isChecked));
-
-        echoCancellationCellView.setListener(isChecked -> viewModel.getSettingConfig().setEchoCancellation(isChecked));
-
-        micVolumeAutoAdjustmentCellView.setListener(isChecked -> viewModel.getSettingConfig().setMicVolumeAutoAdjustment(isChecked));
 
         videoResolutionCellView.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
