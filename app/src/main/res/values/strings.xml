@@ -155,4 +155,23 @@
     <string name="network_connect_failed_title">Network Error</string>
 
     <string name="action">ACTION</string>
+    <string name="face_beautification">Face beautification</string>
+    <string name="face_shape_retouch">Face shape retouch</string>
+
+    <string-array name="beauty_list">
+        <item>Skin tone enhancement</item>
+        <item>Skin smoothing</item>
+        <item>Image sharpening</item>
+        <item>Cheek blusher</item>
+    </string-array>
+
+    <string-array name="beauty_type_list">
+        <item>Eyes enlarging</item>
+        <item>Face sliming</item>
+        <item>Mouth shape adjustment</item>
+        <item>Eyes brightening</item>
+        <item>Nose sliming</item>
+        <item>Teeth whitening</item>
+        <item>Chin lengthening</item>
+    </string-array>
 </resources>

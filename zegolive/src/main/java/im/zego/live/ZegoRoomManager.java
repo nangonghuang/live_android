@@ -2,6 +2,18 @@ package im.zego.live;
 
 import android.app.Application;
 
+import android.util.Log;
+import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
+import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
+import im.zego.live.http.IGetLicenseCallback;
+import im.zego.live.http.License;
+import im.zego.live.service.FaceBeautifyService;
+import im.zego.zegoexpress.callback.IZegoCustomVideoProcessHandler;
+import im.zego.zegoexpress.constants.ZegoPublishChannel;
+import im.zego.zegoexpress.constants.ZegoVideoBufferType;
+import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
+import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
+import im.zego.zegoexpress.entity.ZegoVideoConfig;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,14 +62,17 @@ public class ZegoRoomManager {
         return singleton;
     }
 
+    private static final String TAG = "ZegoRoomManager";
     public ZegoRoomService roomService;
     public ZegoUserService userService;
     public ZegoMessageService messageService;
+    public FaceBeautifyService faceBeautifyService;
 
     public void init(long appID, String appSign, Application application) {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
         messageService = new ZegoMessageService();
+        faceBeautifyService = new FaceBeautifyService(application);
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
         profile.appID = appID;
@@ -83,7 +98,8 @@ public class ZegoRoomManager {
             }
 
             @Override
-            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, ArrayList<ZegoStream> streamList, JSONObject extendedData) {
+            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, ArrayList<ZegoStream> streamList,
+                JSONObject extendedData) {
                 super.onRoomStreamUpdate(roomID, updateType, streamList, extendedData);
                 if (roomService != null) {
                     roomService.onRoomStreamUpdate(roomID, updateType, streamList);
@@ -165,11 +181,60 @@ public class ZegoRoomManager {
                 super.onRoomAttributesBatchUpdated(zim, infos, roomID);
             }
         });
+
+        faceBeautifyService.init(application, appID, appSign, new IGetLicenseCallback() {
+            @Override
+            public void onGetLicense(int code, String message, License license) {
+                Log.d("Beautify", "onGetLicense() called with: code = [" + code + "], message = [" + message);
+
+                ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
+                config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
+                ZegoExpressEngine.getEngine().enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
+
+                ZegoVideoConfig zegoVideoConfig = new ZegoVideoConfig(ZegoVideoConfigPreset.PRESET_720P);
+                ZegoExpressEngine.getEngine().setVideoConfig(zegoVideoConfig);
+
+//                faceBeautifyService.zegoEffects.initEnv(720, 1280);
+
+                ZegoExpressEngine.getEngine().setCustomVideoProcessHandler(new IZegoCustomVideoProcessHandler() {
+
+                    @Override
+                    public void onStart(ZegoPublishChannel channel) {
+                        faceBeautifyService.zegoEffects.initEnv(720, 1280);
+                    }
+
+                    @Override
+                    public void onStop(ZegoPublishChannel channel) {
+                        faceBeautifyService.zegoEffects.uninitEnv();
+                    }
+
+                    @Override
+                    public void onCapturedUnprocessedTextureData(int textureID, int width, int height,
+                        long referenceTimeMillisecond, ZegoPublishChannel channel) {
+
+                        ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
+                        param.format = ZegoEffectsVideoFrameFormat.BGRA32;
+                        param.width = width;
+                        param.height = height;
+
+                        // Process buffer by ZegoEffects
+                        int processedTextureID = faceBeautifyService.zegoEffects.processTexture(textureID, param);
+
+                        // Send processed texture to ZegoExpressEngine
+                        ZegoExpressEngine.getEngine().sendCustomVideoProcessedTextureData(processedTextureID, width, height,
+                                referenceTimeMillisecond);
+                    }
+                });
+            }
+        });
     }
 
     public void unInit() {
         ZegoZIMManager.getInstance().destroyZIM();
         ZegoExpressEngine.destroyEngine(null);
+        if (faceBeautifyService != null) {
+            faceBeautifyService.zegoEffects.destroy();
+        }
     }
 
     public void uploadLog(final ZegoRoomCallback callback) {

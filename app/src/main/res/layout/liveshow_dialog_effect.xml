@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <im.zego.livedemo.feature.live.view.SeekBarWithNumber
+        android:id="@+id/seekBarWithNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="67dp"
+        android:layout_marginRight="67dp"
+        android:max="100"
+        android:maxHeight="3dp"
+        android:progressDrawable="@drawable/liveshow_seek_bar"
+        android:thumb="@drawable/liveshow_seek_thumb"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textBackground="@drawable/liveshow_icon_indicator"
+        app:textColor="#ff1b1a1c"
+        app:textSize="15sp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:background="@drawable/liveshow_dailog_resolution_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarWithNumber">
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="40dp"
+            android:layout_height="5dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/liveshow_shape_3b3b3b_2_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_select"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            app:layout_constraintTop_toBottomOf="@+id/line">
+
+            <TextView
+                android:id="@+id/tv_beauty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/face_beautification"
+                android:textColor="#ffffffff"
+                android:textSize="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_beauty_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/face_shape_retouch"
+                android:textColor="@color/white_color_30alpha"
+                android:textSize="14dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tv_beauty"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/resetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="5dp"
+                android:src="@drawable/liveshow_resetting"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <im.zego.livedemo.feature.live.view.EffectsBeautyView
+            android:id="@+id/effectsBeautyView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="26dp"
+            android:layout_marginTop="22dp"
+            android:paddingBottom="37dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_select" />
+
+        <im.zego.livedemo.feature.live.view.EffectsBeautyTypeView
+            android:id="@+id/effectsBeautyTypeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:paddingLeft="26dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="37dp"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_select" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
