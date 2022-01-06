@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
-import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
@@ -31,6 +30,7 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
 import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
+import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
@@ -95,6 +95,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         videoConfigViewModel = new ViewModelProvider(this).get(VideoConfigViewModel.class);
+        videoConfigViewModel.init();
 
         liveRoomViewModel = new ViewModelProvider(this).get(LiveRoomViewModel.class);
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
@@ -426,6 +427,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onStartLiveClick(String roomName) {
                 String roomID = String.valueOf((int) (100 + Math.random() * 900));
+                videoConfigViewModel.updateVideoConfig();
                 liveRoomViewModel.createRoom(roomID, roomName, errorCode -> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();
