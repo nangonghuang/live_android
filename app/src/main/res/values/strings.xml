@@ -174,7 +174,6 @@
     <string name="network_connect_failed">Network connection failed.  Please leave the room and retry.</string>
     <string name="network_connect_failed_title">Network Error</string>
 
-    <string name="action">ACTION</string>
     <string name="face_beautification">Face beautification</string>
     <string name="face_shape_retouch">Face shape retouch</string>
 

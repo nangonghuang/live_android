@@ -1,12 +1,16 @@
 package im.zego.live.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by rocket_wang on 2021/12/27.
  */
 public class OperationAction {
     private int seq;
     private OperationActionType type;
+    @SerializedName("target_id")
     private String targetID;
+    @SerializedName("operator_id")
     private String operatorID;
 
     public int getSeq() {

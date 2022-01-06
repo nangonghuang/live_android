@@ -11,7 +11,7 @@ import im.zego.zim.entity.ZIMCustomMessage;
 
 public class ZegoCustomCommand extends ZIMCustomMessage {
 
-    @SerializedName("actionType")
+    @SerializedName("action_type")
     public CustomCommandType actionType;
 
     @SerializedName("target")
