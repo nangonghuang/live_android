@@ -258,10 +258,10 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public void leaveRoom(ZegoRoomCallback callback) {
+        boolean selfHost = UserInfoHelper.isSelfHost();
+        String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
         ZegoRoomManager.getInstance().roomService.leaveRoom(callback);
-        Log.d("leaveROOm", "leaveRoom() called with: UserInfoHelper.isSelfCoHost() = [" + UserInfoHelper.isSelfCoHost() + "]");
-        if (UserInfoHelper.isSelfCoHost()) {
-            String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
+        if (selfHost) {
             RoomApi.endRoom(roomID, new IAsyncGetCallback<RoomBean>() {
                 @Override
                 public void onResponse(int errorCode, @NonNull String message,
@@ -270,7 +270,6 @@ public class LiveRoomViewModel extends ViewModel {
                 }
             });
         } else {
-            String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
             String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
             RoomApi.leaveRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
                 @Override

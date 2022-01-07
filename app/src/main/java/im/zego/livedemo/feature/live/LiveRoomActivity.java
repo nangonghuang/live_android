@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import androidx.annotation.Nullable;
@@ -370,8 +371,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 } else if (errorCode == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
                     showErrorToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
+                    finish();
                 } else {
                     showErrorToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
+                    finish();
                 }
             });
         }
@@ -537,6 +540,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     @Override
     public void onBackPressed() {
+        Log.d("onBackPressed", "leaveRoom: UserInfoHelper.isSelfHost():" + UserInfoHelper.isSelfHost());
         if (UserInfoHelper.isSelfHost()) {
             DialogHelper.showAlertDialog(LiveRoomActivity.this,
                 StringUtils.getString(R.string.room_page_destroy_room),
