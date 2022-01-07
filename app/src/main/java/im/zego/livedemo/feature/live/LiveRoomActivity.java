@@ -9,11 +9,18 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
+
+import java.util.List;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
@@ -28,6 +35,7 @@ import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
 import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
+import im.zego.livedemo.feature.live.dialog.LoadingDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
 import im.zego.livedemo.feature.live.dialog.MoreVideoSettingsDialog;
@@ -40,6 +48,7 @@ import im.zego.livedemo.feature.live.view.LiveHeadView;
 import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
 import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
+import im.zego.livedemo.feature.login.UserLoginActivity;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
 import im.zego.livedemo.helper.ToastHelper;
@@ -48,7 +57,6 @@ import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
-import java.util.List;
 
 /**
  * Created by rocket_wang on 2021/12/23.
@@ -80,6 +88,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private MessageListAdapter messageListAdapter;
     private CoHostListAdapter coHostListAdapter;
 
+    private LoadingDialog loadingDialog;
     private IMInputDialog imInputDialog;
     private MemberListDialog memberListDialog;
     private MoreSettingDialog moreSettingDialog;
@@ -101,11 +110,38 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
             @Override
             public void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo) {
+                if (roomInfo == null) {
+                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                    finish();
+                }
             }
 
             @Override
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
+                if (state == ZIMConnectionState.DISCONNECTED) {
+                    dismissDialog(loadingDialog);
+                    if (event == ZIMConnectionEvent.LOGIN_TIMEOUT) {
+                        showDisconnectDialog();
+                    } else {
+                        if (event == ZIMConnectionEvent.SUCCESS) {
+                            // disconnect because of room end
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                            finish();
+                        } else if (event == ZIMConnectionEvent.KICKED_OUT) {
+                            //disconnect because of multiple login,been kicked out
+                            ToastHelper.showNormalToast(R.string.toast_kickout_error);
+                            ActivityUtils.finishToActivity(UserLoginActivity.class, false);
+                        } else {
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_disconnect_tips));
+                            ActivityUtils.finishToActivity(UserLoginActivity.class, false);
+                        }
 
+                    }
+                } else if (state == ZIMConnectionState.RECONNECTING) {
+                    showLoadingDialog();
+                } else if (state == ZIMConnectionState.CONNECTED) {
+                    dismissDialog(loadingDialog);
+                }
             }
 
             @Override
@@ -542,6 +578,49 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         });
     }
 
+    private void showDisconnectDialog() {
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(LiveRoomActivity.this);
+        builder2.setTitle(R.string.network_connect_failed_title);
+        builder2.setMessage(R.string.network_connect_failed);
+        builder2.setCancelable(false);
+        builder2.setPositiveButton(R.string.dialog_confirm, (dialog1, which1) -> {
+            ActivityUtils.finishToActivity(UserLoginActivity.class, false);
+        });
+        if (!LiveRoomActivity.this.isFinishing()) {
+            AlertDialog alertDialog = builder2.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+        }
+    }
+
+    private void dismissDialog(Dialog dialog) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    private void showLoadingDialog() {
+        if (loadingDialog == null) {
+            loadingDialog = new LoadingDialog(this);
+        }
+        loadingDialog.updateText(R.string.network_reconnect);
+        loadingDialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissDialog(loadingDialog);
+        dismissDialog(imInputDialog);
+        dismissDialog(memberListDialog);
+        dismissDialog(moreSettingDialog);
+        dismissDialog(videoSettingsDialog);
+        dismissDialog(moreVideoSettingsDialog);
+        dismissDialog(soundEffectsDialog);
+        ZegoRoomManager.getInstance().roomService.leaveRoom(error -> {
+        });
+    }
+
     @Override
     public void onBackPressed() {
         Log.d("onBackPressed", "leaveRoom: UserInfoHelper.isSelfHost():" + UserInfoHelper.isSelfHost());
@@ -553,21 +632,22 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 null,
                 true,
                 (dialog, which) -> {
-                    liveRoomViewModel.leaveRoom(errorCode -> {
-                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                            dialog.dismiss();
-                            super.onBackPressed();
-                        } else {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
-                        }
-                    });
+//                    liveRoomViewModel.leaveRoom(errorCode -> {
+//                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+//                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+//                            dialog.dismiss();
+//                            super.onBackPressed();
+//                        } else {
+//                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
+//                        }
+//                    });
+                    super.onBackPressed();
                 },
                 null
             );
         } else {
-            liveRoomViewModel.leaveRoom(errorCode -> {
-            });
+//            liveRoomViewModel.leaveRoom(errorCode -> {
+//            });
             super.onBackPressed();
         }
     }
