@@ -1,35 +1,35 @@
 package im.zego.livedemo.feature.room.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import im.zego.livedemo.R;
 import im.zego.livedemo.constants.Constants;
-import im.zego.livedemo.feature.room.model.RoomListItem;
+import im.zego.livedemo.feature.room.model.RoomBean;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rocket_wang on 2021/12/22.
  */
 public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomListViewHolder> {
 
-    private List<RoomListItem> items = new ArrayList<>();
+    private static final String TAG = "RoomListAdapter";
+    private List<RoomBean> items = new ArrayList<>();
     private OnClickListener listener;
 
-    public void setList(List<RoomListItem> list) {
+    public void setList(List<RoomBean> list) {
+        Log.d(TAG, "setList() called with: list = [" + list.size() + "]");
         items.clear();
         items.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void addList(List<RoomListItem> list) {
+    public void addList(List<RoomBean> list) {
         items.addAll(list);
         notifyDataSetChanged();
     }
@@ -43,11 +43,13 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
 
     @Override
     public void onBindViewHolder(@NonNull RoomListViewHolder holder, int position) {
-        RoomListItem item = items.get(position);
+        RoomBean item = items.get(position);
 
-        holder.rootView.setBackgroundResource(Constants.coverList[Integer.parseInt(item.getCoverImg()) - 1]);
-        holder.roomUserNum.setText(String.valueOf(item.getNum()));
-        holder.roomTitle.setText(item.getTitle());
+        int index = (int) ((item.getCreateTime() - 1) % 5);
+        Log.d(TAG, "onBindViewHolder,position: " +  index);
+        holder.rootView.setBackgroundResource(Constants.coverList[index]);
+        holder.roomUserNum.setText(String.valueOf(item.getUserNum()));
+        holder.roomTitle.setText(item.getName());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -66,10 +68,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     }
 
     public interface OnClickListener {
-        void onClick(View v, int position, RoomListItem item);
+
+        void onClick(View v, int position, RoomBean item);
     }
 
     static class RoomListViewHolder extends RecyclerView.ViewHolder {
+
         View rootView;
         TextView roomUserNum;
         TextView roomTitle;

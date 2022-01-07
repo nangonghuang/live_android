@@ -1,5 +1,6 @@
 package im.zego.live.helper;
 
+import android.util.Log;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
