@@ -8,16 +8,11 @@ import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.View;
 import android.view.WindowManager;
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
-
-import java.util.List;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
@@ -50,6 +45,7 @@ import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
+import java.util.List;
 
 /**
  * Created by rocket_wang on 2021/12/23.
@@ -372,13 +368,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             liveRoomViewModel.joinRoom(roomID, errorCode -> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                    return;
                 } else if (errorCode == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
                     showErrorToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
                 } else {
                     showErrorToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                 }
-                finish();
             });
         }
     }
@@ -426,9 +420,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onStartLiveClick(String roomName) {
-                String roomID = String.valueOf((int) (100 + Math.random() * 900));
                 videoConfigViewModel.updateVideoConfig();
-                liveRoomViewModel.createRoom(roomID, roomName, errorCode -> {
+                liveRoomViewModel.createRoom(roomName, errorCode -> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();
                         binding.liveBottomView.toHost();
@@ -469,7 +462,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onBeautyClick() {
-
+                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
+                beautyDialog.show();
             }
 
             @Override
