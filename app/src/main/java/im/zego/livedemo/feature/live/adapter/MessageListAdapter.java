@@ -3,7 +3,6 @@ package im.zego.livedemo.feature.live.adapter;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -65,53 +64,55 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         String fromUserName = ZegoRoomManager.getInstance().userService.getUserName(message.userID);
         String content = message.message;
         Context context = holder.itemView.getContext();
-        if (!TextUtils.isEmpty(fromUserName)) {
-            StringBuilder builder = new StringBuilder();
-            if (isHostMessage) {
-                builder.append(context.getString(R.string.room_page_host));
-                builder.append(" ");
-            }
-            builder.append(fromUserName);
-            builder.append(" ");
-            builder.append(content);
-            String source = builder.toString();
-            SpannableString string = new SpannableString(source);
-            RoundedBackgroundSpan backgroundColorSpan = new RoundedBackgroundSpan(
-                    ContextCompat.getColor(context, R.color.purple_dark),
-                    ContextCompat.getColor(context, R.color.white),
-                    SizeUtils.sp2px(10));
-            if (isHostMessage) {
-                AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(10));
-                string.setSpan(absoluteSizeSpan, 0,
-                    context.getString(R.string.room_page_host).length(),
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                string.setSpan(backgroundColorSpan, 0,
-                    context.getString(R.string.room_page_host).length(),
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            }
-            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(context, R.color.teal)
-            );
-            int indexOfUser = source.indexOf(fromUserName);
-            string.setSpan(foregroundColorSpan, indexOfUser, indexOfUser + fromUserName.length(),
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(13));
-            string.setSpan(absoluteSizeSpan, indexOfUser, indexOfUser + fromUserName.length(),
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            holder.tvSendMessage.setText(string);
-        } else {
-            SpannableString string = new SpannableString(content);
-            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(context, R.color.teal)
-            );
-            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(13));
-            string.setSpan(foregroundColorSpan, 0, content.length(),
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            string
-                .setSpan(absoluteSizeSpan, 0, content.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            holder.tvSendMessage.setText(string);
+        StringBuilder builder = new StringBuilder();
+        if (isHostMessage) {
+            builder.append(context.getString(R.string.room_page_host));
+            builder.append(" ");
         }
+        builder.append(fromUserName);
+        builder.append(" ");
+        builder.append(content);
+        String source = builder.toString();
+        SpannableString string = new SpannableString(source);
+        RoundedBackgroundSpan backgroundColorSpan = new RoundedBackgroundSpan(
+                ContextCompat.getColor(context, R.color.purple_dark),
+                ContextCompat.getColor(context, R.color.white),
+                SizeUtils.sp2px(10));
+        if (isHostMessage) {
+            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(10));
+            string.setSpan(absoluteSizeSpan, 0,
+                context.getString(R.string.room_page_host).length(),
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            string.setSpan(backgroundColorSpan, 0,
+                context.getString(R.string.room_page_host).length(),
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
+            ContextCompat.getColor(context, R.color.teal)
+        );
+        int indexOfUser = source.indexOf(fromUserName);
+        string.setSpan(foregroundColorSpan, indexOfUser, indexOfUser + fromUserName.length(),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(13));
+        string.setSpan(absoluteSizeSpan, indexOfUser, indexOfUser + fromUserName.length(),
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        holder.tvSendMessage.setText(string);
+
+//        if (!message.isRoomUserInfoMessage) {
+//        } else {
+//            SpannableString string = new SpannableString(content);
+//            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
+//                ContextCompat.getColor(context, R.color.teal)
+//            );
+//            AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(SizeUtils.sp2px(13));
+//            string.setSpan(foregroundColorSpan, 0, content.length(),
+//                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//            string
+//                .setSpan(absoluteSizeSpan, 0, content.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//            holder.tvSendMessage.setText(string);
+//        }
     }
 
     @Override

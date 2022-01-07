@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
 import im.zego.live.ZegoRoomManager;
 import im.zego.livedemo.helper.AuthInfoManager;
+import im.zego.livedemo.helper.SoundEffectsHelper;
 
 public class App extends Application {
 
@@ -20,5 +21,7 @@ public class App extends Application {
         long appID = AuthInfoManager.getInstance().getAppID();
         String appSign = AuthInfoManager.getInstance().getAppSign();
         ZegoRoomManager.getInstance().init(appID, appSign, this);
+
+        SoundEffectsHelper.initLocalAudioEffectList(this);
     }
 }

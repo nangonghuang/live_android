@@ -30,21 +30,7 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
         return R.color.common_bg;
     }
 
-    protected void showErrorToast(String content) {
-        CookieBar.build(this)
-                .setTitle(content)
-                .setBackgroundColor(R.color.light_red)
-                .setEnableAutoDismiss(true)
-                .setSwipeToDismiss(false)
-                .setCookiePosition(CookieBar.TOP)
-                .show();
-    }
-
-    protected void showTipsToast(String content) {
-        this.showTipsToast(content, true);
-    }
-
-    protected void showTipsToast(String content, boolean autoDismiss) {
+    protected void showNormalToast(String content, boolean autoDismiss) {
         CookieBar.build(this)
                 .setTitle(content)
                 .setBackgroundColor(R.color.light_green)

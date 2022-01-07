@@ -26,9 +26,9 @@ public class MemberListDialog extends BaseBottomDialog {
     private TextView tvTitle;
     private MemberListAdapter memberListAdapter;
 
-    private IItemOnClickListener itemOnClickListener;
+    private final IItemOnClickListener<ZegoUserInfo> itemOnClickListener;
 
-    public MemberListDialog(Context context, IItemOnClickListener itemOnClickListener) {
+    public MemberListDialog(Context context, IItemOnClickListener<ZegoUserInfo> itemOnClickListener) {
         super(context);
         this.itemOnClickListener = itemOnClickListener;
     }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.zego.live.callback.ZegoRoomCallback;
+import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomService;
 import im.zego.live.service.ZegoUserService;
@@ -67,6 +68,7 @@ public class ZegoRoomManager {
     public ZegoUserService userService;
     public ZegoMessageService messageService;
     public FaceBeautifyService faceBeautifyService;
+    public ZegoSoundEffectService soundEffectService;
 
     public void init(long appID, String appSign, Application application) {
         roomService = new ZegoRoomService();
@@ -79,7 +81,7 @@ public class ZegoRoomManager {
         profile.appSign = appSign;
         profile.scenario = ZegoScenario.COMMUNICATION;
         profile.application = application;
-        ZegoExpressEngine.createEngine(profile, new IZegoEventHandler() {
+        ZegoExpressEngine engine = ZegoExpressEngine.createEngine(profile, new IZegoEventHandler() {
             @Override
             public void onNetworkQuality(String userID, ZegoStreamQualityLevel upstreamQuality,
                 ZegoStreamQualityLevel downstreamQuality) {
@@ -106,6 +108,7 @@ public class ZegoRoomManager {
                 }
             }
         });
+        soundEffectService = new ZegoSoundEffectService(engine);
 
         ZegoZIMManager.getInstance().createZIM(appID, application);
         // distribute to specific services which listening what they want

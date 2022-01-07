@@ -13,8 +13,8 @@
         android:gravity="center"
         android:textColor="#ffffffff"
         android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/room_page_co_host_mute" />
 
@@ -26,8 +26,8 @@
         android:text="@string/room_page_co_host_prohibit"
         android:textColor="#ffffffff"
         android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_mic_status" />
 
     <View
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#3b3b3b"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_prohibit_connect" />
 
     <TextView
@@ -47,8 +47,8 @@
         android:text="@string/room_page_cancel"
         android:textColor="#ffffffff"
         android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

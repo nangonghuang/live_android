@@ -25,7 +25,7 @@ import im.zego.livedemo.helper.AvatarHelper;
 
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.UserListHolder> {
 
-    private IItemOnClickListener itemOnClickListener = null;
+    private IItemOnClickListener<ZegoUserInfo> itemOnClickListener = null;
 
     private List<ZegoUserInfo> userListInRoom;
 
@@ -95,7 +95,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         return userListInRoom.size();
     }
 
-    public void setItemOnClick(IItemOnClickListener itemOnClickListener) {
+    public void setItemOnClick(IItemOnClickListener<ZegoUserInfo> itemOnClickListener) {
         this.itemOnClickListener = itemOnClickListener;
     }
 

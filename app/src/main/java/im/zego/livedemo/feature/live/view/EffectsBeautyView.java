@@ -17,9 +17,6 @@ import im.zego.live.model.FaceBeautifyType;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.adapter.EffectsBeautyAdapter;
 
-/**
- * 美颜
- */
 public class EffectsBeautyView extends ConstraintLayout {
 
     private IBeautyCallBack callBack;
@@ -90,11 +87,6 @@ public class EffectsBeautyView extends ConstraintLayout {
        }
     }
 
-    /**
-     * 美颜数据创建
-     *
-     * @return
-     */
     private List<BeautyInfo> createBeautyList() {
         List<BeautyInfo> list = new ArrayList<>();
         String[] beautyList = getResources().getStringArray(R.array.beauty_list);

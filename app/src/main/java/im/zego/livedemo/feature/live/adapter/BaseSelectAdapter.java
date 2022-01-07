@@ -8,9 +8,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 单选和多选的BaseAdapter
- */
 public abstract class BaseSelectAdapter<T, K extends BaseViewHolder> extends BaseQuickAdapter<T, K> {
 
     private List<T> multiSelectList;
@@ -36,21 +33,16 @@ public abstract class BaseSelectAdapter<T, K extends BaseViewHolder> extends Bas
         selectConvert(isSelect, helper, item);
     }
 
-    /**
-     * 点击Item的通知
-     *
-     * @param position
-     */
-    public void notifySelect(int position,boolean canselSelect) {
+    public void notifySelect(int position, boolean canselSelect) {
         if (getData() == null || getData().size() == 0 || position >= getData().size()) {
             return;
         }
         switch (currentType) {
             case single:
-                if(currentSelectItemPosition == position && canselSelect){  //点击同一个按钮的时候，选中效果取消
+                if (currentSelectItemPosition == position && canselSelect) {
                     currentSelectItemPosition = -1;
                     notifyItemChanged(position);
-                }else {
+                } else {
                     int temp = currentSelectItemPosition;
                     currentSelectItemPosition = position;
                     notifyItemChanged(temp);
@@ -104,27 +96,14 @@ public abstract class BaseSelectAdapter<T, K extends BaseViewHolder> extends Bas
         return multiSelectList;
     }
 
-    /**
-     * @param isSelect 是否被选中
-     * @param helper
-     * @param item
-     */
     protected abstract void selectConvert(boolean isSelect, K helper, T item);
 
-    /**
-     * 单选还是多选
-     */
     public enum SelectType {
-        single, multi;
+        single, multi
     }
 
-    /**
-     * 点击item发生的改变
-     *
-     * @param
-     */
     public interface MultiSelectAction<T> {
-        // 返回true为选中,false 不选中
+
         boolean action(T t);
     }
 

@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivitySettingsBinding;
+import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zim.ZIM;
 
@@ -39,9 +40,9 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
         binding.tvLogout.setOnClickListener(v -> logout());
         binding.layoutShareLog.setOnClickListener(v -> ZegoRoomManager.getInstance().uploadLog(errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                ToastUtils.showShort(R.string.toast_upload_log_success);
+                ToastHelper.showNormalToast(R.string.toast_upload_log_success);
             } else {
-                ToastUtils.showShort(R.string.toast_upload_log_fail, errorCode);
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_upload_log_fail, errorCode));
             }
         }));
     }
