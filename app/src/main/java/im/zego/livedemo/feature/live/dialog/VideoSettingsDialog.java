@@ -6,8 +6,8 @@ import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
-import im.zego.livedemo.feature.live.model.VideoSettingConfig;
 import im.zego.livedemo.feature.live.view.VideoSettingCellView;
+import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 
 
 public class VideoSettingsDialog extends BaseBottomDialog {
@@ -16,17 +16,17 @@ public class VideoSettingsDialog extends BaseBottomDialog {
     private VideoSettingCellView settingsLayeredCoding;
     private VideoSettingCellView settingsHardwareCoding;
     private VideoSettingCellView settingsHardwareDecoding;
+    private VideoSettingCellView backgroundNoiseReduction;
+    private VideoSettingCellView echoCancellation;
+    private VideoSettingCellView micVolumeAutoAdjustment;
     private VideoSettingCellView settingsVideoResolution;
     private VideoSettingCellView settingsAudioBitrate;
 
-    private String[] encodingTypeStringArray = StringUtils.getStringArray(R.array.encoding_type);
-    private String[] videoResolutionStringArray = StringUtils.getStringArray(R.array.video_resolution);
-    private String[] audioBitrateStringArray = StringUtils.getStringArray(R.array.audio_bitrate);
+    private final VideoConfigViewModel viewModel;
 
-    private VideoSettingConfig config = new VideoSettingConfig();
-
-    public VideoSettingsDialog(Context context) {
+    public VideoSettingsDialog(Context context, VideoConfigViewModel viewModel) {
         super(context);
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -41,6 +41,9 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsLayeredCoding = findViewById(R.id.settings_layered_coding);
         settingsHardwareCoding = findViewById(R.id.settings_hardware_coding);
         settingsHardwareDecoding = findViewById(R.id.settings_hardware_decoding);
+        backgroundNoiseReduction = findViewById(R.id.settings_background_noise_reduction);
+        echoCancellation = findViewById(R.id.settings_echo_cancellation);
+        micVolumeAutoAdjustment = findViewById(R.id.settings_mic_volume_auto_adjustment);
         settingsVideoResolution = findViewById(R.id.settings_resolution_settings);
         settingsAudioBitrate = findViewById(R.id.settings_audio_bitrate);
     }
@@ -48,13 +51,9 @@ public class VideoSettingsDialog extends BaseBottomDialog {
     @Override
     protected void initData() {
         super.initData();
-        config.setEncodeType(encodingTypeStringArray[0]);
-        config.setVideoResolution(videoResolutionStringArray[0]);
-        config.setAudioBitrate(audioBitrateStringArray[0]);
-
-        settingsEncodeType.setContent(config.getEncodeType());
-        settingsVideoResolution.setContent(config.getVideoResolution());
-        settingsAudioBitrate.setContent(config.getAudioBitrate());
+        settingsEncodeType.setContent(viewModel.getSettingConfig().getEncodeType());
+        settingsVideoResolution.setContent(viewModel.getSettingConfig().getVideoResolution());
+        settingsAudioBitrate.setContent(viewModel.getSettingConfig().getAudioBitrate());
     }
 
     @Override
@@ -65,33 +64,43 @@ public class VideoSettingsDialog extends BaseBottomDialog {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
                     StringUtils.getString(R.string.room_page_settings_encode_type),
-                    config.getEncodeType(),
-                    encodingTypeStringArray,
+                    viewModel.getSettingConfig().getEncodeType(),
+                    viewModel.encodingTypeStringArray,
                     checkedString -> {
                         settingsEncodeType.setContent(checkedString);
-                        config.setEncodeType(checkedString);
+                        viewModel.getSettingConfig().setEncodeType(checkedString);
                     }
             );
+            dialog.setOnDismissListener(d -> this.show());
+            this.hide();
             dialog.show();
         });
 
-        settingsLayeredCoding.setListener(isChecked -> config.setLayeredCoding(isChecked));
+        settingsLayeredCoding.setListener(isChecked -> viewModel.getSettingConfig().setLayeredCoding(isChecked));
 
-        settingsHardwareCoding.setListener(isChecked -> config.setHardwareCoding(isChecked));
+        settingsHardwareCoding.setListener(isChecked -> viewModel.getSettingConfig().setHardwareEncode(isChecked));
 
-        settingsHardwareDecoding.setListener(isChecked -> config.setHardwareDecoding(isChecked));
+        settingsHardwareDecoding.setListener(isChecked -> viewModel.getSettingConfig().setHardwareDecode(isChecked));
+
+        backgroundNoiseReduction.setListener(isChecked -> viewModel.getSettingConfig().setBackgroundNoiseReduction(isChecked));
+
+        echoCancellation.setListener(isChecked -> viewModel.getSettingConfig().setEchoCancellation(isChecked));
+
+        micVolumeAutoAdjustment.setListener(isChecked -> viewModel.getSettingConfig().setMicVolumeAutoAdjustment(isChecked));
 
         settingsVideoResolution.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
                     StringUtils.getString(R.string.room_page_settings_video_resolution),
-                    config.getVideoResolution(),
-                    videoResolutionStringArray,
+                    viewModel.getSettingConfig().getVideoResolution(),
+                    viewModel.videoResolutionStringArray,
                     checkedString -> {
                         settingsVideoResolution.setContent(checkedString);
-                        config.setVideoResolution(checkedString);
+                        viewModel.getSettingConfig().setVideoResolution(checkedString);
                     }
             );
+            dialog.setOnDismissListener(d -> this.show());
+            this.hide();
             dialog.show();
         });
 
@@ -99,14 +108,22 @@ public class VideoSettingsDialog extends BaseBottomDialog {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
                     StringUtils.getString(R.string.room_page_settings_audio_bitrate),
-                    config.getAudioBitrate(),
-                    audioBitrateStringArray,
+                    viewModel.getSettingConfig().getAudioBitrate(),
+                    viewModel.audioBitrateStringArray,
                     checkedString -> {
                         settingsAudioBitrate.setContent(checkedString);
-                        config.setAudioBitrate(checkedString);
+                        viewModel.getSettingConfig().setAudioBitrate(checkedString);
                     }
             );
+            dialog.setOnDismissListener(d -> this.show());
+            this.hide();
             dialog.show();
         });
+    }
+
+    @Override
+    public void dismiss() {
+        viewModel.updateVideoConfig();
+        super.dismiss();
     }
 }

@@ -6,10 +6,13 @@ package im.zego.livedemo.feature.live.model;
 public class VideoSettingConfig {
     private String encodeType;
     private boolean layeredCoding;
-    private boolean hardwareCoding;
-    private boolean hardwareDecoding;
+    private boolean hardwareEncode;
+    private boolean hardwareDecode;
     private String videoResolution;
     private String audioBitrate;
+    private boolean backgroundNoiseReduction;
+    private boolean echoCancellation;
+    private boolean micVolumeAutoAdjustment;
 
     public String getEncodeType() {
         return encodeType;
@@ -27,20 +30,20 @@ public class VideoSettingConfig {
         this.layeredCoding = layeredCoding;
     }
 
-    public boolean isHardwareCoding() {
-        return hardwareCoding;
+    public boolean isHardwareEncode() {
+        return hardwareEncode;
     }
 
-    public void setHardwareCoding(boolean hardwareCoding) {
-        this.hardwareCoding = hardwareCoding;
+    public void setHardwareEncode(boolean hardwareEncode) {
+        this.hardwareEncode = hardwareEncode;
     }
 
-    public boolean isHardwareDecoding() {
-        return hardwareDecoding;
+    public boolean isHardwareDecode() {
+        return hardwareDecode;
     }
 
-    public void setHardwareDecoding(boolean hardwareDecoding) {
-        this.hardwareDecoding = hardwareDecoding;
+    public void setHardwareDecode(boolean hardwareDecode) {
+        this.hardwareDecode = hardwareDecode;
     }
 
     public String getVideoResolution() {
@@ -59,15 +62,52 @@ public class VideoSettingConfig {
         this.audioBitrate = audioBitrate;
     }
 
+    public static int calculateAudioBitrate(String audioBitrate) {
+        return Integer.parseInt(audioBitrate.replace("kbps", ""));
+    }
+
+    public boolean isBackgroundNoiseReduction() {
+        return backgroundNoiseReduction;
+    }
+
+    public void setBackgroundNoiseReduction(boolean backgroundNoiseReduction) {
+        this.backgroundNoiseReduction = backgroundNoiseReduction;
+    }
+
+    public boolean isEchoCancellation() {
+        return echoCancellation;
+    }
+
+    public void setEchoCancellation(boolean echoCancellation) {
+        this.echoCancellation = echoCancellation;
+    }
+
+    public boolean isMicVolumeAutoAdjustment() {
+        return micVolumeAutoAdjustment;
+    }
+
+    public void setMicVolumeAutoAdjustment(boolean micVolumeAutoAdjustment) {
+        this.micVolumeAutoAdjustment = micVolumeAutoAdjustment;
+    }
+
+    //
+//    public static int calculateVideoBitrate(String videoResolution) {
+//        Size size = Size.parseSize(videoResolution);
+//        return 0;
+//    }
+
     @Override
     public String toString() {
         return "VideoSettingConfig{" +
                 "encodeType='" + encodeType + '\'' +
                 ", layeredCoding=" + layeredCoding +
-                ", hardwareCoding=" + hardwareCoding +
-                ", hardwareDecoding=" + hardwareDecoding +
+                ", hardwareEncode=" + hardwareEncode +
+                ", hardwareDecode=" + hardwareDecode +
                 ", videoResolution='" + videoResolution + '\'' +
                 ", audioBitrate='" + audioBitrate + '\'' +
+                ", backgroundNoiseReduction=" + backgroundNoiseReduction +
+                ", echoCancellation=" + echoCancellation +
+                ", micVolumeAutoAdjustment=" + micVolumeAutoAdjustment +
                 '}';
     }
 }

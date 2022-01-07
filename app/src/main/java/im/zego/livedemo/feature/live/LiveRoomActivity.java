@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
-import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
@@ -31,9 +30,11 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
 import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
+import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
+import im.zego.livedemo.feature.live.dialog.MoreVideoSettingsDialog;
 import im.zego.livedemo.feature.live.dialog.SeatMoreDialog;
 import im.zego.livedemo.feature.live.dialog.VideoSettingsDialog;
 import im.zego.livedemo.feature.live.view.CreateLiveView;
@@ -41,6 +42,7 @@ import im.zego.livedemo.feature.live.view.LiveBottomView;
 import im.zego.livedemo.feature.live.view.LiveHeadView;
 import im.zego.livedemo.feature.live.viewmodel.ILiveRoomViewModelListener;
 import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
+import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
@@ -74,6 +76,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private LiveRoomViewModel liveRoomViewModel;
+    private VideoConfigViewModel videoConfigViewModel;
 
     private MessageListAdapter messageListAdapter;
     private CoHostListAdapter coHostListAdapter;
@@ -82,6 +85,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private MemberListDialog memberListDialog;
     private MoreSettingDialog moreSettingDialog;
     private VideoSettingsDialog videoSettingsDialog;
+    private MoreVideoSettingsDialog moreVideoSettingsDialog;
 
     private final ArrayMap<String, Dialog> requestDialogMap = new ArrayMap<>();
 
@@ -89,6 +93,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        videoConfigViewModel = new ViewModelProvider(this).get(VideoConfigViewModel.class);
+        videoConfigViewModel.init();
 
         liveRoomViewModel = new ViewModelProvider(this).get(LiveRoomViewModel.class);
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
@@ -273,11 +280,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onClickSettings() {
-
+                moreVideoSettingsDialog.show();
             }
         });
 
-        videoSettingsDialog = new VideoSettingsDialog(LiveRoomActivity.this);
+        videoSettingsDialog = new VideoSettingsDialog(LiveRoomActivity.this, videoConfigViewModel);
+        moreVideoSettingsDialog = new MoreVideoSettingsDialog(LiveRoomActivity.this, videoConfigViewModel);
 
         startObservingDataChange();
     }
@@ -419,6 +427,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onStartLiveClick(String roomName) {
                 String roomID = String.valueOf((int) (100 + Math.random() * 900));
+                videoConfigViewModel.updateVideoConfig();
                 liveRoomViewModel.createRoom(roomID, roomName, errorCode -> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();

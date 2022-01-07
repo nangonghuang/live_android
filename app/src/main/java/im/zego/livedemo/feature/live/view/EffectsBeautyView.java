@@ -3,17 +3,19 @@ package im.zego.livedemo.feature.live.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.adapter.EffectsBeautyAdapter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 美颜
@@ -47,7 +49,7 @@ public class EffectsBeautyView extends ConstraintLayout {
         this.mRvBeauty.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         this.effectsBeautyAdapter = new EffectsBeautyAdapter(createBeautyList());
         this.mRvBeauty.setAdapter(this.effectsBeautyAdapter);
-        this.effectsBeautyAdapter.setOnItemClickListener((BaseQuickAdapter adapter, View viewItem, int position) -> {
+        this.effectsBeautyAdapter.setOnItemClickListener((adapter, view, position) -> {
             effectsBeautyAdapter.notifySelect(position, false);
             returnData(position);
         });

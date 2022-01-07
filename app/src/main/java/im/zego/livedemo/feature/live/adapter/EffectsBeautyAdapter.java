@@ -3,11 +3,15 @@ package im.zego.livedemo.feature.live.adapter;
 import android.graphics.Color;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
-import com.chad.library.adapter.base.BaseViewHolder;
+
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+
+import java.util.List;
+
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.view.BeautyInfo;
-import java.util.List;
 
 /**
  * 美颜美型adapter

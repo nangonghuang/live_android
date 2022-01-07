@@ -18,8 +18,28 @@
     <string name="room_page_settings_layered_coding">Layered coding</string>
     <string name="room_page_settings_hardware_coding">Hardware coding</string>
     <string name="room_page_settings_hardware_decoding">Hardware decoding</string>
+    <string name="room_page_settings_background_noise_reduction">Background noise reduction</string>
+    <string name="room_page_settings_echo_cancellation">Echo cancellation</string>
+    <string name="room_page_settings_mic_volume_auto_adjustment">Mic volume auto-adjustment</string>
     <string name="room_page_settings_video_resolution">Resolution Settings</string>
     <string name="room_page_settings_audio_bitrate">Audio bitrate</string>
+
+    <string name="room_page_sound_effects_title">Music effects</string>
+    <string name="room_page_sound_effects_background">Background</string>
+    <string name="room_page_sound_effects_background_joyful">Joyful</string>
+    <string name="room_page_sound_effects_background_romantic">Romantic</string>
+    <string name="room_page_sound_effects_music_volume">Music volume</string>
+    <string name="room_page_sound_effects_voice_volume">Voice volume</string>
+    <string name="room_page_sound_effects_none">None</string>
+    <string name="room_page_sound_effects_lolita">Lolita</string>
+    <string name="room_page_sound_effects_robot">Robot</string>
+    <string name="room_page_sound_effects_empty">Empty</string>
+    <string name="room_page_sound_effects_ktv">KTV</string>
+    <string name="room_page_sound_effects_hall">Hall</string>
+    <string name="room_page_sound_effects_concert">Concert</string>
+    <string name="room_page_sound_effects_rock">Rock</string>
+    <string name="room_page_sound_effects_voice_change">Voice Change</string>
+    <string name="room_page_sound_effects_reverb">Reverb</string>
 
     <string name="room_page_apply_to_connect">Apply to connect</string>
     <string name="room_page_cancel_apply">Cancel apply</string>
@@ -154,7 +174,6 @@
     <string name="network_connect_failed">Network connection failed.  Please leave the room and retry.</string>
     <string name="network_connect_failed_title">Network Error</string>
 
-    <string name="action">ACTION</string>
     <string name="face_beautification">Face beautification</string>
     <string name="face_shape_retouch">Face shape retouch</string>
 

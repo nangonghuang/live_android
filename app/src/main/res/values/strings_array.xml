@@ -5,12 +5,12 @@
     </string-array>
 
     <string-array name="video_resolution">
-        <item>1080×1920</item>
-        <item>720×1280</item>
-        <item>540×960</item>
-        <item>360×640</item>
-        <item>270×480</item>
-        <item>180×320</item>
+        <item>1080x1920</item>
+        <item>720x1280</item>
+        <item>540x960</item>
+        <item>360x640</item>
+        <item>270x480</item>
+        <item>180x320</item>
     </string-array>
 
     <string-array name="audio_bitrate">

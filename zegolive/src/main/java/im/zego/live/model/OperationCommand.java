@@ -20,11 +20,11 @@ import im.zego.live.helper.ZegoRoomAttributesHelper;
  * Created by rocket_wang on 2021/12/27.
  */
 public class OperationCommand {
-    @SerializedName("seat")
+    @SerializedName(ZegoRoomConstants.KEY_SEAT)
     private List<ZegoCoHostSeatModel> seatList = new ArrayList<>();
-    @SerializedName("requestCoHost")
+    @SerializedName(ZegoRoomConstants.KEY_REQUEST_CO_HOST)
     private List<String> requestCoHostList = new ArrayList<>();
-    @SerializedName("action")
+    @SerializedName(ZegoRoomConstants.KEY_ACTION)
     private OperationAction action = new OperationAction();
 
     public List<ZegoCoHostSeatModel> getSeatList() {

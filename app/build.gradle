@@ -43,6 +43,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // utils library
     implementation 'com.blankj:utilcodex:1.30.6'
@@ -71,7 +72,7 @@ dependencies {
     // webView
     implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx'
 
-    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30"
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
 
     implementation project(':zegolive')
 }
