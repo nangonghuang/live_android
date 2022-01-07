@@ -41,6 +41,7 @@ import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
+import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
@@ -118,7 +119,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                                 binding.liveBottomView.toCoHost();
                             } else {
-                                showErrorToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
                             }
                         });
                     },
@@ -132,7 +133,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onReceiveAddCoHostRespond(boolean accept) {
                 if (!accept) {
-                    showErrorToast(StringUtils.getString(R.string.toast_invite_to_connect_refuse));
+                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_invite_to_connect_refuse));
                 }
             }
 
@@ -171,12 +172,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                             binding.liveBottomView.toCoHost();
                         } else {
-                            showErrorToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
                         }
                     });
                 } else {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                    showErrorToast(StringUtils.getString(R.string.toast_request_connect_refuse));
+                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_request_connect_refuse));
                 }
             }
 
@@ -240,13 +241,13 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         memberListDialog = new MemberListDialog(this, userInfo -> {
             if (liveRoomViewModel.isCoHostMax()) {
-                showErrorToast(StringUtils.getString(R.string.room_page_invite_to_connect_at_max));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.room_page_invite_to_connect_at_max));
             } else {
                 String string = StringUtils.getString(R.string.room_page_invite_to_connect);
                 DialogHelper.showToastDialog(this, string, dialog -> {
                     liveRoomViewModel.inviteToBeCoHost(userInfo.getUserID(), errorCode -> {
                         if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                            showErrorToast(StringUtils.getString(R.string.toast_invite_to_connect_fail));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_invite_to_connect_fail));
                         }
                     });
                 });
@@ -370,10 +371,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 } else if (errorCode == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
-                    showErrorToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
+                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
                     finish();
                 } else {
-                    showErrorToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
+                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                     finish();
                 }
             });
@@ -428,9 +429,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();
                         binding.liveBottomView.toHost();
-                        showTipsToast(StringUtils.getString(R.string.toast_create_room_success));
+                        ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_create_room_success));
                     } else {
-                        showErrorToast(StringUtils.getString(R.string.toast_create_room_fail, errorCode));
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_create_room_fail, errorCode));
                     }
                 });
             }
@@ -498,7 +499,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onApplyConnection() {
                 liveRoomViewModel.requestToBeCoHost(errorCode -> {
                     if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        showErrorToast(StringUtils.getString(R.string.toast_request_to_connect_fail));
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_request_to_connect_fail));
                         binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                     }
                 });
@@ -508,7 +509,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onCancelApplyConnection() {
                 liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
                     if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        showErrorToast(StringUtils.getString(R.string.toast_cancel_request_to_connect_fail));
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_cancel_request_to_connect_fail));
                         binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_APPLYING);
                     }
                 });
@@ -525,7 +526,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         dialog.dismiss();
                         liveRoomViewModel.leaveCoHostSeat(null, errorCode -> {
                             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                                showErrorToast(StringUtils.getString(R.string.toast_end_connect_fail));
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_end_connect_fail));
                                 binding.liveBottomView.toParticipant(LiveBottomView.CONNECTING);
                             } else {
                                 binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
@@ -551,11 +552,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 (dialog, which) -> {
                     liveRoomViewModel.leaveRoom(errorCode -> {
                         if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                            showTipsToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
                             dialog.dismiss();
                             super.onBackPressed();
                         } else {
-                            showErrorToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
                         }
                     });
                 },

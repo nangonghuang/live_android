@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 
 import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.http.IAsyncGetCallback;
@@ -35,6 +34,7 @@ import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.helper.AuthInfoManager;
+import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.constants.ZegoOrientation;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
@@ -292,7 +292,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().userService.cameraOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                 isCameraEnable.postValue(!enable);
-                ToastUtils.showShort(R.string.toast_operate_camera_fail, errorCode);
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_operate_camera_fail, errorCode));
             }
         });
     }
@@ -302,7 +302,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().userService.micOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                 isMicEnable.postValue(!enable);
-                ToastUtils.showShort(R.string.toast_operate_mic_fail, errorCode);
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_operate_mic_fail, errorCode));
             }
         });
     }
@@ -313,7 +313,7 @@ public class LiveRoomViewModel extends ViewModel {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 updateMessageLiveData();
             } else {
-                ToastUtils.showShort(R.string.toast_send_message_error, errorCode);
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_send_message_error, errorCode));
             }
         });
     }

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +20,7 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityUserLoginBinding;
 import im.zego.livedemo.feature.room.RoomListActivity;
 import im.zego.livedemo.helper.AuthInfoManager;
+import im.zego.livedemo.helper.ToastHelper;
 
 public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
 
@@ -63,7 +63,7 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 Pattern p = Pattern.compile(regEx);
                 Matcher m = p.matcher(binding.etUserId.getText().toString());
                 if (!m.matches()) {
-                    ToastUtils.showShort(R.string.toast_user_id_error);
+                    ToastHelper.showWarnToast(R.string.toast_user_id_error);
                     return;
                 }
                 user.setUserID(userID);
@@ -74,12 +74,12 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                         if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                             RoomListActivity.start(this);
                         } else {
-                            ToastUtils.showShort(StringUtils.getString(R.string.toast_login_fail, errorCode));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_login_fail, errorCode));
                         }
                     });
                 }
             } else {
-                ToastUtils.showShort(StringUtils.getString(R.string.toast_userid_login_fail));
+                ToastHelper.showWarnToast(R.string.toast_userid_login_fail);
             }
         });
     }

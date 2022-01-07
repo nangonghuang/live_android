@@ -2,9 +2,9 @@ package im.zego.livedemo.feature.login;
 
 import android.os.Bundle;
 
+import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivityWelcomeBinding;
-import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.feature.webview.WebViewActivity;
 
 public class WelcomeActivity extends BaseActivity<ActivityWelcomeBinding> {

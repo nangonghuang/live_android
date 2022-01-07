@@ -12,10 +12,10 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 
 import im.zego.livedemo.R;
 import im.zego.livedemo.databinding.LayoutCreateLiveBinding;
+import im.zego.livedemo.helper.ToastHelper;
 
 public class CreateLiveView extends ConstraintLayout {
 
@@ -64,7 +64,7 @@ public class CreateLiveView extends ConstraintLayout {
         binding.tvStartLive.setOnClickListener(v -> {
             String roomName = binding.etRoomName.getText().toString().trim();
             if (TextUtils.isEmpty(roomName)) {
-                ToastUtils.showShort(StringUtils.getString(R.string.toast_room_name_error));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_name_error));
                 return;
             }
             listener.onStartLiveClick(roomName);
