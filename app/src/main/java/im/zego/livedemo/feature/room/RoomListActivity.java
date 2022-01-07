@@ -6,19 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.blankj.utilcode.util.SizeUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.http.IAsyncGetCallback;
-import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityRoomListBinding;
 import im.zego.livedemo.feature.live.LiveRoomActivity;
 import im.zego.livedemo.feature.room.adapter.RoomListAdapter;
-import im.zego.livedemo.feature.room.model.RoomBean;
 import im.zego.livedemo.feature.room.model.RoomList;
 import im.zego.livedemo.feature.settings.SettingsActivity;
 import im.zego.livedemo.helper.PermissionHelper;
@@ -80,12 +81,6 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
             });
         });
         binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
-//            ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
-//                        RoomApi.createRoom("直播间" + localUserInfo.getUserID(), localUserInfo.getUserID(), new IAsyncGetCallback<RoomBean>() {
-//                            @Override
-//                            public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
-//                            }
-//                        });
             RoomApi.getRoomList(100, null, new IAsyncGetCallback<RoomList>() {
                 @Override
                 public void onResponse(int errorCode, @NonNull String message, RoomList responseJsonBean) {

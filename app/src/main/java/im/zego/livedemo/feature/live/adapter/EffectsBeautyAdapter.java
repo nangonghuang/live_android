@@ -13,9 +13,6 @@ import java.util.List;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.view.BeautyInfo;
 
-/**
- * 美颜美型adapter
- */
 public class EffectsBeautyAdapter extends BaseSelectAdapter<BeautyInfo, BaseViewHolder> {
 
     public EffectsBeautyAdapter(@Nullable List<BeautyInfo> data) {

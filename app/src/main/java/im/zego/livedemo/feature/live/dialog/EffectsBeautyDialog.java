@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.live.service.FaceBeautifyService;
@@ -20,11 +22,11 @@ import im.zego.livedemo.feature.live.view.SeekBarWithNumber;
 
 public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClickListener {
 
-    private TextView mTvBeauty;   //美颜按钮
-    private TextView mTvBeautyType;  //美型按钮
+    private TextView mTvBeauty;
+    private TextView mTvBeautyType;
     private ImageView mResetting;
-    private EffectsBeautyView mEffectsBeautyView;  //美颜view
-    private EffectsBeautyTypeView mEffectsBeautyTypeView; //美型view
+    private EffectsBeautyView mEffectsBeautyView;
+    private EffectsBeautyTypeView mEffectsBeautyTypeView;
     private SeekBarWithNumber seekBarWithNumber;
 
     private FaceBeautifyType selectType;
@@ -35,7 +37,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
     private int min = 0;
 
     public EffectsBeautyDialog(@NonNull Context context) {
-        super(context,R.style.BeautyDialog);
+        super(context, R.style.BeautyDialog);
     }
 
     public EffectsBeautyDialog(@NonNull Context context, int theme) {
@@ -86,21 +88,11 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
         return R.layout.liveshow_dialog_effect;
     }
 
-    /**
-     * 选中效果
-     *
-     * @param view
-     */
     private void selectView(TextView view) {
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         view.setTextColor(getContext().getResources().getColor(R.color.white_color));
     }
 
-    /**
-     * 未选中效果
-     *
-     * @param view
-     */
     private void unSelectView(TextView view) {
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         view.setTextColor(getContext().getResources().getColor(R.color.white_color_30alpha));
@@ -109,7 +101,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.tv_beauty) {  //美颜
+        if (id == R.id.tv_beauty) {
             selectIndex = 0;
             selectView(mTvBeauty);
             unSelectView(mTvBeautyType);
@@ -119,7 +111,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
             seekBarWithNumber.setVisibility(View.INVISIBLE);
             mEffectsBeautyView.setAdaptet();
 
-        } else if (id == R.id.tv_beauty_type) { //美型
+        } else if (id == R.id.tv_beauty_type) {
             selectIndex = 1;
             selectView(mTvBeautyType);
             unSelectView(mTvBeauty);
@@ -129,7 +121,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
             seekBarWithNumber.setVisibility(View.INVISIBLE);
             mEffectsBeautyTypeView.setAdapter();
 
-        } else if (id == R.id.resetting) {  //重置
+        } else if (id == R.id.resetting) {
             seekBarWithNumber.setVisibility(View.INVISIBLE);
             FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
             if (selectIndex == 0) {

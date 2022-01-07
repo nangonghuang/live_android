@@ -3,10 +3,17 @@ package im.zego.live.http;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -14,8 +21,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 
 public class APIBase {
@@ -106,7 +111,7 @@ public class APIBase {
                         okHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json解析异常", null);
+                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json parsing exception", null);
                             }
                         });
                     }
@@ -121,7 +126,7 @@ public class APIBase {
                     okHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "网络异常", null);
+                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "Network exception", null);
                         }
                     });
                 }
@@ -147,7 +152,7 @@ public class APIBase {
                     okHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "网络异常", null);
+                            reqCallback.onResponse(ErrorcodeConstants.ErrorFailNetwork, "Network exception", null);
                         }
                     });
                 }
@@ -194,7 +199,7 @@ public class APIBase {
                         okHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json解析异常", null);
+                                reqCallback.onResponse(ErrorcodeConstants.ErrorJSONFormatInvalid, "Json parsing exception", null);
                             }
                         });
                     }
