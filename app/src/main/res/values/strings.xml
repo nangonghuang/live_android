@@ -133,8 +133,8 @@
     <string name="room_page_leave_seat">Leave the seat</string>
     <string name="room_page_set_take_seat">Close all untaken speaker seats</string>
     <string name="room_page_set_silence">Disable text chat for all</string>
-    <string name="room_page_has_left_the_room">%s left the room</string>
-    <string name="room_page_joined_the_room">%s joined the room</string>
+    <string name="room_page_has_left_the_room">left the room</string>
+    <string name="room_page_joined_the_room">joined the room</string>
     <string name="toast_send_message_error">Failed to send message. Error code: %d.</string>
     <string name="room_page_send_message">Send</string>
     <string name="room_page_bands_send_message">The host has disabled text chat for everyone.</string>

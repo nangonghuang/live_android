@@ -99,16 +99,18 @@ public class LiveRoomViewModel extends ViewModel {
                 }
                 if (containsSelf) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.message = StringUtils
-                        .getString(R.string.room_page_joined_the_room, localUserInfo.getUserName());
+                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userID = localUserInfo.getUserID();
+                    textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
                 } else {
                     for (ZegoUserInfo user : memberList) {
                         ZegoTextMessage textMessage = new ZegoTextMessage();
+                        textMessage.isRoomUserInfoMessage = true;
+                        textMessage.userID = user.getUserID();
                         textMessage.timestamp = System.currentTimeMillis();
-                        textMessage.message = StringUtils
-                            .getString(R.string.room_page_joined_the_room, user.getUserName());
+                        textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                         joinLeaveMessages.add(textMessage);
                     }
                 }
@@ -120,8 +122,9 @@ public class LiveRoomViewModel extends ViewModel {
             public void onRoomUserLeave(List<ZegoUserInfo> memberList) {
                 for (ZegoUserInfo user : memberList) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.message = StringUtils
-                        .getString(R.string.room_page_has_left_the_room, user.getUserName());
+                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userID = user.getUserID();
+                    textMessage.message = StringUtils.getString(R.string.room_page_has_left_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
                     updateMessageLiveData();
