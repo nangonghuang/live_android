@@ -35,7 +35,7 @@ public class VideoConfigViewModel extends ViewModel {
         settingConfig.setBackgroundNoiseReduction(false);
         settingConfig.setEchoCancellation(false);
         settingConfig.setMicVolumeAutoAdjustment(false);
-        settingConfig.setVideoResolution(videoResolutionStringArray[0]);
+        settingConfig.setVideoResolution(videoResolutionStringArray[1]);
         settingConfig.setAudioBitrate(audioBitrateStringArray[0]);
     }
 
@@ -72,5 +72,9 @@ public class VideoConfigViewModel extends ViewModel {
         ZegoExpressEngine.getEngine().enableAEC(settingConfig.isEchoCancellation());
 
         ZegoExpressEngine.getEngine().enableAGC(settingConfig.isMicVolumeAutoAdjustment());
+    }
+
+    public boolean isDeviceSupportH265() {
+        return ZegoExpressEngine.getEngine().isVideoEncoderSupported(ZegoVideoCodecID.H265);
     }
 }

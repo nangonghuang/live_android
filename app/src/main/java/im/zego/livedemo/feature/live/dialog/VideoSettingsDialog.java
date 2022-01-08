@@ -69,10 +69,15 @@ public class VideoSettingsDialog extends BaseBottomDialog {
                     viewModel.getSettingConfig().getEncodeType(),
                     viewModel.encodingTypeStringArray,
                     encodeType -> {
+                        if (VideoSettingConfig.isH265(encodeType) && !viewModel.isDeviceSupportH265()) {
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_settings_device_not_support_h265));
+                            return;
+                        }
+
                         settingsEncodeType.setContent(encodeType);
                         viewModel.getSettingConfig().setEncodeType(encodeType);
 
-                        if (VideoSettingConfig.isH265(viewModel.getSettingConfig().getEncodeType())) {
+                        if (VideoSettingConfig.isH265(encodeType)) {
                             settingsLayeredCoding.setEnabled(false);
                         } else {
                             settingsLayeredCoding.setEnabled(true);
