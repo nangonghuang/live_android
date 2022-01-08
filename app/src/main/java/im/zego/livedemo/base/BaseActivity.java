@@ -39,11 +39,6 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
         dialog.show();
     }
 
-    protected void showErrorToastDialog(String content) {
-        dialog.showColorToast(ToastHelper.ToastMessageType.WARN, content);
-        dialog.show();
-    }
-
     protected void dismissAllToast() {
         dialog.dismiss();
     }
