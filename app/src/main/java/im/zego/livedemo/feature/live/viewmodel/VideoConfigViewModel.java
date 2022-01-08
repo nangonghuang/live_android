@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.blankj.utilcode.util.StringUtils;
 
-import java.util.Objects;
-
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.model.VideoSettingConfig;
 import im.zego.zegoexpress.ZegoExpressEngine;
@@ -54,7 +52,7 @@ public class VideoConfigViewModel extends ViewModel {
         ZegoVideoConfig videoConfig = new ZegoVideoConfig(configPreset);
         if (settingConfig.isLayeredCoding()) {
             videoConfig.setCodecID(ZegoVideoCodecID.SVC);
-        } else if (Objects.equals(settingConfig.getEncodeType(), "H.265")) {
+        } else if (VideoSettingConfig.isH265(settingConfig.getEncodeType())) {
             videoConfig.setCodecID(ZegoVideoCodecID.H265);
         } else {
             videoConfig.setCodecID(ZegoVideoCodecID.DEFAULT);

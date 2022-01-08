@@ -1,12 +1,14 @@
 package im.zego.livedemo.feature.live.model;
 
+import java.util.Objects;
+
 /**
  * Created by rocket_wang on 2022/1/4.
  */
 public class VideoSettingConfig {
     private String encodeType;
     private boolean layeredCoding;
-    private boolean hardwareEncode;
+    private boolean hardwareEncode = true;
     private boolean hardwareDecode;
     private String videoResolution;
     private String audioBitrate;
@@ -90,11 +92,9 @@ public class VideoSettingConfig {
         this.micVolumeAutoAdjustment = micVolumeAutoAdjustment;
     }
 
-    //
-//    public static int calculateVideoBitrate(String videoResolution) {
-//        Size size = Size.parseSize(videoResolution);
-//        return 0;
-//    }
+    public static boolean isH265(String encodeType) {
+        return Objects.equals(encodeType, "H.265");
+    }
 
     @Override
     public String toString() {

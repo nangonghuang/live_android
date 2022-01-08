@@ -6,8 +6,10 @@ import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
+import im.zego.livedemo.feature.live.model.VideoSettingConfig;
 import im.zego.livedemo.feature.live.view.VideoSettingCellView;
 import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
+import im.zego.livedemo.helper.ToastHelper;
 
 
 public class VideoSettingsDialog extends BaseBottomDialog {
@@ -66,9 +68,16 @@ public class VideoSettingsDialog extends BaseBottomDialog {
                     StringUtils.getString(R.string.room_page_settings_encode_type),
                     viewModel.getSettingConfig().getEncodeType(),
                     viewModel.encodingTypeStringArray,
-                    checkedString -> {
-                        settingsEncodeType.setContent(checkedString);
-                        viewModel.getSettingConfig().setEncodeType(checkedString);
+                    encodeType -> {
+                        settingsEncodeType.setContent(encodeType);
+                        viewModel.getSettingConfig().setEncodeType(encodeType);
+
+                        if (VideoSettingConfig.isH265(viewModel.getSettingConfig().getEncodeType())) {
+                            settingsLayeredCoding.setEnabled(false);
+                        } else {
+                            settingsLayeredCoding.setEnabled(true);
+                        }
+                        settingsHardwareCoding.setChecked(true);
                     }
             );
             dialog.setOnDismissListener(d -> this.show());
@@ -78,7 +87,14 @@ public class VideoSettingsDialog extends BaseBottomDialog {
 
         settingsLayeredCoding.setListener(isChecked -> viewModel.getSettingConfig().setLayeredCoding(isChecked));
 
-        settingsHardwareCoding.setListener(isChecked -> viewModel.getSettingConfig().setHardwareEncode(isChecked));
+        settingsHardwareCoding.setListener(isChecked -> {
+            viewModel.getSettingConfig().setHardwareEncode(isChecked);
+
+            if (VideoSettingConfig.isH265(viewModel.getSettingConfig().getEncodeType()) && !isChecked) {
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_settings_h265_error));
+                settingsHardwareCoding.setChecked(true);
+            }
+        });
 
         settingsHardwareDecoding.setListener(isChecked -> viewModel.getSettingConfig().setHardwareDecode(isChecked));
 
