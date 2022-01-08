@@ -9,10 +9,13 @@ import androidx.viewbinding.ViewBinding;
 import com.gyf.immersionbar.ImmersionBar;
 
 import im.zego.livedemo.R;
-import im.zego.livedemo.view.toast.CookieBar;
+import im.zego.livedemo.feature.live.dialog.ToastDialog;
+import im.zego.livedemo.helper.ToastHelper;
 
 public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingActivity<VB> {
     private static final String TAG = "BaseActivity";
+
+    protected ToastDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,6 +26,7 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
                 .fitsSystemWindows(true)
                 .statusBarDarkFont(false)
                 .init();
+        dialog = new ToastDialog(this);
     }
 
     @ColorRes
@@ -30,17 +34,12 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
         return R.color.common_bg;
     }
 
-    protected void showNormalToast(String content, boolean autoDismiss) {
-        CookieBar.build(this)
-                .setTitle(content)
-                .setBackgroundColor(R.color.light_green)
-                .setEnableAutoDismiss(autoDismiss)
-                .setSwipeToDismiss(false)
-                .setCookiePosition(CookieBar.TOP)
-                .show();
+    protected void showNormalToastDialog(String content) {
+        dialog.showColorToast(ToastHelper.ToastMessageType.NORMAL, content);
+        dialog.show();
     }
 
     protected void dismissAllToast() {
-        CookieBar.dismiss(this);
+        dialog.dismiss();
     }
 }

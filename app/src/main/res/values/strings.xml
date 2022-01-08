@@ -49,6 +49,14 @@
     <string name="toast_user_id_error">User ID can only contain letters and numbers.</string>
     <string name="toast_login_fail">Failed to log in. Error code: %d.</string>
     <string name="toast_kickout_error">This account has already logged in from another device.</string>
+    <string name="toast_room_applied_connection">You have applied for connection, please wait for the host’s confirmation!</string>
+    <string name="toast_room_has_canceled_connection_apply">%s canceled to connect with you</string>
+    <string name="toast_room_has_rejected">Host has rejected your request！</string>
+    <string name="toast_room_maximum">A maximum of 3 viewers can connect with the host</string>
+    <string name="toast_room_prohibited_connection">You have been prohibited the connection by the host</string>
+    <string name="toast_room_muted_by_host">You have been muted by the host</string>
+    <string name="toast_room_failed_to_operate">Failed to operate， please try it again</string>
+    <string name="toast_room_ended_the_connection">%s has ended the connection</string>
 
     <string name="create_page_room_id">Room ID</string>
     <string name="create_page_room_name">Room name</string>
@@ -93,7 +101,6 @@
     <string name="room_page_co_host_prohibit">Prohibit to connect</string>
 
     <string name="room_page_invite_to_connect">Invite the viewer to connect</string>
-    <string name="room_page_invite_to_connect_at_max">A maximum of 3 viewers can connect with the host</string>
     <string name="toast_invite_to_connect_fail">Failed to invite participant. Error code: %d.</string>
     <string name="toast_request_to_connect_fail">Failed to request connect. Error code: %d.</string>
     <string name="toast_cancel_request_to_connect_fail">Failed to cancel request connect. Error code: %d.</string>
