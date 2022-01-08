@@ -8,15 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.SizeUtils;
-import im.zego.livedemo.R;
-import im.zego.livedemo.feature.room.model.RoomBean;
+
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
+
+import im.zego.livedemo.R;
+import im.zego.livedemo.feature.room.model.RoomBean;
 
 /**
  * Created by rocket_wang on 2021/12/22.
