@@ -136,19 +136,19 @@ public class FaceBeautifyService {
     }
 
     public void resetBeauty() {
-        setBeautifyValue(0, FaceBeautifyType.SkinToneEnhancement);
-        setBeautifyValue(0, FaceBeautifyType.SkinSmoothing);
-        setBeautifyValue(0, FaceBeautifyType.ImageSharpening);
-        setBeautifyValue(0, FaceBeautifyType.CheekBlusher);
+        setBeautifyValue(50, FaceBeautifyType.SkinToneEnhancement);
+        setBeautifyValue(50, FaceBeautifyType.SkinSmoothing);
+        setBeautifyValue(50, FaceBeautifyType.ImageSharpening);
+        setBeautifyValue(5, FaceBeautifyType.CheekBlusher);
     }
 
     public void resetReSharp() {
-        setBeautifyValue(0, FaceBeautifyType.EyesEnlarging);
-        setBeautifyValue(0, FaceBeautifyType.FaceSliming);
+        setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
+        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
         setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
-        setBeautifyValue(0, FaceBeautifyType.EyesBrightening);
-        setBeautifyValue(0, FaceBeautifyType.NoseSliming);
-        setBeautifyValue(0, FaceBeautifyType.TeethWhitening);
+        setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
+        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
+        setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
         setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
     }
 
