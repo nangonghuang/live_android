@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.blankj.utilcode.util.StringUtils;
 
-import java.util.Objects;
-
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.model.VideoSettingConfig;
 import im.zego.zegoexpress.ZegoExpressEngine;
@@ -37,7 +35,7 @@ public class VideoConfigViewModel extends ViewModel {
         settingConfig.setBackgroundNoiseReduction(false);
         settingConfig.setEchoCancellation(false);
         settingConfig.setMicVolumeAutoAdjustment(false);
-        settingConfig.setVideoResolution(videoResolutionStringArray[0]);
+        settingConfig.setVideoResolution(videoResolutionStringArray[1]);
         settingConfig.setAudioBitrate(audioBitrateStringArray[0]);
     }
 
@@ -54,7 +52,7 @@ public class VideoConfigViewModel extends ViewModel {
         ZegoVideoConfig videoConfig = new ZegoVideoConfig(configPreset);
         if (settingConfig.isLayeredCoding()) {
             videoConfig.setCodecID(ZegoVideoCodecID.SVC);
-        } else if (Objects.equals(settingConfig.getEncodeType(), "H.265")) {
+        } else if (VideoSettingConfig.isH265(settingConfig.getEncodeType())) {
             videoConfig.setCodecID(ZegoVideoCodecID.H265);
         } else {
             videoConfig.setCodecID(ZegoVideoCodecID.DEFAULT);
@@ -74,5 +72,9 @@ public class VideoConfigViewModel extends ViewModel {
         ZegoExpressEngine.getEngine().enableAEC(settingConfig.isEchoCancellation());
 
         ZegoExpressEngine.getEngine().enableAGC(settingConfig.isMicVolumeAutoAdjustment());
+    }
+
+    public boolean isDeviceSupportH265() {
+        return ZegoExpressEngine.getEngine().isVideoEncoderSupported(ZegoVideoCodecID.H265);
     }
 }

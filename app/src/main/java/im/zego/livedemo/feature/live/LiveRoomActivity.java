@@ -32,6 +32,7 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
 import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
+import im.zego.livedemo.feature.live.dialog.CommonDialog;
 import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
 import im.zego.livedemo.feature.live.dialog.LoadingDialog;
@@ -110,8 +111,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo) {
                 if (roomInfo == null) {
-                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                    finish();
+                    new CommonDialog.Builder(LiveRoomActivity.this)
+                            .setTitle(StringUtils.getString(R.string.dialog_attetion_title))
+                            .setContent(StringUtils.getString(R.string.toast_room_has_destroyed))
+                            .setPositiveButton(StringUtils.getString(R.string.dialog_close), (dialog, which) -> {
+                                finish();
+                            })
+                            .create()
+                            .show();
                 }
             }
 
@@ -124,8 +131,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     } else {
                         if (event == ZIMConnectionEvent.SUCCESS) {
                             // disconnect because of room end
-                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                            finish();
+//                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+//                            finish();
                         } else if (event == ZIMConnectionEvent.KICKED_OUT) {
                             //disconnect because of multiple login,been kicked out
                             ToastHelper.showNormalToast(R.string.toast_kickout_error);

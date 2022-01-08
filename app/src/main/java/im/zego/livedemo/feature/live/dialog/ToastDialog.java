@@ -21,12 +21,12 @@ public class ToastDialog extends Dialog {
     private TextView textView;
 
     public ToastDialog(@NonNull Context context) {
-        super(context);
+        this(context, 0);
         initDialog(context);
     }
 
     public ToastDialog(@NonNull Context context, int themeResId) {
-        super(context, themeResId);
+        super(context, themeResId == 0 ? R.style.ToastDialogTheme : themeResId);
         initDialog(context);
     }
 
@@ -39,8 +39,10 @@ public class ToastDialog extends Dialog {
 
         Window window = getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        window.setAttributes(layoutParams);
         window.setGravity(Gravity.TOP);
-        window.setDimAmount(0F);
     }
 
     public void showColorToast(ToastHelper.ToastMessageType type, String text) {
