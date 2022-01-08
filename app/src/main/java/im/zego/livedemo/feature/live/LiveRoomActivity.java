@@ -566,6 +566,15 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onMicEnable(boolean isMicEnable) {
+                if (isMicEnable) {
+                    ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
+                    if (model != null) {
+                        if (model.isMuted()) {
+                            binding.liveBottomView.enableMicView(false);
+                            return;
+                        }
+                    }
+                }
                 liveRoomViewModel.enableMic(isMicEnable);
             }
 
