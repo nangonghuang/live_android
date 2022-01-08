@@ -216,7 +216,7 @@ public class LiveRoomViewModel extends ViewModel {
                                     RoomApi.heartBeat(userID, roomID, true, null);
                                 }
                             };
-                            timer.schedule(task, 30 * 1000);
+                            timer.schedule(task, 0, 30 * 1000);
                         }
                     });
                 } else {
@@ -255,7 +255,7 @@ public class LiveRoomViewModel extends ViewModel {
                             RoomApi.heartBeat(userID, roomID, false, null);
                         }
                     };
-                    timer.schedule(task, 30 * 1000);
+                    timer.schedule(task, 0,30 * 1000);
                 } else {
                     if (callback != null) {
                         callback.onRoomCallback(errorCode);
