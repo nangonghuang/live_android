@@ -61,7 +61,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
         RoomBean item = items.get(position);
 
         int index = getIndex(item.getName());
-        Bitmap bitmap = BitmapFactory.decodeResource(holder.itemView.getResources(), coverList[index + 1]);
+        Log.d(TAG, "onBindViewHolder: " + index);
+        Bitmap bitmap = BitmapFactory.decodeResource(holder.itemView.getResources(), coverList[index]);
         Bitmap roundBitmap = ImageUtils.toRoundCorner(bitmap, SizeUtils.dp2px(13f));
         holder.cover.setImageBitmap(roundBitmap);
         holder.roomUserNum.setText(String.valueOf(item.getUserNum()));

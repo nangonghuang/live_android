@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 public final class AvatarHelper {
 
-    private static final int MAX_INDEX = 8;
+    private static final int MAX_INDEX = 6;
 
     public static Drawable getAvatarByUserName(String userName) {
         return ResourceUtils.getDrawable(getAvatarIdByUserName(userName));
