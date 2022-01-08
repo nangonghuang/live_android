@@ -6,21 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
-
-import java.util.List;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
@@ -57,6 +51,7 @@ import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
+import java.util.List;
 
 /**
  * Created by rocket_wang on 2021/12/23.
@@ -157,7 +152,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                                 binding.liveBottomView.toCoHost();
                             } else {
-                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                                ToastHelper
+                                    .showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
                             }
                         });
                     },
@@ -617,13 +613,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         dismissDialog(videoSettingsDialog);
         dismissDialog(moreVideoSettingsDialog);
         dismissDialog(soundEffectsDialog);
-        ZegoRoomManager.getInstance().roomService.leaveRoom(error -> {
+        liveRoomViewModel.leaveRoom(errorCode -> {
         });
     }
 
     @Override
     public void onBackPressed() {
-        Log.d("onBackPressed", "leaveRoom: UserInfoHelper.isSelfHost():" + UserInfoHelper.isSelfHost());
         if (UserInfoHelper.isSelfHost()) {
             DialogHelper.showAlertDialog(LiveRoomActivity.this,
                 StringUtils.getString(R.string.room_page_destroy_room),
@@ -632,22 +627,23 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 null,
                 true,
                 (dialog, which) -> {
-//                    liveRoomViewModel.leaveRoom(errorCode -> {
-//                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-//                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-//                            dialog.dismiss();
-//                            super.onBackPressed();
-//                        } else {
-//                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
-//                        }
-//                    });
+                    //                    liveRoomViewModel.leaveRoom(errorCode -> {
+                    //                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                    //                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
+                    //                            dialog.dismiss();
+                    //                            super.onBackPressed();
+                    //                        } else {
+                    //                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
+                    //                        }
+                    //                    });
+                    dialog.dismiss();
                     super.onBackPressed();
                 },
                 null
             );
         } else {
-//            liveRoomViewModel.leaveRoom(errorCode -> {
-//            });
+            //            liveRoomViewModel.leaveRoom(errorCode -> {
+            //            });
             super.onBackPressed();
         }
     }

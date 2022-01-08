@@ -207,13 +207,18 @@ public class LiveRoomViewModel extends ViewModel {
                             callback.onRoomCallback(errorCode);
                         }
                     });
-                    TimerTask task = new TimerTask() {
+                    RoomApi.joinRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
                         @Override
-                        public void run() {
-                            RoomApi.heartBeat(userID, roomID, true, null);
+                        public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    RoomApi.heartBeat(userID, roomID, true, null);
+                                }
+                            };
+                            timer.schedule(task, 30 * 1000);
                         }
-                    };
-                    timer.schedule(task, 30 * 1000);
+                    });
                 } else {
                     if (callback != null) {
                         callback.onRoomCallback(errorCode);
@@ -264,6 +269,7 @@ public class LiveRoomViewModel extends ViewModel {
         boolean selfHost = UserInfoHelper.isSelfHost();
         String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
         ZegoRoomManager.getInstance().roomService.leaveRoom(callback);
+        Log.d("leaveRoom", "leaveRoom() called with: selfHost = [" + selfHost + "]");
         if (selfHost) {
             RoomApi.endRoom(roomID, new IAsyncGetCallback<RoomBean>() {
                 @Override

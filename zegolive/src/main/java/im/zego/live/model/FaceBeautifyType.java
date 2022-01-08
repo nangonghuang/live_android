@@ -10,6 +10,6 @@ public enum FaceBeautifyType {
     MouthShapeAdjustment,
     EyesBrightening,
     NoseSliming,
-    ChinLengthening,
-    TeethWhitening
+    TeethWhitening,
+    ChinLengthening
 }

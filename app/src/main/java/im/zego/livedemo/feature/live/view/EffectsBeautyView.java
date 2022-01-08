@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import im.zego.livedemo.feature.live.model.BeautyInfo;
 import java.util.ArrayList;
 import java.util.List;
 

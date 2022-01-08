@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.live.view;
+package im.zego.livedemo.feature.live.model;
 
 
 import im.zego.livedemo.R;

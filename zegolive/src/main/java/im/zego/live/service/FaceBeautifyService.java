@@ -41,8 +41,8 @@ public class FaceBeautifyService {
     private ZegoEffectsSmallMouthParam mouthShapeAdjustmentParam = new ZegoEffectsSmallMouthParam();
     private ZegoEffectsEyesBrighteningParam eyesBrighteningParam = new ZegoEffectsEyesBrighteningParam();
     private ZegoEffectsNoseNarrowingParam noseSlimingParam = new ZegoEffectsNoseNarrowingParam();
-    private ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
     private ZegoEffectsTeethWhiteningParam teethWhiteningParam = new ZegoEffectsTeethWhiteningParam();
+    private ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
 
     public FaceBeautifyService(Context context) {
         ArrayList<String> aiModeInfoList = EffectsSDKHelper.copyAiModeInfoList(context);
@@ -69,6 +69,7 @@ public class FaceBeautifyService {
                     for (FaceBeautifyType type : FaceBeautifyType.values()) {
                         enableBeautify(true, type);
                     }
+                    initBeauty();
                 }
                 if (callback != null) {
                     callback.onGetLicense(code, message, responseJsonBean);
@@ -120,22 +121,35 @@ public class FaceBeautifyService {
         }
     }
 
-    public void resetBeauty() {
-        skinToneEnhancementParam.intensity = 0;
-        skinSmoothingParam.intensity = 0;
-        imageSharpeningParam.intensity = 0;
-        cheekBlusherParam.intensity = 0;
+    private void initBeauty() {
+        setBeautifyValue(50, FaceBeautifyType.SkinToneEnhancement);
+        setBeautifyValue(50, FaceBeautifyType.SkinSmoothing);
+        setBeautifyValue(50, FaceBeautifyType.ImageSharpening);
+        setBeautifyValue(5, FaceBeautifyType.CheekBlusher);
+        setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
+        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
+        setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
+        setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
+        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
+        setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
+        setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
+    }
 
+    public void resetBeauty() {
+        setBeautifyValue(0, FaceBeautifyType.SkinToneEnhancement);
+        setBeautifyValue(0, FaceBeautifyType.SkinSmoothing);
+        setBeautifyValue(0, FaceBeautifyType.ImageSharpening);
+        setBeautifyValue(0, FaceBeautifyType.CheekBlusher);
     }
 
     public void resetReSharp() {
-        eyesEnlargingParam.intensity = 0;
-        faceSlimingParam.intensity = 0;
-        mouthShapeAdjustmentParam.intensity = 0;
-        eyesBrighteningParam.intensity = 0;
-        noseSlimingParam.intensity = 0;
-        chinLengtheningParam.intensity = 0;
-        teethWhiteningParam.intensity = 0;
+        setBeautifyValue(0, FaceBeautifyType.EyesEnlarging);
+        setBeautifyValue(0, FaceBeautifyType.FaceSliming);
+        setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
+        setBeautifyValue(0, FaceBeautifyType.EyesBrightening);
+        setBeautifyValue(0, FaceBeautifyType.NoseSliming);
+        setBeautifyValue(0, FaceBeautifyType.TeethWhitening);
+        setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
     }
 
     public int getBeautifyValue(FaceBeautifyType type) {

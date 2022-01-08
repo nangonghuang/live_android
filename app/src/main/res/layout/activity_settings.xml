@@ -80,6 +80,71 @@
     </LinearLayout>
 
     <LinearLayout
+      android:id="@+id/layout_effects_sdk_version"
+      android:layout_width="match_parent"
+      android:layout_height="54dp"
+      android:layout_marginTop="1dp"
+      android:background="#0AFFFFFF"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/layout_zim_sdk_version">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:text="@string/setting_page_effect_sdk_version"
+          android:textColor="#fff"
+          android:textSize="16sp" />
+
+        <TextView
+          android:id="@+id/tv_effects_sdk_version"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_weight="1"
+          android:gravity="end"
+          android:textColor="#80FFFFFF"
+          android:textSize="14sp"
+          tools:text="v1.0.0" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/layout_app_version"
+      android:layout_width="match_parent"
+      android:layout_height="54dp"
+      android:layout_marginTop="1dp"
+      android:background="#0AFFFFFF"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/layout_effects_sdk_version">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:text="@string/setting_page_version"
+          android:textColor="#fff"
+          android:textSize="16sp" />
+
+        <TextView
+          android:id="@+id/tv_app_version"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_weight="1"
+          android:gravity="end"
+          android:textColor="#80FFFFFF"
+          android:textSize="14sp"
+          tools:text="v1.0.0" />
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/layout_share_log"
         android:layout_width="match_parent"
         android:layout_height="54dp"
@@ -89,7 +154,7 @@
         android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_zim_sdk_version">
+        app:layout_constraintTop_toBottomOf="@id/layout_app_version">
 
         <TextView
             android:layout_width="wrap_content"

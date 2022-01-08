@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.blankj.utilcode.util.SizeUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.http.IAsyncGetCallback;
 import im.zego.livedemo.R;
@@ -46,6 +43,26 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
         super.onCreate(savedInstanceState);
         initData();
         initListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RoomApi.getRoomList(100, null, new IAsyncGetCallback<RoomList>() {
+            @Override
+            public void onResponse(int errorCode, @NonNull String message, RoomList responseJsonBean) {
+                if (errorCode == 0) {
+                    if (responseJsonBean.roomList.size() > 0) {
+                        roomListAdapter.setList(responseJsonBean.roomList);
+                        binding.recyclerView.setVisibility(View.VISIBLE);
+                        binding.emptyView.setVisibility(View.GONE);
+                    } else {
+                        binding.recyclerView.setVisibility(View.GONE);
+                        binding.emptyView.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     private void initData() {

@@ -1,9 +1,11 @@
 package im.zego.live.service;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
+import im.zego.zim.enums.ZIMRoomAttributesUpdateAction;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -154,6 +156,15 @@ public class ZegoRoomService {
                 "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["
                         + info.roomAttributes + "], roomID = [" + roomID
                         + "]");
+        if (info.action == ZIMRoomAttributesUpdateAction.DELETE) {
+            String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
+            if(TextUtils.isEmpty(roomJson)){
+                if (listener != null) {
+                    listener.onReceiveRoomInfoUpdate(null);
+                }
+                return;
+            }
+        }
         Gson gson = ZegoRoomAttributesHelper.gson;
         String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
         if (StringUtils.isNotEmpty(roomJson)) {

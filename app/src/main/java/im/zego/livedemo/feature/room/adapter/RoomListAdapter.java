@@ -1,15 +1,20 @@
 package im.zego.livedemo.feature.room.adapter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.blankj.utilcode.util.ImageUtils;
+import com.blankj.utilcode.util.SizeUtils;
 import im.zego.livedemo.R;
-import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.feature.room.model.RoomBean;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +26,16 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     private static final String TAG = "RoomListAdapter";
     private List<RoomBean> items = new ArrayList<>();
     private OnClickListener listener;
+
+    public static final int MAX_INDEX = 6;
+    public static final int[] coverList = new int[]{
+        R.drawable.liveshow_room_1,
+        R.drawable.liveshow_room_2,
+        R.drawable.liveshow_room_3,
+        R.drawable.liveshow_room_4,
+        R.drawable.liveshow_room_5,
+        R.drawable.liveshow_room_6
+    };
 
     public void setList(List<RoomBean> list) {
         Log.d(TAG, "setList() called with: list = [" + list.size() + "]");
@@ -45,9 +60,10 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     public void onBindViewHolder(@NonNull RoomListViewHolder holder, int position) {
         RoomBean item = items.get(position);
 
-        int index = (int) ((item.getCreateTime() - 1) % 5);
-        Log.d(TAG, "onBindViewHolder,position: " +  index);
-        holder.rootView.setBackgroundResource(Constants.coverList[index]);
+        int index = getIndex(item.getName());
+        Bitmap bitmap = BitmapFactory.decodeResource(holder.itemView.getResources(), coverList[index + 1]);
+        Bitmap roundBitmap = ImageUtils.toRoundCorner(bitmap, SizeUtils.dp2px(13f));
+        holder.cover.setImageBitmap(roundBitmap);
         holder.roomUserNum.setText(String.valueOf(item.getUserNum()));
         holder.roomTitle.setText(item.getName());
 
@@ -63,6 +79,19 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
         return items.size();
     }
 
+    private static int getIndex(String string) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("md5");
+            digest.update(string.getBytes());
+            final byte[] bytes = digest.digest();
+            final StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%02X", bytes[0]));
+            return Integer.parseInt(sb.toString()) % MAX_INDEX;
+        } catch (Exception exc) {
+            return 0;
+        }
+    }
+
     public void setOnClickListener(OnClickListener onClickListener) {
         listener = onClickListener;
     }
@@ -74,13 +103,13 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
 
     static class RoomListViewHolder extends RecyclerView.ViewHolder {
 
-        View rootView;
+        ImageView cover;
         TextView roomUserNum;
         TextView roomTitle;
 
         private RoomListViewHolder(View itemView) {
             super(itemView);
-            rootView = itemView.findViewById(R.id.root_view);
+            cover = itemView.findViewById(R.id.tv_room_cover);
             roomUserNum = itemView.findViewById(R.id.tv_room_user_num);
             roomTitle = itemView.findViewById(R.id.tv_room_title);
         }
