@@ -2,6 +2,7 @@ package im.zego.live.service;
 
 import android.util.Log;
 
+import java.util.Iterator;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -255,11 +256,18 @@ public class ZegoUserService {
 
     public void onRoomMemberJoined(ZIM zim, ArrayList<ZIMUserInfo> memberList, String roomID) {
         List<ZegoUserInfo> joinUsers = generateRoomUsers(memberList);
-        userList.addAll(joinUsers);
-        for (ZegoUserInfo joinUser : joinUsers) {
-            userMap.put(joinUser.getUserID(), joinUser);
+        Iterator<ZegoUserInfo> iterator = joinUsers.iterator();
+        while (iterator.hasNext()) {
+            ZegoUserInfo next = iterator.next();
+            if (!userMap.containsKey(next.getUserID())) {
+                userList.add(next); // avoid duplicate
+                userMap.put(next.getUserID(), next);
+            } else {
+                // if duplicate,don't notify outside
+                iterator.remove();
+            }
         }
-        if (listener != null) {
+        if (joinUsers.size() > 0 && listener != null) {
             listener.onRoomUserJoin(joinUsers);
         }
     }
