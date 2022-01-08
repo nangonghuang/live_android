@@ -16,13 +16,6 @@ public class WelcomeActivity extends BaseActivity<ActivityWelcomeBinding> {
     }
 
     private void initListener() {
-//        binding.layoutLiveShow.setOnClickListener(v -> {
-//            showNormalToastDialog("测试1");
-//            ThreadUtils.runOnUiThreadDelayed(() -> {
-//                showErrorToastDialog("测试2");
-//                ThreadUtils.runOnUiThreadDelayed(this::dismissAllToast, 1000L);
-//            }, 2000L);
-//        });
         binding.layoutLiveShow.setOnClickListener(v -> UserLoginActivity.start(this));
         binding.tvGetMore.setOnClickListener(v -> WebViewActivity.start(this, Constants.URL_GET_MORE));
         binding.flSignUp.setOnClickListener(v -> WebViewActivity.start(this, Constants.URL_SIGN_UP));

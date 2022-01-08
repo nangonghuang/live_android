@@ -15,7 +15,7 @@ import im.zego.livedemo.feature.room.model.RoomRequestCommonParam;
 public class RoomApi {
 
     private static final String TAG = "RoomApi";
-    private static final String baseUrl = "https://goktv-server-sh.zego.im";
+    private static final String baseUrl = "http://192.168.100.44:3128";
     private static Gson gson = new Gson();
 
     public static final int PARAM_ERROR = 4;
