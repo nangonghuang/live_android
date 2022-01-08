@@ -23,6 +23,8 @@
     <string name="room_page_settings_mic_volume_auto_adjustment">Mic volume auto-adjustment</string>
     <string name="room_page_settings_video_resolution">Resolution Settings</string>
     <string name="room_page_settings_audio_bitrate">Audio bitrate</string>
+    <string name="toast_room_page_settings_device_not_support_h265">This device does not support H.265 encoding type</string>
+    <string name="toast_room_page_settings_h265_error">H.265 encoding type does not support software encoding</string>
 
     <string name="room_page_sound_effects_title">Music effects</string>
     <string name="room_page_sound_effects_background">Background</string>
@@ -126,6 +128,8 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_refuse">Decline</string>
     <string name="dialog_accept">Accept</string>
+    <string name="dialog_attetion_title">Attention!</string>
+    <string name="dialog_close">Close</string>
 
     <string name="room_tips_reconnect">You are disconnected from the room. Do you want to reconnect?</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>
@@ -175,7 +179,7 @@
     <string name="toast_leave_seat_fail">Failed to leave the speaker seat. Error code: %d.</string>
     <string name="room_page_destroy_room">End room</string>
     <string name="dialog_sure_to_destroy_room">End the room now?</string>
-    <string name="toast_room_has_destroyed">This room has ended.</string>
+    <string name="toast_room_has_destroyed">The live is over.</string>
     <string name="toast_room_leave_fail_tip">Failed to leave the room. Error code: %d.</string>
     <string name="toast_room_end_fail_tip">Failed to end the room. Error code: %d.</string>
     <string name="member_list_send_invitation_failed">Failed to send the invitation.</string>

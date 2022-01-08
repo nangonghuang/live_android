@@ -82,8 +82,11 @@ public class VideoSettingCellView extends ConstraintLayout {
     @Override
     public void setEnabled(boolean enabled) {
         binding.cellTvTitle.setAlpha(enabled ? 1F : 0.5F);
-        if (cellViewType == CELL_VIEW_TYPE_TEXT_WITH_SWITCH && !enabled) {
-            binding.cellSwitch.setChecked(false);
+        if (cellViewType == CELL_VIEW_TYPE_TEXT_WITH_SWITCH) {
+            if (!enabled) {
+                binding.cellSwitch.setChecked(false);
+            }
+            binding.cellSwitch.setEnabled(enabled);
         }
         super.setEnabled(enabled);
     }
@@ -91,6 +94,10 @@ public class VideoSettingCellView extends ConstraintLayout {
     public void setContent(String content) {
         this.content = content;
         updateUI();
+    }
+
+    public void setChecked(boolean checked) {
+        binding.cellSwitch.setChecked(checked);
     }
 
     public void setListener(ISettingCellViewListener listener) {

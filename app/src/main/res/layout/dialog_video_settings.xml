@@ -55,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                app:cell_view_switch_checked="true"
                 app:cell_view_title="@string/room_page_settings_hardware_coding"
                 app:cell_view_type="text_with_switch" />
 
