@@ -73,7 +73,7 @@ public class ZegoUserService {
         zimUserInfo.userName = userInfo.getUserName();
         ZegoZIMManager.getInstance().zim.login(zimUserInfo, token, errorInfo -> {
             Log.d(TAG, "onLoggedIn() called with: errorInfo = [" + errorInfo.code + ", "
-                    + errorInfo.message + "]");
+                + errorInfo.message + "]");
             if (errorInfo.code == ZIMErrorCode.SUCCESS) {
                 localUserInfo = new ZegoUserInfo();
                 localUserInfo.setUserID(userInfo.getUserID());
@@ -168,27 +168,27 @@ public class ZegoUserService {
     // Request to co-host
     public void requestToCoHost(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(true);
+            = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
     public void cancelRequestToCoHost(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(false);
+            = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
     // Respond to the co-host request
     public void respondCoHostRequest(boolean agree, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
+            = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
     // Prohibit turning on the camera microphone
     public void muteUser(boolean isMuted, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 2);
+            = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 2);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
         }
@@ -197,7 +197,7 @@ public class ZegoUserService {
     // Microphone operate
     public void micOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 0);
+            = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 0);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (callback != null) {
@@ -210,7 +210,7 @@ public class ZegoUserService {
     // Camera operate
     public void cameraOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
+            = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (callback != null) {
@@ -223,7 +223,7 @@ public class ZegoUserService {
     // take a co-host seat
     public void takeCoHostSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
+            = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ZegoExpressEngine.getEngine().startPublishingStream(ZegoLiveHelper.getSelfStreamID());
@@ -239,7 +239,7 @@ public class ZegoUserService {
     // Leave co-host seat
     public void leaveCoHostSeat(String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
+            = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS && UserInfoHelper.isUserIDSelf(userID)) {
                 ZegoExpressEngine.getEngine().stopPublishingStream();
@@ -322,28 +322,35 @@ public class ZegoUserService {
     public void onRoomAttributesUpdated(HashMap<String, String> roomAttributes, OperationCommand command) {
         String myUserID = localUserInfo.getUserID();
         OperationAction action = command.getAction();
-
-        if (!Objects.equals(myUserID, action.getTargetID())) return;
+        //        if (!Objects.equals(myUserID, action.getTargetID())) return;
 
         switch (action.getType()) {
             case RequestToCoHost:
-                if (listener != null) {
-                    listener.onReceiveToCoHostRequest(action.getOperatorID());
+                if (UserInfoHelper.isSelfHost()) {
+                    if (listener != null) {
+                        listener.onReceiveToCoHostRequest(action.getOperatorID());
+                    }
                 }
                 break;
             case CancelRequestCoHost:
-                if (listener != null) {
-                    listener.onReceiveCancelToCoHostRequest(action.getOperatorID());
+                if (UserInfoHelper.isSelfHost()) {
+                    if (listener != null) {
+                        listener.onReceiveCancelToCoHostRequest(action.getOperatorID());
+                    }
                 }
                 break;
             case AgreeToCoHost:
-                if (listener != null) {
-                    listener.onReceiveToCoHostRespond(true);
+                if (Objects.equals(myUserID, action.getTargetID())) {
+                    if (listener != null) {
+                        listener.onReceiveToCoHostRespond(true);
+                    }
                 }
                 break;
             case DeclineToCoHost:
-                if (listener != null) {
-                    listener.onReceiveToCoHostRespond(false);
+                if (Objects.equals(myUserID, action.getTargetID())) {
+                    if (listener != null) {
+                        listener.onReceiveToCoHostRespond(false);
+                    }
                 }
                 break;
         }
@@ -355,7 +362,13 @@ public class ZegoUserService {
             }
         }
 
-        if (seat == null) return;
+        if (seat == null) {
+            return;
+        }
+
+        if (!Objects.equals(myUserID, action.getTargetID())) {
+            return;
+        }
 
         if (action.getType() == OperationActionType.Mic) {
             ZegoExpressEngine.getEngine().muteMicrophone(!seat.isMicEnable());
@@ -383,7 +396,9 @@ public class ZegoUserService {
                     }
                 } else {
                     ZegoCustomCommand.CustomCommandContent content = command.content;
-                    if (content == null) continue;
+                    if (content == null) {
+                        continue;
+                    }
                     List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
                     for (ZegoUserInfo zegoUserInfo : userInfoList) {
                         if (Objects.equals(command.userID, zegoUserInfo.getUserID())) {

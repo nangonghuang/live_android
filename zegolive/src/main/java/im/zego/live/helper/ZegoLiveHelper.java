@@ -1,7 +1,6 @@
 package im.zego.live.helper;
 
 import androidx.annotation.NonNull;
-
 import im.zego.live.ZegoRoomManager;
 
 /**

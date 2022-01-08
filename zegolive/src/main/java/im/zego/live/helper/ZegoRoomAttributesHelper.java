@@ -50,7 +50,7 @@ public class ZegoRoomAttributesHelper {
         OperationCommand operation = ZegoRoomManager.getInstance().roomService.operation.copy();
         operation.getAction().setSeq(operation.getAction().getSeq() + 1);
         operation.getAction().setOperatorID(myUserID);
-        operation.getAction().setTargetID(hostID);
+        operation.getAction().setTargetID(myUserID);
 
         if (isRequest) {
             operation.getAction().setType(OperationActionType.RequestToCoHost);
