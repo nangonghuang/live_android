@@ -216,7 +216,7 @@ public class ZegoRoomManager {
                         long referenceTimeMillisecond, ZegoPublishChannel channel) {
 
                         ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
-                        param.format = ZegoEffectsVideoFrameFormat.BGRA32;
+                        param.format = ZegoEffectsVideoFrameFormat.RGBA32;
                         param.width = width;
                         param.height = height;
 

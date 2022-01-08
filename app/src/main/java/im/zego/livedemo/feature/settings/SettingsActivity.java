@@ -7,8 +7,11 @@ import android.os.Bundle;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.StringUtils;
 
+import im.zego.effects.ZegoEffects;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
+import im.zego.live.util.EffectsSDKHelper;
+import im.zego.livedemo.BuildConfig;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivitySettingsBinding;
@@ -33,6 +36,8 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
     protected void initData() {
         binding.tvRtcSdkVersion.setText(ZegoExpressEngine.getVersion());
         binding.tvZimSdkVersion.setText(ZIM.getVersion());
+        binding.tvEffectsSdkVersion.setText(ZegoEffects.getVersion());
+        binding.tvAppVersion.setText(BuildConfig.VERSION_NAME);
     }
 
     protected void initListener() {

@@ -26,6 +26,8 @@
   <string name="setting_page_settings">设置</string>
   <string name="setting_page_sdk_version">Express SDK 版本号</string>
   <string name="setting_page_zim_sdk_version">ZIM SDK 版本号</string>
+  <string name="setting_page_effect_sdk_version">Effect SDK 版本号</string>
+  <string name="setting_page_version">APP 版本号</string>
   <string name="setting_page_upload_log">上传日志</string>
   <string name="setting_page_logout">退出登录</string>
   <string name="toast_upload_log_success">日志上传成功 </string>

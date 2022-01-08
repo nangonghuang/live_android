@@ -11,7 +11,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import java.util.List;
 
 import im.zego.livedemo.R;
-import im.zego.livedemo.feature.live.view.BeautyInfo;
+import im.zego.livedemo.feature.live.model.BeautyInfo;
 
 public class EffectsBeautyAdapter extends BaseSelectAdapter<BeautyInfo, BaseViewHolder> {
 
