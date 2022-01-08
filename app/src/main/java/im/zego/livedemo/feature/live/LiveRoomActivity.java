@@ -413,8 +413,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     }
                     break;
                 case Mute:
-                    if (UserInfoHelper.isUserIDHost(action.getOperatorID())) {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_muted_by_host));
+                    if (UserInfoHelper.isUserIDSelf(action.getTargetID()) && UserInfoHelper.isUserIDHost(action.getOperatorID())) {
+                        ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
+                        if (model != null) {
+                            if (model.isMuted()) {
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_muted_by_host));
+                            }
+                            binding.liveBottomView.enableMicView(!model.isMuted());
+                        }
                     }
                     break;
             }
