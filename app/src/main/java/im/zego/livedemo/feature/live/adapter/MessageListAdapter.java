@@ -19,7 +19,6 @@ import com.blankj.utilcode.util.SizeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.zego.live.ZegoRoomManager;
 import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.livedemo.R;
@@ -61,7 +60,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void onBindViewHolder(@NonNull MessageHolder holder, int position) {
         ZegoTextMessage message = messageList.get(position);
         boolean isHostMessage = UserInfoHelper.isUserIDHost(message.userID);
-        String fromUserName = ZegoRoomManager.getInstance().userService.getUserName(message.userID);
+        String fromUserName = message.userName;
         String content = message.message;
         Context context = holder.itemView.getContext();
 

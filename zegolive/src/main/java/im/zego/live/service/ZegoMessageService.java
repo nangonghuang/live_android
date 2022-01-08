@@ -7,6 +7,7 @@ import java.util.List;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.listener.ZegoMessageServiceListener;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
@@ -49,6 +50,7 @@ public class ZegoMessageService {
             .getInstance().userService.localUserInfo;
         ZegoTextMessage textMessage = new ZegoTextMessage();
         textMessage.message = text;
+        textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
         textMessage.userID = localUserInfo.getUserID();
         textMessage.timestamp = System.currentTimeMillis();
         String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
@@ -68,6 +70,7 @@ public class ZegoMessageService {
                 ZIMTextMessage zimTextMessage = (ZIMTextMessage) zimMessage;
                 ZegoTextMessage textMessage = new ZegoTextMessage();
                 textMessage.message = zimTextMessage.message;
+                textMessage.userName = UserInfoHelper.getUserName(zimTextMessage.userID);
                 textMessage.userID = zimTextMessage.userID;
                 textMessage.messageID = zimTextMessage.messageID;
                 textMessage.type = zimTextMessage.type;

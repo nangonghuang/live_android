@@ -99,7 +99,7 @@ public class LiveRoomViewModel extends ViewModel {
                 }
                 if (containsSelf) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
                     textMessage.userID = localUserInfo.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
@@ -107,7 +107,7 @@ public class LiveRoomViewModel extends ViewModel {
                 } else {
                     for (ZegoUserInfo user : memberList) {
                         ZegoTextMessage textMessage = new ZegoTextMessage();
-                        textMessage.isRoomUserInfoMessage = true;
+                        textMessage.userName = user.getUserName();
                         textMessage.userID = user.getUserID();
                         textMessage.timestamp = System.currentTimeMillis();
                         textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
@@ -122,7 +122,7 @@ public class LiveRoomViewModel extends ViewModel {
             public void onRoomUserLeave(List<ZegoUserInfo> memberList) {
                 for (ZegoUserInfo user : memberList) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userName = user.getUserName();
                     textMessage.userID = user.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_has_left_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
