@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.ColorUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     public MemberListAdapter(List<ZegoUserInfo> userListInRoom) {
         this.userListInRoom = new ArrayList<>();
         this.userListInRoom.addAll(userListInRoom);
+        sort();
     }
 
     @NonNull
@@ -87,7 +89,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     public void updateUserList(List<ZegoUserInfo> userList) {
         userListInRoom.clear();
         userListInRoom.addAll(userList);
+        sort();
         notifyDataSetChanged();
+    }
+
+    private void sort() {
+        Collections.sort(userListInRoom, (o1, o2) -> getRoleWeight(o1) - getRoleWeight(o2));
     }
 
     @Override
@@ -117,10 +124,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
 
     private RoleType getRoleType(ZegoUserInfo userInfo) {
         ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
-        if (Objects.equals(selfUser.getUserID(), userInfo.getUserID())) {
-            return RoleType.Me;
-        } else if (userInfo.getRole() == ZegoRoomUserRole.Host) {
+        if (UserInfoHelper.isUserIDHost(userInfo.getUserID())) {
             return RoleType.Host;
+        } else if (Objects.equals(selfUser.getUserID(), userInfo.getUserID())) {
+            return RoleType.Me;
         } else if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
             return RoleType.CoHost;
         } else if (userInfo.getRole() == ZegoRoomUserRole.Participant && userInfo.isHasInvited()) {
@@ -128,6 +135,21 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         } else {
             return RoleType.Participant;
         }
+    }
+
+    private int getRoleWeight(ZegoUserInfo userInfo) {
+        switch (getRoleType(userInfo)) {
+            case Host:
+                return 1;
+            case CoHost:
+            case InvitedCoHost:
+                return 2;
+            case Me:
+                return 3;
+            case Participant:
+                return 4;
+        }
+        return 5;
     }
 
     enum RoleType {
