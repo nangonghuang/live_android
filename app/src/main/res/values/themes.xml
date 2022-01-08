@@ -27,7 +27,7 @@
     </style>
 
 
-    <style name="BeautyDialog" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BeautyDialog" parent="BottomSheetDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
