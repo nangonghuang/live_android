@@ -132,6 +132,13 @@
     <string name="dialog_close">Close</string>
     <string name="send_to_friend">Send to my friend</string>
 
+    <string name="dialog_room_page_mic_cant_open">Cannot use microphone！</string>
+    <string name="dialog_room_page_mic_permission">Please allow access to your microphone to continue.</string>
+    <string name="dialog_room_page_go_to_settings">Go to Settings</string>
+    <string name="dialog_room_page_title_cannot_use_camera">Cannot use Camera！</string>
+    <string name="dialog_room_page_massage_cannot_use_camera">Please allow access to your camera to continue.</string>
+    <string name="toast_room_page_permission_error">Failed to connect，please agree the access to microphone/camera.</string>
+
     <string name="room_tips_reconnect">You are disconnected from the room. Do you want to reconnect?</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>
     <string name="room_page_mic_cant_open">The Mic is off.</string>

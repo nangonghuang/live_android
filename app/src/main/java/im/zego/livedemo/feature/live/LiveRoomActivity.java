@@ -53,6 +53,7 @@ import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 import im.zego.livedemo.feature.login.UserLoginActivity;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
+import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.helper.ShareHelper;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
@@ -164,7 +165,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         dialog.dismiss();
                         liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
                             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                binding.liveBottomView.toCoHost();
+                                coHostTakeSeat(isAllGranted -> {
+                                    if (!isAllGranted) {
+                                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
+                                        liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
+                                    }
+                                });
                             } else {
                                 ToastHelper
                                     .showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
@@ -219,11 +225,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onReceiveToCoHostRespond(boolean agree) {
                 dismissAllToast();
                 if (agree) {
-                    liveRoomViewModel.takeCoHostSeat(errorCode -> {
-                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                            binding.liveBottomView.toCoHost();
-                        } else {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                    coHostTakeSeat(isAllGranted -> {
+                        if (!isAllGranted) {
+                            binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
                         }
                     });
                 } else {
@@ -252,6 +257,21 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         initUI();
         initUIListener();
         initData();
+    }
+
+    private void coHostTakeSeat(PermissionHelper.IPermissionCallback permissionCallback) {
+        PermissionHelper.requestCameraAndAudio(LiveRoomActivity.this, isAllGranted -> {
+            if (isAllGranted) {
+                liveRoomViewModel.takeCoHostSeat(errorCode -> {
+                    if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                        binding.liveBottomView.toCoHost();
+                    } else {
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
+                    }
+                });
+            }
+            permissionCallback.onRequestCallback(isAllGranted);
+        });
     }
 
     private void toTransparentStatusBar() {

@@ -76,11 +76,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
 
         roomListAdapter.setOnClickListener((v, position, item) -> {
             Log.d(TAG, "initData: " + item.getRoomID());
-            PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
-                if (isAllGranted) {
-                    LiveRoomActivity.start(RoomListActivity.this, item.getRoomID());
-                }
-            });
+            LiveRoomActivity.start(RoomListActivity.this, item.getRoomID());
         });
 
         binding.recyclerView.setVisibility(View.GONE);
