@@ -43,6 +43,20 @@ public final class UserInfoHelper {
         return isCoHost;
     }
 
+    public static ZegoCoHostSeatModel getSelfCoHost() {
+        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
+        String userID = selfUser.getUserID();
+        List<ZegoCoHostSeatModel> coHostList = ZegoRoomManager.getInstance().userService.coHostList;
+        ZegoCoHostSeatModel selfModel = null;
+        for (ZegoCoHostSeatModel model : coHostList) {
+            if (Objects.equals(model.getUserID(), userID) && StringUtils.isNotEmpty(userID)) {
+                selfModel = model;
+                break;
+            }
+        }
+        return selfModel;
+    }
+
     public static String getUserName(String userID) {
         return ZegoRoomManager.getInstance().userService.getUserName(userID);
     }

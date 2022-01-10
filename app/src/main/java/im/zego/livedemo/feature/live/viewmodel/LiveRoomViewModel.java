@@ -11,18 +11,18 @@ import androidx.lifecycle.ViewModel;
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.StringUtils;
 
-import im.zego.live.helper.UserInfoHelper;
-import im.zego.live.http.IAsyncGetCallback;
-import im.zego.livedemo.feature.room.RoomApi;
-import im.zego.livedemo.feature.room.model.RoomBean;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.constants.ZegoRoomErrorCode;
+import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.http.IAsyncGetCallback;
 import im.zego.live.listener.ZegoRoomServiceListener;
 import im.zego.live.listener.ZegoUserServiceListener;
 import im.zego.live.model.OperationAction;
@@ -33,6 +33,8 @@ import im.zego.live.model.ZegoUserInfo;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
+import im.zego.livedemo.feature.room.RoomApi;
+import im.zego.livedemo.feature.room.model.RoomBean;
 import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
@@ -43,8 +45,6 @@ import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by rocket_wang on 2021/12/27.
@@ -99,7 +99,7 @@ public class LiveRoomViewModel extends ViewModel {
                 }
                 if (containsSelf) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
                     textMessage.userID = localUserInfo.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
@@ -107,7 +107,7 @@ public class LiveRoomViewModel extends ViewModel {
                 } else {
                     for (ZegoUserInfo user : memberList) {
                         ZegoTextMessage textMessage = new ZegoTextMessage();
-                        textMessage.isRoomUserInfoMessage = true;
+                        textMessage.userName = user.getUserName();
                         textMessage.userID = user.getUserID();
                         textMessage.timestamp = System.currentTimeMillis();
                         textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
@@ -122,7 +122,7 @@ public class LiveRoomViewModel extends ViewModel {
             public void onRoomUserLeave(List<ZegoUserInfo> memberList) {
                 for (ZegoUserInfo user : memberList) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
-                    textMessage.isRoomUserInfoMessage = true;
+                    textMessage.userName = user.getUserName();
                     textMessage.userID = user.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_has_left_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
@@ -181,6 +181,10 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoCanvas zegoCanvas = new ZegoCanvas(view);
         zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
         ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
+    }
+
+    public void stopPlayingStream(String streamID) {
+        ZegoExpressEngine.getEngine().stopPlayingStream(streamID);
     }
 
     public void useFrontCamera(boolean enable) {
@@ -397,10 +401,6 @@ public class LiveRoomViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        destroy();
-    }
-
-    private void destroy() {
-        stopPreview();
+        ZegoExpressEngine.getEngine().stopPreview();
     }
 }

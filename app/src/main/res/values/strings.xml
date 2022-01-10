@@ -130,6 +130,7 @@
     <string name="dialog_accept">Accept</string>
     <string name="dialog_attetion_title">Attention!</string>
     <string name="dialog_close">Close</string>
+    <string name="send_to_friend">Send to my friend</string>
 
     <string name="room_tips_reconnect">You are disconnected from the room. Do you want to reconnect?</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>

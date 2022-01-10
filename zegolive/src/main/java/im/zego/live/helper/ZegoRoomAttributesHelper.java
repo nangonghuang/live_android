@@ -35,7 +35,7 @@ public class ZegoRoomAttributesHelper {
     public static ZIMRoomAttributesSetConfig getAttributesSetConfig() {
         ZIMRoomAttributesSetConfig setConfig = new ZIMRoomAttributesSetConfig();
         setConfig.isForce = true;
-        setConfig.isDeleteAfterOwnerLeft = true;
+        setConfig.isDeleteAfterOwnerLeft = false;
         setConfig.isUpdateOwner = true;
         return setConfig;
     }

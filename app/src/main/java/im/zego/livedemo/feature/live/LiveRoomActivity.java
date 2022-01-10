@@ -30,6 +30,7 @@ import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivityLiveRoomBinding;
 import im.zego.livedemo.feature.live.adapter.CoHostListAdapter;
 import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
@@ -52,6 +53,7 @@ import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 import im.zego.livedemo.feature.login.UserLoginActivity;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
+import im.zego.livedemo.helper.ShareHelper;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoStream;
@@ -413,8 +415,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     }
                     break;
                 case Mute:
-                    if (UserInfoHelper.isUserIDHost(action.getOperatorID())) {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_muted_by_host));
+                    if (UserInfoHelper.isUserIDSelf(action.getTargetID()) && UserInfoHelper.isUserIDHost(action.getOperatorID())) {
+                        ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
+                        if (model != null) {
+                            if (model.isMuted()) {
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_muted_by_host));
+                            }
+                            binding.liveBottomView.enableMicView(!model.isMuted());
+                        }
                     }
                     break;
             }
@@ -527,7 +535,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onShareClick() {
-
+                ShareHelper.startToShare(LiveRoomActivity.this, Constants.URL_GET_MORE);
             }
 
             @Override
@@ -558,6 +566,15 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onMicEnable(boolean isMicEnable) {
+                if (isMicEnable) {
+                    ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
+                    if (model != null) {
+                        if (model.isMuted()) {
+                            binding.liveBottomView.enableMicView(false);
+                            return;
+                        }
+                    }
+                }
                 liveRoomViewModel.enableMic(isMicEnable);
             }
 
