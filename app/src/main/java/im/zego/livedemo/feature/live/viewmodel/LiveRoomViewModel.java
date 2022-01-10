@@ -133,8 +133,8 @@ public class LiveRoomViewModel extends ViewModel {
             }
 
             @Override
-            public void onReceiveAddCoHostInvitation() {
-                listener.onReceiveAddCoHostInvitation();
+            public void onReceiveAddCoHostInvitation(String operateUserID) {
+                listener.onReceiveAddCoHostInvitation(operateUserID);
             }
 
             @Override
@@ -342,12 +342,8 @@ public class LiveRoomViewModel extends ViewModel {
         });
     }
 
-    public void respondCoHostInvitation(boolean accept, ZegoRoomCallback callback) {
-        ZegoRoomManager.getInstance().userService.respondCoHostInvitation(accept, errorCode -> {
-            if (errorCode == ZegoRoomErrorCode.SUCCESS && accept) {
-                takeCoHostSeat(callback);
-                return;
-            }
+    public void respondCoHostInvitation(boolean accept, String operateUserID, ZegoRoomCallback callback) {
+        ZegoRoomManager.getInstance().userService.respondCoHostInvitation(accept, operateUserID, errorCode -> {
             if (callback != null) {
                 callback.onRoomCallback(errorCode);
             }

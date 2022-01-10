@@ -154,7 +154,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
 
             @Override
-            public void onReceiveAddCoHostInvitation() {
+            public void onReceiveAddCoHostInvitation(String operateUserID) {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
                     StringUtils.getString(R.string.dialog_invite_to_connect_title),
                     StringUtils.getString(R.string.dialog_invite_to_connect_descrip),
@@ -162,7 +162,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     StringUtils.getString(R.string.dialog_refuse),
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.respondCoHostInvitation(true, errorCode -> {
+                        liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
                             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                                 binding.liveBottomView.toCoHost();
                             } else {
@@ -173,7 +173,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     },
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.respondCoHostInvitation(false, null);
+                        liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
                     }
                 );
             }

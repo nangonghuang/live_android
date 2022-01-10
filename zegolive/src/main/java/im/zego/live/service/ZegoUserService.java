@@ -2,12 +2,12 @@ package im.zego.live.service;
 
 import android.util.Log;
 
-import java.util.Iterator;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,16 +149,14 @@ public class ZegoUserService {
     }
 
     // Respond to the co-host invitation
-    public void respondCoHostInvitation(boolean accept, ZegoRoomCallback callback) {
-        ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
-        String hostID = roomInfo.getHostID();
+    public void respondCoHostInvitation(boolean accept, String operateUserID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
         command.userID = localUserInfo.getUserID();
-        command.targetUserIDs = Collections.singletonList(hostID);
+        command.targetUserIDs = Collections.singletonList(operateUserID);
         command.content = new ZegoCustomCommand.CustomCommandContent(accept);
         command.toJson();
-        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, hostID, (message, errorInfo) -> {
+        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, operateUserID, (message, errorInfo) -> {
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
             }
@@ -392,7 +390,7 @@ public class ZegoUserService {
                 command.fromJson(zimCustomMessage.message);
                 if (command.actionType == ZegoCustomCommand.CustomCommandType.Invitation) {
                     if (listener != null) {
-                        listener.onReceiveAddCoHostInvitation();
+                        listener.onReceiveAddCoHostInvitation(zimCustomMessage.userID);
                     }
                 } else {
                     ZegoCustomCommand.CustomCommandContent content = command.content;

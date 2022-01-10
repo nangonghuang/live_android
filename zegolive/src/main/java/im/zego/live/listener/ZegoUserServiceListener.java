@@ -16,7 +16,7 @@ public interface ZegoUserServiceListener {
     void onRoomUserLeave(List<ZegoUserInfo> memberList);
 
     // receive add co-host invitation
-    void onReceiveAddCoHostInvitation();
+    void onReceiveAddCoHostInvitation(String operateUserID);
 
     // receive add co-host invitation respond
     void onReceiveAddCoHostRespond(boolean accept);
