@@ -72,6 +72,12 @@ public class LiveRoomViewModel extends ViewModel {
             public void onReceiveCoHostListUpdate(OperationAction action) {
                 coHostList.postValue(ZegoRoomManager.getInstance().userService.coHostList);
                 operationAction.postValue(action);
+
+                ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
+                if (model != null) {
+                    isMicEnable.postValue(model.isMicEnable());
+                    isCameraEnable.postValue(model.isCameraEnable());
+                }
             }
 
             @Override

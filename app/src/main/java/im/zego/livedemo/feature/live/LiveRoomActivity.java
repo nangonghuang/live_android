@@ -429,9 +429,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     if (UserInfoHelper.isUserIDHost(action.getOperatorID())) {
                         ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_prohibited_connection));
                     }
-                    if (Objects.equals(action.getOperatorID(), action.getTargetID()) && !StringUtils.isTrimEmpty(action.getOperatorID())) {
-                        String userName = UserInfoHelper.getUserName(action.getTargetID());
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_ended_the_connection, userName));
+                    if (UserInfoHelper.isSelfHost() || UserInfoHelper.isSelfCoHost()) {
+                        if (Objects.equals(action.getOperatorID(), action.getTargetID()) && !StringUtils.isTrimEmpty(action.getOperatorID())) {
+                            String userName = UserInfoHelper.getUserName(action.getTargetID());
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_ended_the_connection, userName));
+                        }
                     }
                     break;
                 case Mute:
