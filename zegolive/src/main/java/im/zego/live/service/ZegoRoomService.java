@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import im.zego.zim.enums.ZIMRoomAttributesUpdateAction;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -38,6 +37,9 @@ import im.zego.zim.entity.ZIMRoomInfo;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
+import im.zego.zim.enums.ZIMRoomAttributesUpdateAction;
+import im.zego.zim.enums.ZIMRoomEvent;
+import im.zego.zim.enums.ZIMRoomState;
 
 /**
  * Created by rocket_wang on 2021/12/14.
@@ -146,11 +148,31 @@ public class ZegoRoomService {
         this.listener = listener;
     }
 
-    /**
-     * @param zim
-     * @param info
-     * @param roomID
-     */
+    public void onRoomStateChanged(ZIM zim, ZIMRoomState state, ZIMRoomEvent event, JSONObject extendedData,
+                                   String roomID) {
+        Log.d(TAG, "onRoomStateChanged() called with: zim = [" + zim + "], state = [" + state + "], event = [" + event
+                + "], extendedData = [" + extendedData + "], roomID = [" + roomID + "]");
+        if (state == ZIMRoomState.CONNECTED) {
+            boolean newInRoom = StringUtils.isEmpty(this.roomInfo.getHostID());
+            if (!newInRoom && !TextUtils.isEmpty(roomID)) {
+                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomAttributes, errorInfo) -> {
+                    boolean hostLeft = errorInfo.getCode() == ZIMErrorCode.SUCCESS
+                            && !roomAttributes.keySet().contains(ZegoRoomConstants.KEY_ROOM_INFO);
+                    boolean roomNotExisted = errorInfo.getCode() == ZIMErrorCode.ROOM_NOT_EXIST;
+                    if (hostLeft || roomNotExisted) {
+                        if (listener != null) {
+                            listener.onReceiveRoomInfoUpdate(null);
+                        }
+                    }
+                });
+            }
+        } else if (state == ZIMRoomState.DISCONNECTED) {
+            if (listener != null) {
+                listener.onReceiveRoomInfoUpdate(null);
+            }
+        }
+    }
+
     public void onRoomAttributesUpdated(ZIM zim, ZIMRoomAttributesUpdateInfo info, String roomID) {
         Log.d(TAG,
                 "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["

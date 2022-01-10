@@ -1,36 +1,36 @@
 package im.zego.live;
 
 import android.app.Application;
-
 import android.util.Log;
-import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
-import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
-import im.zego.live.http.IGetLicenseCallback;
-import im.zego.live.http.License;
-import im.zego.live.service.FaceBeautifyService;
-import im.zego.zegoexpress.callback.IZegoCustomVideoProcessHandler;
-import im.zego.zegoexpress.constants.ZegoPublishChannel;
-import im.zego.zegoexpress.constants.ZegoVideoBufferType;
-import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
-import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
-import im.zego.zegoexpress.entity.ZegoVideoConfig;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
+import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
 import im.zego.live.callback.ZegoRoomCallback;
-import im.zego.live.service.ZegoSoundEffectService;
+import im.zego.live.http.IGetLicenseCallback;
+import im.zego.live.http.License;
+import im.zego.live.service.FaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomService;
+import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.zegoexpress.ZegoExpressEngine;
+import im.zego.zegoexpress.callback.IZegoCustomVideoProcessHandler;
 import im.zego.zegoexpress.callback.IZegoEventHandler;
+import im.zego.zegoexpress.constants.ZegoPublishChannel;
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamQualityLevel;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
+import im.zego.zegoexpress.constants.ZegoVideoBufferType;
+import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
+import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
 import im.zego.zegoexpress.entity.ZegoEngineProfile;
 import im.zego.zegoexpress.entity.ZegoStream;
+import im.zego.zegoexpress.entity.ZegoVideoConfig;
 import im.zego.zim.ZIM;
 import im.zego.zim.callback.ZIMEventHandler;
 import im.zego.zim.entity.ZIMError;
@@ -168,6 +168,9 @@ public class ZegoRoomManager {
             public void onRoomStateChanged(ZIM zim, ZIMRoomState state, ZIMRoomEvent event, JSONObject extendedData,
                 String roomID) {
                 super.onRoomStateChanged(zim, state, event, extendedData, roomID);
+                if (roomService != null) {
+                    roomService.onRoomStateChanged(zim, state, event, extendedData, roomID);
+                }
             }
 
             @Override
