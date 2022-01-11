@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
-import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.http.IGetLicenseCallback;
 import im.zego.live.http.License;
@@ -26,11 +24,9 @@ import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamQualityLevel;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.constants.ZegoVideoBufferType;
-import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
 import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
 import im.zego.zegoexpress.entity.ZegoEngineProfile;
 import im.zego.zegoexpress.entity.ZegoStream;
-import im.zego.zegoexpress.entity.ZegoVideoConfig;
 import im.zego.zim.ZIM;
 import im.zego.zim.callback.ZIMEventHandler;
 import im.zego.zim.entity.ZIMError;
@@ -196,35 +192,24 @@ public class ZegoRoomManager {
                 ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
                 config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
                 ZegoExpressEngine.getEngine().enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
-
-                ZegoVideoConfig zegoVideoConfig = new ZegoVideoConfig(ZegoVideoConfigPreset.PRESET_720P);
-                ZegoExpressEngine.getEngine().setVideoConfig(zegoVideoConfig);
-
-//                faceBeautifyService.zegoEffects.initEnv(720, 1280);
-
                 ZegoExpressEngine.getEngine().setCustomVideoProcessHandler(new IZegoCustomVideoProcessHandler() {
 
                     @Override
                     public void onStart(ZegoPublishChannel channel) {
-                        faceBeautifyService.zegoEffects.initEnv(720, 1280);
+//                        faceBeautifyService.onStart();
                     }
 
                     @Override
                     public void onStop(ZegoPublishChannel channel) {
-                        faceBeautifyService.zegoEffects.uninitEnv();
+                        faceBeautifyService.onStop();
                     }
 
                     @Override
                     public void onCapturedUnprocessedTextureData(int textureID, int width, int height,
                         long referenceTimeMillisecond, ZegoPublishChannel channel) {
 
-                        ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
-                        param.format = ZegoEffectsVideoFrameFormat.RGBA32;
-                        param.width = width;
-                        param.height = height;
-
                         // Process buffer by ZegoEffects
-                        int processedTextureID = faceBeautifyService.zegoEffects.processTexture(textureID, param);
+                        int processedTextureID = faceBeautifyService.gainProcessedTextureID(textureID, width, height);
 
                         // Send processed texture to ZegoExpressEngine
                         ZegoExpressEngine.getEngine().sendCustomVideoProcessedTextureData(processedTextureID, width, height,

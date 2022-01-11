@@ -119,6 +119,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         } else {
             liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
         }
+//        ZegoExpressEngine.getEngine().enableCamera(model.isCameraEnable());
     }
 
     @Override

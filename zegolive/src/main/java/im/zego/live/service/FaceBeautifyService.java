@@ -17,7 +17,9 @@ import im.zego.effects.entity.ZegoEffectsSharpenParam;
 import im.zego.effects.entity.ZegoEffectsSmallMouthParam;
 import im.zego.effects.entity.ZegoEffectsSmoothParam;
 import im.zego.effects.entity.ZegoEffectsTeethWhiteningParam;
+import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
 import im.zego.effects.entity.ZegoEffectsWhitenParam;
+import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
 import im.zego.live.http.APIBase;
 import im.zego.live.http.IGetLicenseCallback;
 import im.zego.live.http.License;
@@ -73,6 +75,23 @@ public class FaceBeautifyService {
                 callback.onGetLicense(code, message, responseJsonBean);
             }
         });
+    }
+
+    public void onStart() {
+        zegoEffects.initEnv(720, 1280);
+    }
+
+    public void onStop() {
+        zegoEffects.uninitEnv();
+    }
+
+    public int gainProcessedTextureID(int textureID, int width, int height) {
+        ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
+        param.format = ZegoEffectsVideoFrameFormat.BGRA32;
+        param.width = width;
+        param.height = height;
+
+        return zegoEffects.processTexture(textureID, param);
     }
 
     public void enableBeautify(boolean enable, FaceBeautifyType type) {
