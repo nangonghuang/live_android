@@ -60,4 +60,8 @@ public final class UserInfoHelper {
     public static String getUserName(String userID) {
         return ZegoRoomManager.getInstance().userService.getUserName(userID);
     }
+
+    public static String getUserNameShort(String userName) {
+        return StringUtils.abbreviate(userName, 11);
+    }
 }

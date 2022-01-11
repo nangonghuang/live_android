@@ -24,7 +24,7 @@ public final class AvatarHelper {
         return ResourceUtils.getDrawableIdByName("icon_avatar_" + (position % MAX_INDEX + 1));
     }
 
-    private static int getIndex(String userName) {
+    public static int getIndex(String userName) {
         byte[] value;
         try {
             value = md5(userName);

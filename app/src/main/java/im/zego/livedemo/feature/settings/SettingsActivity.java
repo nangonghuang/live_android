@@ -10,11 +10,11 @@ import com.blankj.utilcode.util.StringUtils;
 import im.zego.effects.ZegoEffects;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
-import im.zego.live.util.EffectsSDKHelper;
 import im.zego.livedemo.BuildConfig;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivitySettingsBinding;
+import im.zego.livedemo.feature.login.UserLoginActivity;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zim.ZIM;
@@ -54,7 +54,6 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
 
     private void logout() {
         ZegoRoomManager.getInstance().userService.logout();
-        ActivityUtils.finishAllActivities();
-        ActivityUtils.startLauncherActivity();
+        ActivityUtils.finishToActivity(UserLoginActivity.class, false);
     }
 }

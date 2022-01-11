@@ -20,9 +20,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="12dp"
+        android:maxWidth="118dp"
+        android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="14sp"
-        tools:text="Hannah" />
+        tools:text="Hannah Hannah Hannah Hannah Hannah Hannah Hannah " />
 
     <TextView
         android:id="@+id/tv_user_info"

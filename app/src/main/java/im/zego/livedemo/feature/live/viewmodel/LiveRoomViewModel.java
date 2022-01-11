@@ -30,9 +30,12 @@ import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
+import im.zego.live.service.FaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
+import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.feature.room.RoomApi;
 import im.zego.livedemo.feature.room.model.RoomBean;
 import im.zego.livedemo.helper.AuthInfoManager;
@@ -385,7 +388,7 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public boolean isCoHostMax() {
-        return ZegoRoomManager.getInstance().userService.coHostList.size() >= 3;
+        return ZegoRoomManager.getInstance().userService.coHostList.size() >= Constants.MAX_CO_HOST_LIST_SIZE;
     }
 
     private void updateMessageLiveData() {
@@ -403,6 +406,14 @@ public class LiveRoomViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
+        // reset face beautify
+        FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+        beautifyService.resetBeauty();
+        beautifyService.resetReSharp();
+
+        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        soundEffectService.reset();
+
         ZegoExpressEngine.getEngine().stopPreview();
     }
 }

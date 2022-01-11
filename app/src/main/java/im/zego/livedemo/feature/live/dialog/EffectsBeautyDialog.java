@@ -40,10 +40,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
         super(context, R.style.BeautyDialog);
     }
 
-    public EffectsBeautyDialog(@NonNull Context context, int theme) {
-        super(context, theme);
-    }
-
     @Override
     public void initView() {
         mTvBeauty = findViewById(R.id.tv_beauty);

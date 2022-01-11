@@ -371,12 +371,14 @@ public class ZegoUserService {
         if (action.getType() == OperationActionType.Mic) {
             ZegoExpressEngine.getEngine().muteMicrophone(!seat.isMicEnable());
         }
+
         if (action.getType() == OperationActionType.Camera) {
             ZegoExpressEngine.getEngine().enableCamera(seat.isCameraEnable());
         }
 
         if (action.getType() == OperationActionType.Mute) {
             ZegoExpressEngine.getEngine().muteMicrophone(seat.isMuted());
+            micOperate(!seat.isMuted(), null);
         }
     }
 

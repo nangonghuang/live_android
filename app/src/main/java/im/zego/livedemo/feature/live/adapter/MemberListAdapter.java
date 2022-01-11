@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     public void onBindViewHolder(@NonNull UserListHolder holder, int position) {
         final ZegoUserInfo userInfo = userListInRoom.get(position);
 
-        holder.ivUserAvatar.setImageDrawable(AvatarHelper.getAvatarByUserName(userInfo.getUserName()));
+        int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
+        holder.ivUserAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(avatarId), true));
         holder.tvUserName.setText(userInfo.getUserName());
         holder.ivInvite.setVisibility(View.GONE);
         holder.tvUserInfo.setVisibility(View.GONE);

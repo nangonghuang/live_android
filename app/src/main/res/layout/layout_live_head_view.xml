@@ -21,7 +21,8 @@
             android:layout_marginStart="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/icon_avatar_1" />
 
         <TextView
             android:id="@+id/tv_host_name"
@@ -29,12 +30,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="12dp"
+            android:maxWidth="130dp"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_host_avatar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="hello world! hello world! hello world! hello world! hello world! hello world! " />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

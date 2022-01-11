@@ -109,6 +109,12 @@ public class ZegoRoomService {
 
     // leave the room
     public void leaveRoom(final ZegoRoomCallback callback) {
+        if (UserInfoHelper.isSelfCoHost()) {
+            ZegoRoomManager.getInstance().userService.leaveCoHostSeat(null, errorCode -> {
+
+            });
+        }
+
         ZegoMessageService messageService = ZegoRoomManager.getInstance().messageService;
         if (messageService != null) {
             messageService.reset();
@@ -123,12 +129,6 @@ public class ZegoRoomService {
         ZegoExpressEngine.getEngine().stopPublishingStream();
 
         ZegoExpressEngine.getEngine().logoutRoom(roomInfo.getRoomID());
-
-        if (UserInfoHelper.isSelfCoHost()) {
-            ZegoRoomManager.getInstance().userService.leaveCoHostSeat(null, errorCode -> {
-
-            });
-        }
 
         ZegoZIMManager.getInstance().zim.leaveRoom(roomInfo.getRoomID(), errorInfo -> {
             Log.d(TAG, "leaveRoom() called with: errorInfo = [" + errorInfo.code + "]" + errorInfo.message);
