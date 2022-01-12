@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/room_page_cancel"
+        android:text="@string/dialog_room_page_cancel"
         android:textColor="#ffffffff"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"

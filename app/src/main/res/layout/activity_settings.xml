@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:common_back_btn_visible="true"
-        app:common_title="@string/room_page_settings"
+        app:common_title="@string/setting_page_settings"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout

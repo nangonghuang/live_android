@@ -319,7 +319,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().userService.cameraOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                 isCameraEnable.postValue(!enable);
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_operate_camera_fail, errorCode));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
             }
         });
     }
@@ -329,7 +329,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().userService.micOperate(enable, errorCode -> {
             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                 isMicEnable.postValue(!enable);
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_operate_mic_fail, errorCode));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
             }
         });
     }

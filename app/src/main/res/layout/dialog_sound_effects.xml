@@ -19,7 +19,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
         android:gravity="start"
-        android:text="@string/room_page_sound_effects_title"
+        android:text="@string/room_sound_page_sound_effects"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
