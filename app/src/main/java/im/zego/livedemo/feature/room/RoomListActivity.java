@@ -6,23 +6,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import androidx.annotation.NonNull;
+
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+
 import com.blankj.utilcode.util.SizeUtils;
+import com.blankj.utilcode.util.ThreadUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
+
 import im.zego.live.ZegoRoomManager;
-import im.zego.live.http.IAsyncGetCallback;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.databinding.ActivityRoomListBinding;
 import im.zego.livedemo.feature.live.LiveRoomActivity;
 import im.zego.livedemo.feature.room.adapter.RoomListAdapter;
-import im.zego.livedemo.feature.room.model.RoomList;
 import im.zego.livedemo.feature.settings.SettingsActivity;
 import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.view.GridLayoutItemDecoration;
 
 public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
+
+    private static final int REQUEST_CODE_LEAVE_ROOM = 0x01;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, RoomListActivity.class);
@@ -48,21 +52,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
     @Override
     protected void onStart() {
         super.onStart();
-        RoomApi.getRoomList(100, null, new IAsyncGetCallback<RoomList>() {
-            @Override
-            public void onResponse(int errorCode, @NonNull String message, RoomList responseJsonBean) {
-                if (errorCode == 0) {
-                    if (responseJsonBean.roomList.size() > 0) {
-                        roomListAdapter.setList(responseJsonBean.roomList);
-                        binding.recyclerView.setVisibility(View.VISIBLE);
-                        binding.emptyView.setVisibility(View.GONE);
-                    } else {
-                        binding.recyclerView.setVisibility(View.GONE);
-                        binding.emptyView.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        });
+        refresh(null);
     }
 
     private void initData() {
@@ -76,7 +66,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
 
         roomListAdapter.setOnClickListener((v, position, item) -> {
             Log.d(TAG, "initData: " + item.getRoomID());
-            LiveRoomActivity.start(RoomListActivity.this, item.getRoomID());
+            LiveRoomActivity.start(RoomListActivity.this, item.getRoomID(), REQUEST_CODE_LEAVE_ROOM);
         });
 
         binding.recyclerView.setVisibility(View.GONE);
@@ -89,33 +79,48 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
         binding.flCreateLive.setOnClickListener(v -> {
             PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
                 if (isAllGranted) {
-                    LiveRoomActivity.start(this);
+                    LiveRoomActivity.start(this, REQUEST_CODE_LEAVE_ROOM);
                 }
             });
         });
-        binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> {
-            RoomApi.getRoomList(100, null, new IAsyncGetCallback<RoomList>() {
-                @Override
-                public void onResponse(int errorCode, @NonNull String message, RoomList responseJsonBean) {
-                    refreshLayout.finishRefresh();
-                    if (errorCode == 0) {
-                        if (responseJsonBean.roomList.size() > 0) {
-                            roomListAdapter.setList(responseJsonBean.roomList);
-                            binding.recyclerView.setVisibility(View.VISIBLE);
-                            binding.emptyView.setVisibility(View.GONE);
-                        } else {
-                            binding.recyclerView.setVisibility(View.GONE);
-                            binding.emptyView.setVisibility(View.VISIBLE);
-                        }
-                    }
+        binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> refresh(refreshLayout::finishRefresh));
+    }
+
+    private void refresh(IRefreshListener listener) {
+        RoomApi.getRoomList(100, null, (errorCode, message, responseJsonBean) -> {
+            if (listener != null) {
+                listener.onRefreshFinish();
+            }
+            if (errorCode == 0) {
+                if (responseJsonBean.roomList.size() > 0) {
+                    roomListAdapter.setList(responseJsonBean.roomList);
+                    binding.recyclerView.setVisibility(View.VISIBLE);
+                    binding.emptyView.setVisibility(View.GONE);
+                } else {
+                    binding.recyclerView.setVisibility(View.GONE);
+                    binding.emptyView.setVisibility(View.VISIBLE);
                 }
-            });
+            }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_LEAVE_ROOM) {
+            ThreadUtils.runOnUiThreadDelayed(() -> {
+                refresh(null);
+            }, 3000L);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ZegoRoomManager.getInstance().userService.logout();
+    }
+
+    private interface IRefreshListener {
+        void onRefreshFinish();
     }
 }

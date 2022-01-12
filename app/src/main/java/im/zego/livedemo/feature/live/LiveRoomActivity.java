@@ -1,5 +1,6 @@
 package im.zego.livedemo.feature.live;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -72,18 +73,18 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     /**
      * create new room
      */
-    public static void start(Context context) {
-        Intent intent = new Intent(context, LiveRoomActivity.class);
-        context.startActivity(intent);
+    public static void start(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, LiveRoomActivity.class);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     /**
      * enter exist room
      */
-    public static void start(Context context, String roomID) {
-        Intent intent = new Intent(context, LiveRoomActivity.class);
+    public static void start(Activity activity, String roomID, int requestCode) {
+        Intent intent = new Intent(activity, LiveRoomActivity.class);
         intent.putExtra(EXTRA_KEY_ROOM_ID, roomID);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     private LiveRoomViewModel liveRoomViewModel;
