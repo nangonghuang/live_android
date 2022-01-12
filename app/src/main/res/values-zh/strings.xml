@@ -9,7 +9,6 @@
   <string name="toast_kickout_error">该帐号已在其他设备登录，你已被踢出</string>
 
   <string name="create_page_room_id">房间 ID</string>
-  <string name="create_page_room_name">房间名称</string>
   <string name="create_page_or">或者</string>
   <string name="create_page_create_room">创建房间</string>
   <string name="create_page_join_room">加入房间</string>

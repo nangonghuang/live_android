@@ -346,11 +346,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
 
             @Override
-            public void onClickData() {
-
-            }
-
-            @Override
             public void onClickSettings() {
                 moreVideoSettingsDialog.show();
             }

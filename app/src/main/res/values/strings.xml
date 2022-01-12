@@ -96,7 +96,6 @@
     <string name="dialog_room_page_title_connection_request">Connection request!</string>
     <string name="dialog_room_page_message_connection_request">%s is requesting a connection with you. Do you agree?</string>
 
-    <string name="dialog_invition_title">Invitation</string>
     <string name="dialog_invition_descrip">The host has invited you to connect.</string>
 
     <string name="toast_user_list_page_rejected_invitation">The Participant refuse to connect.</string>
