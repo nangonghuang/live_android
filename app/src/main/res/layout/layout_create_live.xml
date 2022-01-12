@@ -37,7 +37,7 @@
         android:cursorVisible="true"
         android:gravity="center"
         android:hint="@string/create_page_room_name"
-        android:maxLength="15"
+        android:maxLength="16"
         android:singleLine="true"
         android:textColor="#fff"
         android:textColorHint="#99FFFFFF"

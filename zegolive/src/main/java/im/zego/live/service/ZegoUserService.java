@@ -288,6 +288,9 @@ public class ZegoUserService {
         userList.removeAll(leaveUsers);
         for (ZegoUserInfo leaveUser : leaveUsers) {
             userMap.remove(leaveUser.getUserID());
+            if (UserInfoHelper.isSelfHost() && UserInfoHelper.isUserIDCoHost(leaveUser.getUserID())) {
+                leaveCoHostSeat(leaveUser.getUserID(), null);
+            }
         }
         if (listener != null) {
             listener.onRoomUserLeave(leaveUsers);

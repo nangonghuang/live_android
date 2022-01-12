@@ -1,20 +1,22 @@
 package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.blankj.utilcode.util.ClickUtils;
+
 import im.zego.livedemo.R;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 import im.zego.livedemo.feature.live.view.MoreSettingView;
 
-public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickListener {
+public class MoreSettingDialog extends BaseBottomDialog {
 
     private MoreSettingView moreViewFlip;
     private MoreSettingView moreViewCamera;
     private MoreSettingView moreViewMic;
-//    private MoreSettingView moreViewData;
+    //    private MoreSettingView moreViewData;
     private MoreSettingView moreViewSettings;
 
     private ISettingMoreListener listener;
@@ -39,11 +41,26 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
 //        moreViewData = findViewById(R.id.setting_data);
         moreViewSettings = findViewById(R.id.settings);
 
-        moreViewFlip.setOnClickListener(this);
-        moreViewCamera.setOnClickListener(this);
-        moreViewMic.setOnClickListener(this);
-//        moreViewData.setOnClickListener(this);
-        moreViewSettings.setOnClickListener(this);
+        ClickUtils.applySingleDebouncing(moreViewFlip, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+            isCameraFront = !isCameraFront;
+            listener.onCameraFlip(isCameraFront);
+        });
+        ClickUtils.applySingleDebouncing(moreViewCamera, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+            boolean enable = !isCameraEnable;
+            enableCamaraView(enable);
+            listener.onCameraEnable(enable);
+        });
+        ClickUtils.applySingleDebouncing(moreViewMic, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+            boolean enable = !isMicEnable;
+            enableMicView(enable);
+            listener.onMicEnable(enable);
+        });
+//        ClickUtils.applySingleDebouncing(moreViewData, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+//            listener.onClickData();
+//        });
+        ClickUtils.applySingleDebouncing(moreViewSettings, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+            listener.onClickSettings();
+        });
     }
 
     public void enableMicView(boolean enable) {
@@ -57,32 +74,6 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
         isCameraEnable = enable;
         if (moreViewCamera != null) {
             moreViewCamera.enableCamaraView(enable);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (listener == null) {
-            return;
-        }
-        int id = v.getId();
-        if (id == R.id.setting_flip) {
-            isCameraFront = !isCameraFront;
-            listener.onCameraFlip(isCameraFront);
-        } else if (id == R.id.setting_camera) {
-            boolean enable = !isCameraEnable;
-            enableCamaraView(enable);
-            listener.onCameraEnable(enable);
-        } else if (id == R.id.setting_mic) {
-            boolean enable = !isMicEnable;
-            enableMicView(enable);
-            listener.onMicEnable(enable);
-        }
-//        else if (id == R.id.setting_data) {
-//            listener.onClickData();
-//        }
-        else if (id == R.id.settings) {
-            listener.onClickSettings();
         }
     }
 

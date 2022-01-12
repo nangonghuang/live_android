@@ -13,4 +13,5 @@ public class Constants {
     public static final String URL_PRIVACY_POLICY = "https://www.zegocloud.com/policy?index=0";
 
     public static final int MAX_CO_HOST_LIST_SIZE = 4;
+    public static final long DEBOUNCING_DEFAULT_VALUE = 1000;
 }

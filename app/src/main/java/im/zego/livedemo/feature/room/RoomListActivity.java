@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.blankj.utilcode.util.ClickUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.ThreadUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
@@ -17,6 +18,7 @@ import com.scwang.smart.refresh.header.MaterialHeader;
 import im.zego.live.ZegoRoomManager;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivityRoomListBinding;
 import im.zego.livedemo.feature.live.LiveRoomActivity;
 import im.zego.livedemo.feature.room.adapter.RoomListAdapter;
@@ -76,7 +78,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
     private void initListener() {
         binding.commonTitleView.setBackBtnClickListener(v -> onBackPressed());
         binding.commonTitleView.setSettingsBtnClickListener(v -> SettingsActivity.start(this));
-        binding.flCreateLive.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.flCreateLive, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
                 if (isAllGranted) {
                     LiveRoomActivity.start(this, REQUEST_CODE_LEAVE_ROOM);

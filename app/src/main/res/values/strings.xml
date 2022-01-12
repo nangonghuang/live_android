@@ -12,7 +12,7 @@
     <string name="welcome_page_get_more">Get More</string>
     <string name="welcome_page_sign_up">Sign Up</string>
     <string name="welcome_page_contact_us">Contact Us</string>
-    <string name="room_list_page_none">No live streams now. You can try to start your own live.</string>
+    <string name="room_list_page_none">No live streams now. \nYou can try to start your own live.</string>
     <string name="room_list_page_create">Create Live</string>
     <string name="room_list_page_refresh">Updating...</string>
     <string name="toast_room_existed">Failed to create room, because the room already exists.</string>
