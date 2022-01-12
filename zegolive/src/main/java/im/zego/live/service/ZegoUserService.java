@@ -1,6 +1,10 @@
 package im.zego.live.service;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
+import com.zego.ve.ThreadUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -11,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
@@ -50,15 +55,17 @@ public class ZegoUserService {
 
     private static final String TAG = "ZegoUserService";
 
-    public ZegoUserInfo localUserInfo;
-    private ZegoUserServiceListener listener;
+    private static final long RESET_INVITED_DELAY_TIME = 60 * 1000L;
 
+    public List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
+    public ZegoUserInfo localUserInfo;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private ZegoUserServiceListener listener;
     // local login user info
     // room member list
     private final List<ZegoUserInfo> userList = new ArrayList<>();
     private final Map<String, ZegoUserInfo> userMap = new HashMap<>();
-
-    public List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
 
     public boolean isSelfHost() {
         String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
@@ -137,6 +144,12 @@ public class ZegoUserService {
                 for (ZegoUserInfo zegoUserInfo : userInfoList) {
                     if (Objects.equals(userID, zegoUserInfo.getUserID())) {
                         zegoUserInfo.setHasInvited(true);
+                        handler.postDelayed(() -> {
+                            zegoUserInfo.setHasInvited(false);
+                            if (listener != null) {
+                                listener.onRoomUserInfoUpdate(userInfoList);
+                            }
+                        }, RESET_INVITED_DELAY_TIME);
                         break;
                     }
                 }

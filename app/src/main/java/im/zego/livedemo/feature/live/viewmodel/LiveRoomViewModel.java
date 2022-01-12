@@ -96,6 +96,11 @@ public class LiveRoomViewModel extends ViewModel {
 
         ZegoRoomManager.getInstance().userService.setListener(new ZegoUserServiceListener() {
             @Override
+            public void onRoomUserInfoUpdate(List<ZegoUserInfo> memberList) {
+                updateUserList();
+            }
+
+            @Override
             public void onRoomUserJoin(List<ZegoUserInfo> memberList) {
                 ZegoUserService userService = ZegoRoomManager.getInstance().userService;
                 boolean containsSelf = false;

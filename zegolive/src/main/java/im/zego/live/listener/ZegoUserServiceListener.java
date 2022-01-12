@@ -9,6 +9,8 @@ import im.zego.live.model.ZegoUserInfo;
  */
 public interface ZegoUserServiceListener {
 
+    void onRoomUserInfoUpdate(List<ZegoUserInfo> memberList);
+
     // receive user join room command
     void onRoomUserJoin(List<ZegoUserInfo> memberList);
 

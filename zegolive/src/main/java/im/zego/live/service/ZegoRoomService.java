@@ -217,6 +217,10 @@ public class ZegoRoomService {
             List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
             for (ZegoUserInfo zegoUserInfo : userInfoList) {
                 zegoUserInfo.setHasRequestedCoHost(operation.getRequestCoHostList().contains(zegoUserInfo.getUserID()));
+
+                if (UserInfoHelper.isUserIDCoHost(zegoUserInfo.getUserID())) {
+                    zegoUserInfo.setHasInvited(false);
+                }
             }
 
             // if coHost not in user list, this member may disconnect or already leave room
