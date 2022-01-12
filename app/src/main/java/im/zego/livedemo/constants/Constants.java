@@ -9,5 +9,8 @@ public class Constants {
     public static final String URL_CONTACT_US = "http://192.168.100.210:8081/contact";
     public static final String URL_DOWNLOAD = "http://192.168.100.210:8081/live-join";
 
+    public static final String URL_TERMS_OF_SERVICE = "https://www.zegocloud.com/policy?index=1";
+    public static final String URL_PRIVACY_POLICY = "https://www.zegocloud.com/policy?index=0";
+
     public static final int MAX_CO_HOST_LIST_SIZE = 4;
 }

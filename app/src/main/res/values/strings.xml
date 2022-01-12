@@ -211,4 +211,6 @@
     <string name="room_beautify_page_teeth_whitening">Teeth whitening</string>
     <string name="room_beautify_page_chin_lengthening">Chin lengthening</string>
 
+    <string name="setting_page_terms_of_service">Terms of service</string>
+    <string name="setting_page_privacy_policy">Privacy Policy</string>
 </resources>
