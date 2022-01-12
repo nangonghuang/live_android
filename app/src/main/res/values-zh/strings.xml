@@ -18,7 +18,7 @@
 
   <string name="toast_room_id_enter_error">请填写房间 ID</string>
   <string name="toast_room_not_exist_fail">该房间不存在，请创建房间</string>
-  <string name="toast_room_name_error">请填写房间名称</string>
+  <string name="create_page_room_name">请填写房间名称</string>
   <string name="toast_create_room_success">房间已被创建，请加入房间</string>
   <string name="toast_join_room_fail">加入房间失败，错误码：%d</string>
   <string name="toast_create_room_fail">创建房间失败，错误码：%d</string>
@@ -42,7 +42,7 @@
   <string name="room_page_grant_mic_permission">你还未授权我们使用麦克风</string>
   <string name="room_page_go_to_settings">去设置</string>
   <string name="room_page_cancel">取消</string>
-  <string name="room_page_user_list">用户列表（%d）</string>
+  <string name="user_list_page_participants_num">用户列表（%d）</string>
   <string name="room_page_invite_take_seat">邀请上麦</string>
   <string name="room_page_role_speaker">连麦成员</string>
   <string name="room_page_role_owner">房主</string>
@@ -72,15 +72,15 @@
   <string name="toast_lock_seat_fail">锁定麦位失败，错误码：%d</string>
   <string name="room_page_leave_speaker_seat">下麦</string>
   <string name="dialog_warning_leave_seat_message">是否踢 %s下麦？</string>
-  <string name="dialog_confirm">确认</string>
-  <string name="dialog_cancel">取消</string>
+  <string name="dialog_room_page_ok">确认</string>
+  <string name="dialog_room_page_cancel">取消</string>
   <string name="toast_kickout_leave_seat_error">踢下麦 %s 失败，错误码：%d</string>
   <string name="room_page_invitation_has_sent">邀请通知已发送</string>
   <string name="room_page_no_more_seat_available">已没有空闲的麦位</string>
   <string name="dialog_invition_title">上麦邀请</string>
   <string name="dialog_invition_descrip">房主邀请你一起连麦，是否同意</string>
-  <string name="dialog_refuse">拒绝</string>
-  <string name="dialog_accept">同意</string>
+  <string name="dialog_room_page_disagree">拒绝</string>
+  <string name="dialog_room_page_agree">同意</string>
   <string name="toast_to_be_a_speaker_seat_fail">连麦失败，错误码：%d</string>
   <string name="room_page_take_seat">上麦</string>
   <string name="toast_take_speaker_seat_fail">上麦失败，错误码：%d</string>
@@ -96,23 +96,7 @@
   <string name="member_list_send_invitation_error">Failed to send the invitation. Error code: %s</string>
   <string name="network_connect_failed">Network connection failed.  Please leave the room and retry.</string>
   <string name="network_connect_failed_title">Network Error</string>
-  <string name="face_shape_retouch">Face shape retouch</string>
-  <string name="face_beautification">Face beautification</string>
+  <string name="room_beautify_page_skin_tone_enhancement">Face shape retouch</string>
+  <string name="room_beautify_page_face_beautification">Face beautification</string>
 
-  <string-array name="beauty_list">
-    <item>美白</item>
-    <item>磨皮</item>
-    <item>锐化</item>
-    <item>红润</item>
-  </string-array>
-
-  <string-array name="beauty_type_list">
-    <item>大眼</item>
-    <item>瘦脸</item>
-    <item>小嘴</item>
-    <item>亮眼</item>
-    <item>瘦鼻</item>
-    <item>白牙</item>
-    <item>收下巴</item>
-  </string-array>
 </resources>

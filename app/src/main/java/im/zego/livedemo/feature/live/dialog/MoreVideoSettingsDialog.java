@@ -47,7 +47,7 @@ public class MoreVideoSettingsDialog extends BaseBottomDialog {
         videoResolutionCellView.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_video_resolution),
+                    StringUtils.getString(R.string.room_settings_page_video_resolution),
                     viewModel.getSettingConfig().getVideoResolution(),
                     viewModel.videoResolutionStringArray,
                     checkedString -> {
@@ -61,7 +61,7 @@ public class MoreVideoSettingsDialog extends BaseBottomDialog {
         audioBitrateCellView.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_audio_bitrate),
+                    StringUtils.getString(R.string.room_settings_page_audio_bitrate),
                     viewModel.getSettingConfig().getAudioBitrate(),
                     viewModel.audioBitrateStringArray,
                     checkedString -> {

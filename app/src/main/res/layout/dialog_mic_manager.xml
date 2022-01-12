@@ -16,14 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/room_page_co_host_mute" />
+        tools:text="@string/room_page_mute" />
 
     <TextView
         android:id="@+id/tv_prohibit_connect"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="@string/room_page_co_host_prohibit"
+        android:text="@string/room_page_prohibit_to_connect"
         android:textColor="#ffffffff"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"

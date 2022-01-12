@@ -2,7 +2,6 @@ package im.zego.livedemo.feature.live;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -158,10 +157,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onReceiveAddCoHostInvitation(String operateUserID) {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.dialog_invite_to_connect_title),
-                    StringUtils.getString(R.string.dialog_invite_to_connect_descrip),
-                    StringUtils.getString(R.string.dialog_accept),
-                    StringUtils.getString(R.string.dialog_refuse),
+                    StringUtils.getString(R.string.dialog_invition_title),
+                    StringUtils.getString(R.string.dialog_invition_descrip),
+                    StringUtils.getString(R.string.dialog_room_page_agree),
+                    StringUtils.getString(R.string.dialog_room_page_disagree),
                     (dialog, which) -> {
                         dialog.dismiss();
                         liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
@@ -186,9 +185,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
 
             @Override
-            public void onReceiveAddCoHostRespond(boolean accept) {
+            public void onReceiveAddCoHostRespond(String userID, boolean accept) {
                 if (!accept) {
-                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_invite_to_connect_refuse));
+                    String userName = UserInfoHelper.getUserName(userID);
+                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_user_list_page_rejected_invitation, userName));
                 }
             }
 
@@ -196,10 +196,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onReceiveToCoHostRequest(String requestUserID) {
                 String userName = UserInfoHelper.getUserName(requestUserID);
                 Dialog alertDialog = DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.dialog_request_connect_title),
-                    StringUtils.getString(R.string.dialog_request_connect_descrip, UserInfoHelper.getUserNameShort(userName)),
-                    StringUtils.getString(R.string.dialog_accept),
-                    StringUtils.getString(R.string.dialog_refuse),
+                    StringUtils.getString(R.string.dialog_room_page_title_connection_request),
+                    StringUtils.getString(R.string.dialog_room_page_message_connection_request, UserInfoHelper.getUserNameShort(userName)),
+                    StringUtils.getString(R.string.dialog_room_page_agree),
+                    StringUtils.getString(R.string.dialog_room_page_disagree),
                     (dialog, which) -> {
                         dialog.dismiss();
                         liveRoomViewModel.respondToBeCoHostRequest(true, requestUserID, null);
@@ -317,11 +317,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             if (liveRoomViewModel.isCoHostMax()) {
                 ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
             } else {
-                String string = StringUtils.getString(R.string.room_page_invite_to_connect);
+                String string = StringUtils.getString(R.string.user_list_page_invite_to_speak);
                 DialogHelper.showToastDialog(this, string, dialog -> {
                     liveRoomViewModel.inviteToBeCoHost(userInfo.getUserID(), errorCode -> {
                         if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_invite_to_connect_fail));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
                         }
                     });
                 });
@@ -629,9 +629,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onEndConnection() {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
                     StringUtils.getString(R.string.dialog_end_connect_title),
-                    StringUtils.getString(R.string.dialog_end_connect_descrip),
-                    StringUtils.getString(R.string.dialog_confirm),
-                    StringUtils.getString(R.string.dialog_cancel),
+                    StringUtils.getString(R.string.dialog_room_message_ended_the_connection),
+                    StringUtils.getString(R.string.dialog_room_page_ok),
+                    StringUtils.getString(R.string.dialog_room_page_cancel),
                     (dialog, which) -> {
                         dialog.dismiss();
                         liveRoomViewModel.leaveCoHostSeat(null, errorCode -> {
@@ -654,7 +654,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         builder2.setTitle(R.string.network_connect_failed_title);
         builder2.setMessage(R.string.network_connect_failed);
         builder2.setCancelable(false);
-        builder2.setPositiveButton(R.string.dialog_confirm, (dialog1, which1) -> {
+        builder2.setPositiveButton(R.string.dialog_room_page_ok, (dialog1, which1) -> {
             ActivityUtils.finishToActivity(UserLoginActivity.class, false);
         });
         if (!LiveRoomActivity.this.isFinishing()) {
@@ -700,7 +700,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
                     StringUtils.getString(R.string.room_page_destroy_room),
                     StringUtils.getString(R.string.dialog_sure_to_destroy_room),
-                    StringUtils.getString(R.string.dialog_confirm),
+                    StringUtils.getString(R.string.dialog_room_page_ok),
                     null,
                     true,
                     (dialog, which) -> {

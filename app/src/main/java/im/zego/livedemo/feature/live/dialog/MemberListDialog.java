@@ -44,7 +44,7 @@ public class MemberListDialog extends BaseBottomDialog {
         tvTitle = findViewById(R.id.tv_title);
         recyclerView = findViewById(R.id.rv_user_list);
 
-        tvTitle.setText(StringUtils.getString(R.string.room_page_user_list, userList.size()));
+        tvTitle.setText(StringUtils.getString(R.string.user_list_page_participants_num, userList.size()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         memberListAdapter = new MemberListAdapter(userList);
         recyclerView.setAdapter(memberListAdapter);
@@ -58,7 +58,7 @@ public class MemberListDialog extends BaseBottomDialog {
             memberListAdapter.updateUserList(userList);
         }
         if (tvTitle != null) {
-            tvTitle.setText(StringUtils.getString(R.string.room_page_user_list, userList.size()));
+            tvTitle.setText(StringUtils.getString(R.string.user_list_page_participants_num, userList.size()));
         }
     }
 }

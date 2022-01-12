@@ -152,11 +152,11 @@ public class LiveRoomViewModel extends ViewModel {
             }
 
             @Override
-            public void onReceiveAddCoHostRespond(boolean accept) {
+            public void onReceiveAddCoHostRespond(String userID, boolean accept) {
                 if (!accept) {
                     updateUserList();
                 }
-                listener.onReceiveAddCoHostRespond(accept);
+                listener.onReceiveAddCoHostRespond(userID, accept);
             }
 
             @Override

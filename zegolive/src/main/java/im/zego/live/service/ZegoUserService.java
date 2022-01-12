@@ -421,7 +421,7 @@ public class ZegoUserService {
                     }
 
                     if (listener != null) {
-                        listener.onReceiveAddCoHostRespond(content.accept);
+                        listener.onReceiveAddCoHostRespond(command.userID, content.accept);
                     }
                 }
             }

@@ -14,7 +14,7 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
     private MoreSettingView moreViewFlip;
     private MoreSettingView moreViewCamera;
     private MoreSettingView moreViewMic;
-    private MoreSettingView moreViewData;
+//    private MoreSettingView moreViewData;
     private MoreSettingView moreViewSettings;
 
     private ISettingMoreListener listener;
@@ -36,13 +36,13 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
         moreViewFlip = findViewById(R.id.setting_flip);
         moreViewCamera = findViewById(R.id.setting_camera);
         moreViewMic = findViewById(R.id.setting_mic);
-        moreViewData = findViewById(R.id.setting_data);
+//        moreViewData = findViewById(R.id.setting_data);
         moreViewSettings = findViewById(R.id.settings);
 
         moreViewFlip.setOnClickListener(this);
         moreViewCamera.setOnClickListener(this);
         moreViewMic.setOnClickListener(this);
-        moreViewData.setOnClickListener(this);
+//        moreViewData.setOnClickListener(this);
         moreViewSettings.setOnClickListener(this);
     }
 
@@ -77,9 +77,11 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
             boolean enable = !isMicEnable;
             enableMicView(enable);
             listener.onMicEnable(enable);
-        } else if (id == R.id.setting_data) {
-            listener.onClickData();
-        } else if (id == R.id.settings) {
+        }
+//        else if (id == R.id.setting_data) {
+//            listener.onClickData();
+//        }
+        else if (id == R.id.settings) {
             listener.onClickSettings();
         }
     }
@@ -96,7 +98,7 @@ public class MoreSettingDialog extends BaseBottomDialog implements View.OnClickL
 
         void onMicEnable(boolean isMicEnable);
 
-        void onClickData();
+//        void onClickData();
 
         void onClickSettings();
     }

@@ -20,7 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
         android:gravity="start"
-        android:text="@string/room_page_settings"
+        android:text="@string/room_more_setting"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 app:cell_view_content="1080x1920"
-                app:cell_view_title="@string/room_page_settings_video_resolution"
+                app:cell_view_title="@string/room_settings_page_video_resolution"
                 app:cell_view_type="text_with_arrow" />
 
             <im.zego.livedemo.feature.live.view.VideoSettingCellView
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 app:cell_view_content="48kbps"
-                app:cell_view_title="@string/room_page_settings_audio_bitrate"
+                app:cell_view_title="@string/room_settings_page_audio_bitrate"
                 app:cell_view_type="text_with_arrow" />
         </LinearLayout>
     </ScrollView>

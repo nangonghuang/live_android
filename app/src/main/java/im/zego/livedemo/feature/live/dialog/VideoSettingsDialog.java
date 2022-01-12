@@ -65,7 +65,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsEncodeType.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_encode_type),
+                    StringUtils.getString(R.string.room_settings_page_codec),
                     viewModel.getSettingConfig().getEncodeType(),
                     viewModel.encodingTypeStringArray,
                     encodeType -> {
@@ -112,7 +112,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsVideoResolution.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_video_resolution),
+                    StringUtils.getString(R.string.room_settings_page_video_resolution),
                     viewModel.getSettingConfig().getVideoResolution(),
                     viewModel.videoResolutionStringArray,
                     checkedString -> {
@@ -128,7 +128,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsAudioBitrate.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_audio_bitrate),
+                    StringUtils.getString(R.string.room_settings_page_audio_bitrate),
                     viewModel.getSettingConfig().getAudioBitrate(),
                     viewModel.audioBitrateStringArray,
                     checkedString -> {

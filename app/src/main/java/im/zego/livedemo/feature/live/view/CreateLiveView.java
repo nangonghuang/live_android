@@ -64,7 +64,7 @@ public class CreateLiveView extends ConstraintLayout {
         binding.tvStartLive.setOnClickListener(v -> {
             String roomName = binding.etRoomName.getText().toString().trim();
             if (TextUtils.isEmpty(roomName)) {
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_name_error));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.create_page_room_name));
                 return;
             }
             listener.onStartLiveClick(roomName);

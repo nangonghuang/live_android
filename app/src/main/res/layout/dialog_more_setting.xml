@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:text="@string/room_page_more_title"
+        android:text="@string/room_more_setting"
         android:textColor="@color/white_color"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:moreSettingName="@string/room_page_more_flip"
+            app:moreSettingName="@string/room_more_flip"
             app:moreSettingSrc="@drawable/setting_flip" />
 
         <im.zego.livedemo.feature.live.view.MoreSettingView
@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:moreSettingName="@string/room_page_more_camera"
+            app:moreSettingName="@string/room_more_camera"
             app:moreSettingSrc="@drawable/setting_cam_on" />
 
         <im.zego.livedemo.feature.live.view.MoreSettingView
@@ -57,23 +57,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:moreSettingName="@string/room_page_more_mic"
+            app:moreSettingName="@string/room_more_mic"
             app:moreSettingSrc="@drawable/setting_mic_on" />
 
-        <im.zego.livedemo.feature.live.view.MoreSettingView
-            android:id="@+id/setting_data"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:moreSettingName="@string/room_page_more_data"
-            app:moreSettingSrc="@drawable/setting_data" />
+<!--        <im.zego.livedemo.feature.live.view.MoreSettingView-->
+<!--            android:id="@+id/setting_data"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            app:moreSettingName="@string/room_page_more_data"-->
+<!--            app:moreSettingSrc="@drawable/setting_data" />-->
 
         <im.zego.livedemo.feature.live.view.MoreSettingView
             android:id="@+id/settings"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:moreSettingName="@string/room_page_more_settings"
+            app:moreSettingName="@string/room_more_setting"
             app:moreSettingSrc="@drawable/setting_settings" />
 
     </LinearLayout>

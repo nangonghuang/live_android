@@ -58,21 +58,21 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         switch (getRoleType(userInfo)) {
             case Host:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_host);
                 break;
             case CoHost:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_co_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_conneted);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
                 break;
             case InvitedCoHost:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_invited_co_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_invited);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
                 break;
             case Me:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_me);
+                holder.tvUserInfo.setText(R.string.user_list_page_me);
                 break;
             case Participant:
                 if (UserInfoHelper.isSelfHost()) {

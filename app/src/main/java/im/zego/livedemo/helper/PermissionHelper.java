@@ -31,7 +31,7 @@ public class PermissionHelper {
                             new CommonDialog.Builder(activity)
                                     .setTitle(StringUtils.getString(R.string.dialog_room_page_title_cannot_use_camera))
                                     .setContent(StringUtils.getString(R.string.dialog_room_page_massage_cannot_use_camera))
-                                    .setNegativeButton(StringUtils.getString(R.string.dialog_cancel), (dialog, which) -> {
+                                    .setNegativeButton(StringUtils.getString(R.string.dialog_room_page_cancel), (dialog, which) -> {
                                         dialog.dismiss();
                                     })
                                     .setPositiveButton(StringUtils.getString(R.string.dialog_room_page_go_to_settings), (dialog, which) -> {
@@ -44,7 +44,7 @@ public class PermissionHelper {
                             new CommonDialog.Builder(activity)
                                     .setTitle(StringUtils.getString(R.string.dialog_room_page_mic_cant_open))
                                     .setContent(StringUtils.getString(R.string.dialog_room_page_mic_permission))
-                                    .setNegativeButton(StringUtils.getString(R.string.dialog_cancel), (dialog, which) -> {
+                                    .setNegativeButton(StringUtils.getString(R.string.dialog_room_page_cancel), (dialog, which) -> {
                                         dialog.dismiss();
                                     })
                                     .setPositiveButton(StringUtils.getString(R.string.dialog_room_page_go_to_settings), (dialog, which) -> {
