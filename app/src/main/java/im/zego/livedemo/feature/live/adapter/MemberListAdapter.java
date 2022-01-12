@@ -140,16 +140,30 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     }
 
     private int getRoleWeight(ZegoUserInfo userInfo) {
-        switch (getRoleType(userInfo)) {
-            case Host:
-                return 1;
-            case CoHost:
-            case InvitedCoHost:
-                return 2;
-            case Me:
-                return 3;
-            case Participant:
-                return 4;
+        if (UserInfoHelper.isSelfHost()) {
+            switch (getRoleType(userInfo)) {
+                case Host:
+                    return 1;
+                case CoHost:
+                case InvitedCoHost:
+                    return 2;
+                case Me:
+                    return 3;
+                case Participant:
+                    return 4;
+            }
+        } else {
+            switch (getRoleType(userInfo)) {
+                case Host:
+                    return 1;
+                case Me:
+                    return 2;
+                case CoHost:
+                case InvitedCoHost:
+                    return 3;
+                case Participant:
+                    return 4;
+            }
         }
         return 5;
     }
