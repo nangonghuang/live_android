@@ -15,11 +15,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ThreadUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.List;
@@ -31,7 +33,6 @@ import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
-import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.constants.Constants;
@@ -79,6 +80,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     public static void start(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         activity.startActivityForResult(intent, requestCode);
+//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /**
@@ -88,6 +90,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         intent.putExtra(EXTRA_KEY_ROOM_ID, roomID);
         activity.startActivityForResult(intent, requestCode);
+//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private LiveRoomViewModel liveRoomViewModel;
@@ -333,6 +336,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 });
             dialog.show();
         });
+        // Fix refresh flickering issue
+        SimpleItemAnimator itemAnimator = ((SimpleItemAnimator) binding.rvCoHostList.getItemAnimator());
+        if (itemAnimator != null) {
+            itemAnimator.setSupportsChangeAnimations(false);
+        }
         binding.rvCoHostList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, true));
         binding.rvCoHostList.setAdapter(coHostListAdapter);
 
@@ -488,7 +496,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 } else {
-                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
+                    ToastUtils.showLong(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                     finish();
                 }
             });
