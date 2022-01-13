@@ -10,10 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import im.zego.live.constants.ZegoRoomConstants;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 
 /**
@@ -58,6 +60,14 @@ public class OperationCommand {
         return seq > 0 && seq > action.getSeq();
     }
 
+    public void addSeq(int requestSeq) {
+        if (requestSeq > action.getSeq()) {
+            action.setSeq(requestSeq + 1);
+        } else {
+            action.setSeq(action.getSeq() + 1);
+        }
+    }
+
     public OperationCommand copy() {
         OperationCommand command = new OperationCommand();
         command.seatList = new ArrayList<>(seatList);
@@ -70,26 +80,45 @@ public class OperationCommand {
     public void update(HashMap<String, String> map) {
         Gson gson = ZegoRoomAttributesHelper.gson;
         Set<String> keys = map.keySet();
+        // according to the action
+        // Modify the values of various member properties of the operation
         for (String key : keys) {
             switch (key) {
-                case ZegoRoomConstants.KEY_ACTION:
-                    OperationAction action = gson.fromJson(map.get(key), OperationAction.class);
-                    this.action.setSeq(action.getSeq());
-                    break;
                 case ZegoRoomConstants.KEY_SEAT:
-                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<List<ZegoCoHostSeatModel>>() {}.getType());
+                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<ArrayList<ZegoCoHostSeatModel>>() {}.getType());
                     if (seatList != null && !seatList.isEmpty()) {
-                        this.seatList = seatList;
+                        if (action.getType() == OperationActionType.TakeCoHostSeat) {
+                            // If the action is take seat,
+                            // we need to filter duplicate requests to avoid simultaneous operations
+                            this.seatList.addAll(seatList);
+                            this.seatList = removeDuplicateItem(this.seatList);
+                        } else if (action.getType() == OperationActionType.LeaveCoHostSeat) {
+                            ZegoCoHostSeatModel seatModel = UserInfoHelper.getSeatModel(this.seatList, action.getTargetID());
+                            this.seatList.remove(seatModel);
+                        } else {
+                            this.seatList = seatList;
+                        }
                     }
                     break;
                 case ZegoRoomConstants.KEY_REQUEST_CO_HOST:
-                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<List<String>>() {}.getType());
+                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<ArrayList<String>>() {}.getType());
                     if (requestCoHostList != null && !requestCoHostList.isEmpty()) {
-                        this.requestCoHostList = requestCoHostList;
+                        if (action.getType() == OperationActionType.RequestToCoHost) {
+                            this.requestCoHostList.addAll(requestCoHostList);
+                            this.requestCoHostList = removeDuplicateItem(this.requestCoHostList);
+                        } else if (action.getType() == OperationActionType.CancelRequestCoHost) {
+                            this.requestCoHostList.remove(action.getTargetID());
+                        } else {
+                            this.requestCoHostList = requestCoHostList;
+                        }
                     }
                     break;
             }
         }
+    }
+
+    private <T> ArrayList<T> removeDuplicateItem(List<T> listWithDuplicates) {
+        return new ArrayList<>(new LinkedHashSet<>(listWithDuplicates));
     }
 
     public HashMap<String, String> getAttributes(@OperationAttributeType int type) {

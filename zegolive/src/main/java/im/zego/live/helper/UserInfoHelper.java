@@ -1,5 +1,7 @@
 package im.zego.live.helper;
 
+import androidx.annotation.Nullable;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -19,6 +21,11 @@ public final class UserInfoHelper {
     public static boolean isSelfCoHost() {
         ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         return isUserIDCoHost(selfUser.getUserID());
+    }
+
+    public static boolean isSelfInRequestedCoHost() {
+        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
+        return isUserIDInRequestedCoHost(selfUser.getUserID());
     }
 
     public static boolean isUserIDSelf(String userID) {
@@ -43,6 +50,18 @@ public final class UserInfoHelper {
         return isCoHost;
     }
 
+    public static boolean isUserIDInRequestedCoHost(String userID) {
+        boolean hasRequested = false;
+        List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+        for (ZegoUserInfo zegoUserInfo : userInfoList) {
+            if (Objects.equals(zegoUserInfo.getUserID(), userID) && StringUtils.isNotEmpty(userID)) {
+                hasRequested = zegoUserInfo.isHasRequestedCoHost();
+                break;
+            }
+        }
+        return hasRequested;
+    }
+
     public static ZegoCoHostSeatModel getSelfCoHost() {
         ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         String userID = selfUser.getUserID();
@@ -55,6 +74,17 @@ public final class UserInfoHelper {
             }
         }
         return selfModel;
+    }
+
+    @Nullable
+    public static ZegoCoHostSeatModel getSeatModel(List<ZegoCoHostSeatModel> seatList, String targetID) {
+        ZegoCoHostSeatModel seatModel = null;
+        for (ZegoCoHostSeatModel model : seatList) {
+            if (Objects.equals(model.getUserID(), targetID)) {
+                seatModel = model;
+            }
+        }
+        return seatModel;
     }
 
     public static String getUserName(String userID) {

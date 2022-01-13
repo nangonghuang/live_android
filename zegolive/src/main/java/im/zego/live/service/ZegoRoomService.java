@@ -20,6 +20,7 @@ import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 import im.zego.live.listener.ZegoRoomServiceListener;
 import im.zego.live.model.OperationAction;
+import im.zego.live.model.OperationActionType;
 import im.zego.live.model.OperationCommand;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
@@ -109,9 +110,12 @@ public class ZegoRoomService {
 
     // leave the room
     public void leaveRoom(final ZegoRoomCallback callback) {
+        if (UserInfoHelper.isSelfInRequestedCoHost()) {
+            ZegoRoomManager.getInstance().userService.cancelRequestToCoHost(errorCode -> {
+            });
+        }
         if (UserInfoHelper.isSelfCoHost()) {
             ZegoRoomManager.getInstance().userService.leaveCoHostSeat(null, errorCode -> {
-
             });
         }
 
@@ -272,8 +276,31 @@ public class ZegoRoomService {
 
     private void resendRoomAttributes(HashMap<String, String> roomAttributes, OperationAction action) {
         // only the host can resent the room attributes
-        if (!ZegoRoomManager.getInstance().userService.isSelfHost()) return;
+        if (!ZegoRoomManager.getInstance().userService.isSelfHost())
+            return;
 
+        String roomID = this.roomInfo.getRoomID();
+
+        OperationCommand operation = this.operation.copy();
+        operation.setAction(action);
+        operation.addSeq(action.getSeq());
+
+        operation.update(roomAttributes);
+
+        HashMap<String, String> map;
+        if (operation.getAction().getType() == OperationActionType.Mic
+                || operation.getAction().getType() == OperationActionType.Camera
+                || operation.getAction().getType() == OperationActionType.Mute
+                || operation.getAction().getType() == OperationActionType.TakeCoHostSeat
+                || operation.getAction().getType() == OperationActionType.LeaveCoHostSeat
+        ) {
+            map = operation.getAttributes(OperationCommand.OperationAttributeTypeSeat);
+        } else {
+            map = operation.getAttributes(OperationCommand.OperationAttributeTypeRequestCoHost);
+        }
+
+        ZegoRoomAttributesHelper.setRoomAttributes(map, roomID, ZegoRoomAttributesHelper.getAttributesSetConfig(), errorCode -> {
+        });
     }
 
     public void onConnectionStateChanged(ZIM zim, ZIMConnectionState state, ZIMConnectionEvent event,
