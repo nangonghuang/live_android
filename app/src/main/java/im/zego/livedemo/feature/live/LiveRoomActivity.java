@@ -176,12 +176,17 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         dialog.dismiss();
                         liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
                             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                coHostTakeSeat(isAllGranted -> {
-                                    if (!isAllGranted) {
-                                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
-                                        liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
-                                    }
-                                });
+                                if (liveRoomViewModel.isCoHostMax()) {
+                                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                                } else {
+                                    coHostTakeSeat(isAllGranted -> {
+                                        if (!isAllGranted) {
+                                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
+                                            liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
+                                        }
+                                    });
+                                }
                             } else {
                                 ToastHelper
                                     .showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
@@ -238,12 +243,17 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
                 dismissAllToast();
                 if (agree) {
-                    coHostTakeSeat(isAllGranted -> {
-                        if (!isAllGranted) {
-                            binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
-                        }
-                    });
+                    if (liveRoomViewModel.isCoHostMax()) {
+                        ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                        binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                    } else {
+                        coHostTakeSeat(isAllGranted -> {
+                            if (!isAllGranted) {
+                                binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
+                            }
+                        });
+                    }
                 } else {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                     ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_rejected));

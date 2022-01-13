@@ -73,12 +73,12 @@ public class LiveBottomView extends ConstraintLayout {
         ClickUtils.applySingleDebouncing(binding.layoutApplyConnection, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             switch (connectionType) {
                 case CONNECTION_NOT_APPLY:
-                    listener.onApplyConnection();
                     toConnectionType(CONNECTION_APPLYING);
+                    listener.onApplyConnection();
                     break;
                 case CONNECTION_APPLYING:
-                    listener.onCancelApplyConnection();
                     toConnectionType(CONNECTION_NOT_APPLY);
+                    listener.onCancelApplyConnection();
                     break;
                 case CONNECTING:
                     listener.onEndConnection();
