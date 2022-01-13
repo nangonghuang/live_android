@@ -67,12 +67,6 @@ public class ZegoUserService {
     private final List<ZegoUserInfo> userList = new ArrayList<>();
     private final Map<String, ZegoUserInfo> userMap = new HashMap<>();
 
-    public boolean isSelfHost() {
-        String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
-        String userID = localUserInfo.getUserID();
-        return Objects.equals(hostID, userID) && StringUtils.isNotEmpty(hostID);
-    }
-
     // user login
     public void login(ZegoUserInfo userInfo, String token, final ZegoRoomCallback callback) {
         ZIMUserInfo zimUserInfo = new ZIMUserInfo();
@@ -336,7 +330,6 @@ public class ZegoUserService {
     public void onRoomAttributesUpdated(HashMap<String, String> roomAttributes, OperationCommand command) {
         String myUserID = localUserInfo.getUserID();
         OperationAction action = command.getAction();
-        //        if (!Objects.equals(myUserID, action.getTargetID())) return;
 
         switch (action.getType()) {
             case RequestToCoHost:

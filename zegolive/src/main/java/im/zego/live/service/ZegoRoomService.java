@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -180,7 +181,7 @@ public class ZegoRoomService {
     public void onRoomAttributesUpdated(ZIM zim, ZIMRoomAttributesUpdateInfo info, String roomID) {
         Log.d(TAG,
                 "onRoomAttributesUpdated() called with: info.action = [" + info.action + "], info.roomAttributes = ["
-                        + info.roomAttributes + "], roomID = [" + roomID
+                        + Collections.singletonList(info.roomAttributes) + "], roomID = [" + roomID
                         + "]");
         if (info.action == ZIMRoomAttributesUpdateAction.DELETE) {
             String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
@@ -191,6 +192,7 @@ public class ZegoRoomService {
                 return;
             }
         }
+
         Gson gson = ZegoRoomAttributesHelper.gson;
         String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
         if (StringUtils.isNotEmpty(roomJson)) {
@@ -205,8 +207,11 @@ public class ZegoRoomService {
         if (StringUtils.isNotEmpty(actionJson)) {
             OperationAction action = gson.fromJson(actionJson, OperationAction.class);
             // if the seq is invalid
+            // only the host can resent the room attributes
             if (!operation.isSeqValid(action.getSeq())) {
-                resendRoomAttributes(info.roomAttributes, action);
+                if (UserInfoHelper.isSelfHost()) {
+                    resendRoomAttributes(info.roomAttributes, action);
+                }
                 return;
             } else {
                 operation.setAction(action);
@@ -216,7 +221,6 @@ public class ZegoRoomService {
             operation.update(info.roomAttributes);
 
             ZegoRoomManager.getInstance().userService.coHostList = operation.getSeatList();
-            List<ZegoCoHostSeatModel> coHostList = ZegoRoomManager.getInstance().userService.coHostList;
 
             List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
             for (ZegoUserInfo zegoUserInfo : userInfoList) {
@@ -231,6 +235,7 @@ public class ZegoRoomService {
             // we need make him leave seat actively
             // remember only room host have this operation rights
             if (UserInfoHelper.isSelfHost()) {
+                List<ZegoCoHostSeatModel> coHostList = ZegoRoomManager.getInstance().userService.coHostList;
                 for (ZegoCoHostSeatModel model : coHostList) {
                     boolean isFound = false;
                     for (ZegoUserInfo zegoUserInfo : userInfoList) {
@@ -275,17 +280,13 @@ public class ZegoRoomService {
     }
 
     private void resendRoomAttributes(HashMap<String, String> roomAttributes, OperationAction action) {
-        // only the host can resent the room attributes
-        if (!ZegoRoomManager.getInstance().userService.isSelfHost())
-            return;
-
         String roomID = this.roomInfo.getRoomID();
 
         OperationCommand operation = this.operation.copy();
         operation.setAction(action);
         operation.addSeq(action.getSeq());
 
-        operation.update(roomAttributes);
+        operation.updateForResend(roomAttributes);
 
         HashMap<String, String> map;
         if (operation.getAction().getType() == OperationActionType.Mic
@@ -298,6 +299,8 @@ public class ZegoRoomService {
         } else {
             map = operation.getAttributes(OperationCommand.OperationAttributeTypeRequestCoHost);
         }
+
+        Log.d(TAG, "resendRoomAttributes() called with: roomAttributes = [" + Collections.singletonList(map) + "]");
 
         ZegoRoomAttributesHelper.setRoomAttributes(map, roomID, ZegoRoomAttributesHelper.getAttributesSetConfig(), errorCode -> {
         });

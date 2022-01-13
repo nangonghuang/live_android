@@ -29,6 +29,7 @@ public class ZegoRoomAttributesHelper {
     private static final String TAG = "ZegoRoomAttributes";
 
     public static Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
             .registerTypeAdapterFactory(new CustomTypeAdapterFactory())
             .create();
 
@@ -50,7 +51,7 @@ public class ZegoRoomAttributesHelper {
         OperationCommand operation = ZegoRoomManager.getInstance().roomService.operation.copy();
         operation.getAction().setSeq(operation.getAction().getSeq() + 1);
         operation.getAction().setOperatorID(myUserID);
-        operation.getAction().setTargetID(myUserID);
+        operation.getAction().setTargetID(hostID);
 
         if (isRequest) {
             operation.getAction().setType(OperationActionType.RequestToCoHost);

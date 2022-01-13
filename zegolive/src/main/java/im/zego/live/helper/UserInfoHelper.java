@@ -15,7 +15,9 @@ import im.zego.live.model.ZegoUserInfo;
 public final class UserInfoHelper {
 
     public static boolean isSelfHost() {
-        return ZegoRoomManager.getInstance().userService.isSelfHost();
+        String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
+        String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
+        return Objects.equals(hostID, userID) && StringUtils.isNotEmpty(hostID);
     }
 
     public static boolean isSelfCoHost() {
@@ -82,6 +84,7 @@ public final class UserInfoHelper {
         for (ZegoCoHostSeatModel model : seatList) {
             if (Objects.equals(model.getUserID(), targetID)) {
                 seatModel = model;
+                break;
             }
         }
         return seatModel;
