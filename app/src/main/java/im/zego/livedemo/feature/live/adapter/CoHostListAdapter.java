@@ -1,6 +1,7 @@
 package im.zego.livedemo.feature.live.adapter;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.helper.AvatarHelper;
 
 public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.ViewHolder> {
+    private static final String TAG = "CoHostListAdapter";
 
     private List<ZegoCoHostSeatModel> seatModels = new ArrayList<>();
     private ICoHostClickListener listener;
@@ -35,13 +37,8 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
     }
 
     public void setList(List<ZegoCoHostSeatModel> list) {
+        Log.d(TAG, "setList" + list);
         seatModels.clear();
-        seatModels.addAll(list);
-        removeHostSeat(seatModels);
-        notifyDataSetChanged();
-    }
-
-    public void addList(List<ZegoCoHostSeatModel> list) {
         seatModels.addAll(list);
         removeHostSeat(seatModels);
         notifyDataSetChanged();
@@ -91,6 +88,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         }
 
         ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.getUserInfo(model.getUserID());
+        Log.d(TAG, "userInfo" + userInfo);
         if (userInfo == null) return;
 
         int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());

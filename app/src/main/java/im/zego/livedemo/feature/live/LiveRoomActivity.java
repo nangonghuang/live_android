@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
@@ -103,6 +105,13 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private SoundEffectsDialog soundEffectsDialog;
 
     private final ArrayMap<String, Dialog> requestDialogMap = new ArrayMap<>();
+
+    private final Runnable cancelApplyConnectionRunnable = () -> {
+        dismissAllToast();
+        binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+        liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
+        });
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -226,6 +235,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onReceiveToCoHostRespond(boolean agree) {
+                ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
                 dismissAllToast();
                 if (agree) {
                     coHostTakeSeat(isAllGranted -> {
@@ -313,6 +323,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 });
             dialog.show();
         });
+        binding.rvCoHostList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, true));
         binding.rvCoHostList.setAdapter(coHostListAdapter);
 
         memberListDialog = new MemberListDialog(this, userInfo -> {
@@ -377,6 +388,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             binding.ivHostBg.setImageBitmap(blurBitmap);
             binding.ivHostHead.setImageBitmap(roundBitmap);
             binding.tvHostName.setText(userName);
+
+            coHostListAdapter.notifyDataSetChanged();
         });
 
         liveRoomViewModel.coHostList.observe(this, coHostList -> {
@@ -599,6 +612,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onApplyConnection() {
                 if (liveRoomViewModel.isCoHostMax()) {
                     ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 } else {
                     liveRoomViewModel.requestToBeCoHost(errorCode -> {
                         if (errorCode != ZegoRoomErrorCode.SUCCESS) {
@@ -608,16 +622,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                             showNormalToastDialog(StringUtils.getString(R.string.toast_room_applied_connection));
                         }
                     });
-                    ThreadUtils.runOnUiThreadDelayed(() -> {
-                        dismissAllToast();
-                        liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
-                        });
-                    }, 30_000L);
+                    ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
+                    ThreadUtils.runOnUiThreadDelayed(cancelApplyConnectionRunnable, 30_000L);
                 }
             }
 
             @Override
             public void onCancelApplyConnection() {
+                ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
                 liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
                     if (errorCode != ZegoRoomErrorCode.SUCCESS) {
                         ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
@@ -692,6 +704,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         dismissDialog(videoSettingsDialog);
         dismissDialog(moreVideoSettingsDialog);
         dismissDialog(soundEffectsDialog);
+        ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
         liveRoomViewModel.leaveRoom(errorCode -> {
         });
     }

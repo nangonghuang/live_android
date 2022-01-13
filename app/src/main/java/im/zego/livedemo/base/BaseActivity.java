@@ -65,11 +65,19 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
     }
 
     protected void showNormalToastDialog(String content) {
-        dialog.showColorToast(ToastHelper.ToastMessageType.NORMAL, content);
-        dialog.show();
+        if (isFinishing()) return;
+        try {
+            dialog.showColorToast(ToastHelper.ToastMessageType.NORMAL, content);
+            dialog.show();
+        } catch (Exception ignore) {
+        }
     }
 
     protected void dismissAllToast() {
-        dialog.dismiss();
+        if (isFinishing()) return;
+        try {
+            dialog.dismiss();
+        } catch (Exception ignore) {
+        }
     }
 }
