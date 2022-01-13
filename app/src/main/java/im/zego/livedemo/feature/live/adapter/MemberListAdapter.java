@@ -125,10 +125,9 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     }
 
     private RoleType getRoleType(ZegoUserInfo userInfo) {
-        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         if (UserInfoHelper.isUserIDHost(userInfo.getUserID())) {
             return RoleType.Host;
-        } else if (Objects.equals(selfUser.getUserID(), userInfo.getUserID())) {
+        } else if (!UserInfoHelper.isUserIDCoHost(userInfo.getUserID()) && UserInfoHelper.isUserIDSelf(userInfo.getUserID())) {
             return RoleType.Me;
         } else if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
             return RoleType.CoHost;
