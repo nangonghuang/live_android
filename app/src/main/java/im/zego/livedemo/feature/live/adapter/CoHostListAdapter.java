@@ -41,7 +41,14 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         seatModels.clear();
         seatModels.addAll(list);
         removeHostSeat(seatModels);
+        if (needSort()) {
+            sortList(seatModels);
+        }
         notifyDataSetChanged();
+    }
+
+    private boolean needSort() {
+        return !UserInfoHelper.isSelfHost() && UserInfoHelper.isSelfCoHost();
     }
 
     private void removeHostSeat(List<ZegoCoHostSeatModel> seatModels) {
@@ -53,6 +60,21 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
                 break;
             }
         }
+    }
+
+    private void sortList(List<ZegoCoHostSeatModel> seatModels) {
+        if (seatModels.size() <= 1) return;
+        int index = 0;
+        ZegoCoHostSeatModel selfModel = null;
+        for (int i = 0; i < seatModels.size(); i++) {
+            selfModel = seatModels.get(i);
+            if (UserInfoHelper.isUserIDSelf(selfModel.getUserID())) {
+                index = i;
+                break;
+            }
+        }
+        seatModels.remove(index);
+        seatModels.add(0, selfModel);
     }
 
     @NonNull

@@ -342,7 +342,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         if (itemAnimator != null) {
             itemAnimator.setSupportsChangeAnimations(false);
         }
-        binding.rvCoHostList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, true));
         binding.rvCoHostList.setAdapter(coHostListAdapter);
 
         memberListDialog = new MemberListDialog(this, userInfo -> {
