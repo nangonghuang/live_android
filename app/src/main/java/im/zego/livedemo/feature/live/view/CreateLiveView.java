@@ -64,7 +64,7 @@ public class CreateLiveView extends ConstraintLayout {
         ClickUtils.applySingleDebouncing(binding.ivBeauty, Constants.DEBOUNCING_DEFAULT_VALUE, v -> listener.onBeautyClick());
         ClickUtils.applySingleDebouncing(binding.ivSettings, Constants.DEBOUNCING_DEFAULT_VALUE, v -> listener.onSettingsClick());
         ClickUtils.applySingleDebouncing(binding.tvStartLive, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
-            String roomName = binding.etRoomName.getText().toString().trim();
+            String roomName = binding.etRoomName.getText().toString();
             if (TextUtils.isEmpty(roomName)) {
                 ToastHelper.showWarnToast(StringUtils.getString(R.string.create_page_room_name));
                 return;
