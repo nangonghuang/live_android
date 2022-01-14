@@ -498,7 +498,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 } else {
-                    ToastUtils.showLong(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
+                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                     finish();
                 }
             });
