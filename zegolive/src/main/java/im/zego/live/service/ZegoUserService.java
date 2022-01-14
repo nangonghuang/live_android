@@ -330,14 +330,14 @@ public class ZegoUserService {
             case RequestToCoHost:
                 if (UserInfoHelper.isSelfHost()) {
                     if (listener != null) {
-                        listener.onReceiveToCoHostRequest(action.getOperatorID());
+                        listener.onReceiveToCoHostRequest(action.getTargetID());
                     }
                 }
                 break;
             case CancelRequestCoHost:
                 if (UserInfoHelper.isSelfHost()) {
                     if (listener != null) {
-                        listener.onReceiveCancelToCoHostRequest(action.getOperatorID());
+                        listener.onReceiveCancelToCoHostRequest(action.getTargetID());
                     }
                 }
                 break;
