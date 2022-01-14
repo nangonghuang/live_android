@@ -87,12 +87,12 @@ public class OperationCommand {
                 case ZegoRoomConstants.KEY_SEAT:
                     List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<ArrayList<ZegoCoHostSeatModel>>() {}.getType());
                     if (seatList != null) {
-                        if (action.getType() == OperationActionType.TakeCoHostSeat) {
+                        if (action.getType() == OperationActionType.TakeSeat) {
                             // If the action is take seat,
                             // we need to filter duplicate requests to avoid simultaneous operations
                             this.seatList.addAll(seatList);
                             this.seatList = removeDuplicateItem(this.seatList);
-                        } else if (action.getType() == OperationActionType.LeaveCoHostSeat) {
+                        } else if (action.getType() == OperationActionType.LeaveSeat) {
                             ZegoCoHostSeatModel seatModel = UserInfoHelper.getSeatModel(this.seatList, action.getTargetID());
                             this.seatList.remove(seatModel);
                         } else {

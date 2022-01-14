@@ -116,7 +116,7 @@ public class ZegoRoomService {
             });
         }
         if (UserInfoHelper.isSelfCoHost()) {
-            ZegoRoomManager.getInstance().userService.leaveCoHostSeat(null, errorCode -> {
+            ZegoRoomManager.getInstance().userService.leaveSeat(null, errorCode -> {
             });
         }
 
@@ -246,7 +246,7 @@ public class ZegoRoomService {
                     }
 
                     if (!isFound) {
-                        ZegoRoomManager.getInstance().userService.leaveCoHostSeat(model.getUserID(), errorCode -> {
+                        ZegoRoomManager.getInstance().userService.leaveSeat(model.getUserID(), errorCode -> {
 
                         });
                     }
@@ -257,12 +257,12 @@ public class ZegoRoomService {
                 case Mic:
                 case Camera:
                 case Mute:
-                case TakeCoHostSeat:
+                case TakeSeat:
                     if (listener != null) {
                         listener.onReceiveCoHostListUpdate(operation.getAction());
                     }
                     break;
-                case LeaveCoHostSeat:
+                case LeaveSeat:
                     if (!UserInfoHelper.isSelfCoHost()) {
                         ZegoExpressEngine.getEngine().stopPublishingStream();
                     }
@@ -292,8 +292,8 @@ public class ZegoRoomService {
         if (operation.getAction().getType() == OperationActionType.Mic
                 || operation.getAction().getType() == OperationActionType.Camera
                 || operation.getAction().getType() == OperationActionType.Mute
-                || operation.getAction().getType() == OperationActionType.TakeCoHostSeat
-                || operation.getAction().getType() == OperationActionType.LeaveCoHostSeat
+                || operation.getAction().getType() == OperationActionType.TakeSeat
+                || operation.getAction().getType() == OperationActionType.LeaveSeat
         ) {
             map = operation.getAttributes(OperationCommand.OperationAttributeTypeSeat);
         } else {

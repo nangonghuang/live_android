@@ -4,10 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.zego.ve.ThreadUtils;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
@@ -225,8 +220,8 @@ public class ZegoUserService {
         }
     }
 
-    // take a co-host seat
-    public void takeCoHostSeat(ZegoRoomCallback callback) {
+    // take seat
+    public void takeSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
             = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
@@ -241,8 +236,8 @@ public class ZegoUserService {
         });
     }
 
-    // Leave co-host seat
-    public void leaveCoHostSeat(String userID, ZegoRoomCallback callback) {
+    // Leave seat
+    public void leaveSeat(String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
             = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
@@ -283,7 +278,7 @@ public class ZegoUserService {
         for (ZegoUserInfo leaveUser : leaveUsers) {
             userMap.remove(leaveUser.getUserID());
             if (UserInfoHelper.isSelfHost() && UserInfoHelper.isUserIDCoHost(leaveUser.getUserID())) {
-                leaveCoHostSeat(leaveUser.getUserID(), null);
+                leaveSeat(leaveUser.getUserID(), null);
             }
         }
         if (listener != null) {

@@ -30,7 +30,7 @@ import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
-import im.zego.live.service.FaceBeautifyService;
+import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.live.service.ZegoUserService;
@@ -218,7 +218,7 @@ public class LiveRoomViewModel extends ViewModel {
                     ZegoRoomManager.getInstance().roomService.createRoom(roomID, roomName, token, errorCode1 -> {
                         Log.d("Room", "createRoom: " + errorCode1 + ",roomID:" + roomID);
                         if (errorCode1 == ZegoRoomErrorCode.SUCCESS) {
-                            takeCoHostSeat(callback);
+                            takeSeat(callback);
                             return;
                         }
                         if (callback != null) {
@@ -380,16 +380,16 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().userService.muteUser(isMuted, userID, callback);
     }
 
-    public void takeCoHostSeat(ZegoRoomCallback callback) {
-        ZegoRoomManager.getInstance().userService.takeCoHostSeat(errorCode -> {
+    public void takeSeat(ZegoRoomCallback callback) {
+        ZegoRoomManager.getInstance().userService.takeSeat(errorCode -> {
             if (callback != null) {
                 callback.onRoomCallback(errorCode);
             }
         });
     }
 
-    public void leaveCoHostSeat(String userID, ZegoRoomCallback callback) {
-        ZegoRoomManager.getInstance().userService.leaveCoHostSeat(userID, callback);
+    public void leaveSeat(String userID, ZegoRoomCallback callback) {
+        ZegoRoomManager.getInstance().userService.leaveSeat(userID, callback);
     }
 
     public boolean isCoHostMax() {
@@ -412,7 +412,7 @@ public class LiveRoomViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         // reset face beautify
-        FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+        ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
         beautifyService.resetBeauty();
         beautifyService.resetReSharp();
 

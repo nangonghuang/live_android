@@ -26,7 +26,7 @@ import im.zego.live.http.License;
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.live.util.EffectsSDKHelper;
 
-public class FaceBeautifyService {
+public class ZegoFaceBeautifyService {
 
     private static final String TAG = "Beautify";
     private Context context;
@@ -46,7 +46,7 @@ public class FaceBeautifyService {
     private final ZegoEffectsTeethWhiteningParam teethWhiteningParam = new ZegoEffectsTeethWhiteningParam();
     private final ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
 
-    public FaceBeautifyService(Context context) {
+    public ZegoFaceBeautifyService(Context context) {
         ArrayList<String> aiModeInfoList = EffectsSDKHelper.copyAiModeInfoList(context);
         ArrayList<String> resourcesInfoList = EffectsSDKHelper.copyResourcesInfoList(context);
         resourcesInfoList.addAll(aiModeInfoList);

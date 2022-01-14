@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.model.FaceBeautifyType;
-import im.zego.live.service.FaceBeautifyService;
+import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
 import im.zego.livedemo.feature.live.view.EffectsBeautyTypeView;
@@ -119,7 +119,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
 
         } else if (id == R.id.resetting) {
             seekBarWithNumber.setVisibility(View.INVISIBLE);
-            FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+            ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
             if (selectIndex == 0) {
                 mEffectsBeautyView.notifyPosition(beautyPosition);
                 beautyPosition = -1;
@@ -135,7 +135,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
     private static final String TAG = "Beautify";
 
     private void setSeekBarProgress(FaceBeautifyType type, int index, int minProgress) {
-        FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+        ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
         int progress = beautifyService.getBeautifyValue(type);
 
         if (seekBarWithNumber.getVisibility() != View.VISIBLE) {
@@ -164,7 +164,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int currentProgress = seekBar.getProgress();
-                FaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+                ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
                 if (selectType != null) {
                     beautifyService.setBeautifyValue(currentProgress, selectType);
                 }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import im.zego.live.callback.ZegoRoomCallback;
 import im.zego.live.http.IGetLicenseCallback;
 import im.zego.live.http.License;
-import im.zego.live.service.FaceBeautifyService;
+import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomService;
 import im.zego.live.service.ZegoSoundEffectService;
@@ -63,14 +63,14 @@ public class ZegoRoomManager {
     public ZegoRoomService roomService;
     public ZegoUserService userService;
     public ZegoMessageService messageService;
-    public FaceBeautifyService faceBeautifyService;
+    public ZegoFaceBeautifyService faceBeautifyService;
     public ZegoSoundEffectService soundEffectService;
 
     public void init(long appID, String appSign, Application application) {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
         messageService = new ZegoMessageService();
-        faceBeautifyService = new FaceBeautifyService(application);
+        faceBeautifyService = new ZegoFaceBeautifyService(application);
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
         profile.appID = appID;
