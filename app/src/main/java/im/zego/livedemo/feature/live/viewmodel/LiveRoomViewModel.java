@@ -48,6 +48,7 @@ import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
+import im.zego.zim.enums.ZIMErrorCode;
 
 /**
  * Created by rocket_wang on 2021/12/27.
@@ -262,8 +263,12 @@ public class LiveRoomViewModel extends ViewModel {
                                     updateUserList();
                                 });
                             }
+                            int tempErrorCode = errorCode;
+                            if (errorCode1 == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
+                                tempErrorCode = ZegoRoomErrorCode.ROOM_NOT_FOUND;
+                            }
                             if (callback != null) {
-                                callback.onRoomCallback(errorCode);
+                                callback.onRoomCallback(tempErrorCode);
                             }
                         });
                     }
@@ -275,8 +280,12 @@ public class LiveRoomViewModel extends ViewModel {
                     };
                     timer.schedule(task, 0,30 * 1000);
                 } else {
+                    int tempErrorCode = errorCode;
+                    if (errorCode == RoomApi.ROOM_NOT_EXISTED) {
+                        tempErrorCode = ZegoRoomErrorCode.ROOM_NOT_FOUND;
+                    }
                     if (callback != null) {
-                        callback.onRoomCallback(errorCode);
+                        callback.onRoomCallback(tempErrorCode);
                     }
                 }
             }
