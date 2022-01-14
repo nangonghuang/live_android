@@ -253,6 +253,10 @@ public class ZegoRoomService {
                 }
             }
 
+            if (!UserInfoHelper.isSelfCoHost()) {
+                ZegoExpressEngine.getEngine().stopPublishingStream();
+            }
+
             switch (operation.getAction().getType()) {
                 case Mic:
                 case Camera:
