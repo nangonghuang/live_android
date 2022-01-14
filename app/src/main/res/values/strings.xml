@@ -114,7 +114,7 @@
     <string name="room_sound_page_music_volume">Music volume</string>
     <string name="room_sound_page_voice_volume">Voice volume</string>
     <string name="room_sound_page_voice_changing">Voice changing</string>
-    <string name="room_sound_page_original_voice">Original voice</string>
+    <string name="room_sound_page_original_voice">Original</string>
     <string name="room_sound_page_reverb">Reverb</string>
     <string name="room_sound_page_audio_mixing">Audio mixing</string>
     <string name="room_sound_page_joyful">Joyful</string>

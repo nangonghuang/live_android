@@ -179,24 +179,23 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     StringUtils.getString(R.string.dialog_room_page_disagree),
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
-                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                if (liveRoomViewModel.isCoHostMax()) {
-                                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
-                                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                                } else {
+                        if (liveRoomViewModel.isCoHostMax()) {
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                        } else {
+                            liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
+                                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                                     userTakeSeat(isAllGranted -> {
                                         if (!isAllGranted) {
                                             ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
                                             liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
                                         }
                                     });
+                                } else {
+                                    ToastHelper
+                                            .showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
                                 }
-                            } else {
-                                ToastHelper
-                                    .showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
-                            }
-                        });
+                            });
+                        }
                     },
                     (dialog, which) -> {
                         dialog.dismiss();
@@ -460,7 +459,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                             ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_prohibited_connection));
                         }
                     }
-                    if ((UserInfoHelper.isSelfHost() || UserInfoHelper.isSelfCoHost()) && !UserInfoHelper.isUserIDHost(action.getOperatorID())) {
+                    if (UserInfoHelper.isSelfHost() && !UserInfoHelper.isUserIDHost(action.getOperatorID())) {
                         if (Objects.equals(action.getOperatorID(), action.getTargetID()) && !StringUtils.isTrimEmpty(action.getOperatorID())) {
                             String userName = UserInfoHelper.getUserName(action.getTargetID());
                             ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_ended_the_connection, userName));

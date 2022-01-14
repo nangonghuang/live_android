@@ -15,9 +15,7 @@ import com.blankj.utilcode.util.ImageUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import im.zego.live.ZegoRoomManager;
 import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.model.ZegoRoomUserRole;
 import im.zego.live.model.ZegoUserInfo;
@@ -61,11 +59,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
                 holder.tvUserInfo.setText(R.string.user_list_page_host);
                 break;
             case CoHost:
+            case MeCoHost:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
                 holder.tvUserInfo.setText(R.string.user_list_page_conneted);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
                 break;
-            case InvitedCoHost:
+            case InvitedParticipant:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
                 holder.tvUserInfo.setText(R.string.user_list_page_invited);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
@@ -127,12 +126,16 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     private RoleType getRoleType(ZegoUserInfo userInfo) {
         if (UserInfoHelper.isUserIDHost(userInfo.getUserID())) {
             return RoleType.Host;
-        } else if (!UserInfoHelper.isUserIDCoHost(userInfo.getUserID()) && UserInfoHelper.isUserIDSelf(userInfo.getUserID())) {
-            return RoleType.Me;
+        } else if (UserInfoHelper.isUserIDSelf(userInfo.getUserID())) {
+            if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
+                return RoleType.MeCoHost;
+            } else {
+                return RoleType.Me;
+            }
         } else if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
             return RoleType.CoHost;
         } else if (userInfo.getRole() == ZegoRoomUserRole.Participant && userInfo.isHasInvited()) {
-            return RoleType.InvitedCoHost;
+            return RoleType.InvitedParticipant;
         } else {
             return RoleType.Participant;
         }
@@ -144,22 +147,21 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
                 case Host:
                     return 1;
                 case CoHost:
-                case InvitedCoHost:
                     return 2;
-                case Me:
-                    return 3;
+                case InvitedParticipant:
                 case Participant:
-                    return 4;
+                    return 3;
             }
         } else {
             switch (getRoleType(userInfo)) {
                 case Host:
                     return 1;
                 case Me:
+                case MeCoHost:
                     return 2;
                 case CoHost:
-                case InvitedCoHost:
                     return 3;
+                case InvitedParticipant:
                 case Participant:
                     return 4;
             }
@@ -171,7 +173,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         Host,
         Participant,
         CoHost,
-        InvitedCoHost,
+        InvitedParticipant,
+        MeCoHost,
         Me
     }
 }

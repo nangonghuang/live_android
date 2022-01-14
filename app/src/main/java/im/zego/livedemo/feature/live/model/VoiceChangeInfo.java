@@ -8,7 +8,6 @@ public class VoiceChangeInfo {
     public static final int[] voiceChangeUnselect = new int[]{
             R.drawable.liveshow_voice_none_unselect,
             R.drawable.liveshow_loli_unselect,
-            R.drawable.liveshow_uncle_unselect,
             R.drawable.liveshow_robot_unselect,
             R.drawable.liveshow_music_ethereal_unselect
     };
@@ -16,7 +15,6 @@ public class VoiceChangeInfo {
     public static final int[] voiceChangeSelect = new int[]{
             R.drawable.liveshow_voice_none_select,
             R.drawable.liveshow_loli_select,
-            R.drawable.liveshow_uncle_select,
             R.drawable.liveshow_robot_select,
             R.drawable.liveshow_music_ethereal_select
     };
