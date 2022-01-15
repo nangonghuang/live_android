@@ -159,6 +159,10 @@ public class LiveBottomView extends ConstraintLayout {
         this.listener = listener;
     }
 
+    public boolean isConnecting() {
+        return connectionType == CONNECTING;
+    }
+
     public interface BottomViewListener {
         void onImClick();
 

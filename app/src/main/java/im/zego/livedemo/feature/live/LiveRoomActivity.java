@@ -422,6 +422,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 }
             }
 
+            if (!UserInfoHelper.isSelfCoHost()) {
+                if (binding.liveBottomView.isConnecting()) {
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                }
+            }
+
             // others coHost, let adapter update
             coHostListAdapter.setList(coHostList);
         });
