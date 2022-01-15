@@ -60,7 +60,7 @@
     </string-array>
 
     <string-array name="beauty_list">
-        <item>@string/room_beautify_page_face_shape_retouch</item>
+        <item>@string/room_beautify_page_skin_tone_enhancement</item>
         <item>@string/room_beautify_page_skin_smoothing</item>
         <item>@string/room_beautify_page_image_sharpening</item>
         <item>@string/room_beautify_page_cheek_blusher</item>
