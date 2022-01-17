@@ -70,7 +70,7 @@ public class ZegoRoomManager {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
         messageService = new ZegoMessageService();
-        faceBeautifyService = new ZegoFaceBeautifyService(application);
+//        faceBeautifyService = new ZegoFaceBeautifyService(application);
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
         profile.appID = appID;
@@ -184,48 +184,48 @@ public class ZegoRoomManager {
             }
         });
 
-        faceBeautifyService.init(application, appID, appSign, new IGetLicenseCallback() {
-            @Override
-            public void onGetLicense(int code, String message, License license) {
-                Log.d("Beautify", "onGetLicense() called with: code = [" + code + "], message = [" + message);
-
-                ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
-                config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
-                ZegoExpressEngine.getEngine().enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
-                ZegoExpressEngine.getEngine().setCustomVideoProcessHandler(new IZegoCustomVideoProcessHandler() {
-
-                    @Override
-                    public void onStart(ZegoPublishChannel channel) {
-//                        faceBeautifyService.onStart();
-                    }
-
-                    @Override
-                    public void onStop(ZegoPublishChannel channel) {
-                        faceBeautifyService.onStop();
-                    }
-
-                    @Override
-                    public void onCapturedUnprocessedTextureData(int textureID, int width, int height,
-                        long referenceTimeMillisecond, ZegoPublishChannel channel) {
-
-                        // Process buffer by ZegoEffects
-                        int processedTextureID = faceBeautifyService.gainProcessedTextureID(textureID, width, height);
-
-                        // Send processed texture to ZegoExpressEngine
-                        ZegoExpressEngine.getEngine().sendCustomVideoProcessedTextureData(processedTextureID, width, height,
-                                referenceTimeMillisecond);
-                    }
-                });
-            }
-        });
+//        faceBeautifyService.init(application, appID, appSign, new IGetLicenseCallback() {
+//            @Override
+//            public void onGetLicense(int code, String message, License license) {
+//                Log.d("Beautify", "onGetLicense() called with: code = [" + code + "], message = [" + message);
+//
+//                ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
+//                config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
+//                ZegoExpressEngine.getEngine().enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
+//                ZegoExpressEngine.getEngine().setCustomVideoProcessHandler(new IZegoCustomVideoProcessHandler() {
+//
+//                    @Override
+//                    public void onStart(ZegoPublishChannel channel) {
+////                        faceBeautifyService.onStart();
+//                    }
+//
+//                    @Override
+//                    public void onStop(ZegoPublishChannel channel) {
+//                        faceBeautifyService.onStop();
+//                    }
+//
+//                    @Override
+//                    public void onCapturedUnprocessedTextureData(int textureID, int width, int height,
+//                        long referenceTimeMillisecond, ZegoPublishChannel channel) {
+//
+//                        // Process buffer by ZegoEffects
+//                        int processedTextureID = faceBeautifyService.gainProcessedTextureID(textureID, width, height);
+//
+//                        // Send processed texture to ZegoExpressEngine
+//                        ZegoExpressEngine.getEngine().sendCustomVideoProcessedTextureData(processedTextureID, width, height,
+//                                referenceTimeMillisecond);
+//                    }
+//                });
+//            }
+//        });
     }
 
     public void unInit() {
         ZegoZIMManager.getInstance().destroyZIM();
         ZegoExpressEngine.destroyEngine(null);
-        if (faceBeautifyService != null) {
-            faceBeautifyService.zegoEffects.destroy();
-        }
+//        if (faceBeautifyService != null) {
+//            faceBeautifyService.zegoEffects.destroy();
+//        }
     }
 
     public void uploadLog(final ZegoRoomCallback callback) {
