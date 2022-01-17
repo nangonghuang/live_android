@@ -20,6 +20,7 @@ import java.util.TimerTask;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.callback.ZegoRoomCallback;
+import im.zego.live.constants.ZegoRoomConstants;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.http.IAsyncGetCallback;
@@ -402,7 +403,7 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public boolean isCoHostMax() {
-        return ZegoRoomManager.getInstance().userService.coHostList.size() >= Constants.MAX_CO_HOST_LIST_SIZE;
+        return ZegoRoomManager.getInstance().userService.coHostList.size() >= ZegoRoomConstants.MAX_CO_HOST_LIST_SIZE;
     }
 
     private void updateMessageLiveData() {

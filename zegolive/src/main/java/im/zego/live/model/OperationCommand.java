@@ -92,6 +92,11 @@ public class OperationCommand {
                             // we need to filter duplicate requests to avoid simultaneous operations
                             this.seatList.addAll(seatList);
                             this.seatList = removeDuplicateItem(this.seatList);
+
+                            // remove last N items when list exceed max num
+                            if (this.seatList.size() > ZegoRoomConstants.MAX_CO_HOST_LIST_SIZE) {
+                                this.seatList.subList(ZegoRoomConstants.MAX_CO_HOST_LIST_SIZE, this.seatList.size()).clear();
+                            }
                         } else if (action.getType() == OperationActionType.LeaveSeat) {
                             ZegoCoHostSeatModel seatModel = UserInfoHelper.getSeatModel(this.seatList, action.getTargetID());
                             this.seatList.remove(seatModel);
