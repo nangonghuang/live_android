@@ -49,7 +49,7 @@
     <string name="network_connect_failed">Network connection failed. Please log out and join again.</string>
     <string name="network_connect_failed_title">Network error.</string>
     <string name="toast_disconnect_tips">You are disconnected from the room. Please join again.</string>
-    <string name="toast_room_applied_connection">You request has been sent. Please wait for the respond.</string>
+    <string name="toast_room_applied_connection">Your request has been sent. Please wait for the respond.</string>
     <string name="dialog_room_page_title_connection_request">Co-hosting request</string>
     <string name="dialog_room_page_message_connection_request">%s wants to co-host with you.</string>
     <string name="dialog_room_page_disagree">Decline</string>
@@ -86,7 +86,7 @@
     <string name="room_settings_page_noise_suppression">Noise suppression</string>
     <string name="room_settings_page_echo_cancellation">Echo cancellation</string>
     <string name="room_settings_page_mic_volume">Mic volume auto-adjustment</string>
-    <string name="room_settings_page_video_resolution">Resolution Settings</string>
+    <string name="room_settings_page_video_resolution">Resolution</string>
     <string name="room_settings_page_audio_bitrate">Audio bitrate</string>
     <string name="room_settings_page_more">More</string>
     <string name="toast_room_page_settings_device_not_support_h265">This device does not support H.265 encoding type</string>
