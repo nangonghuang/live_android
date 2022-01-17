@@ -168,6 +168,9 @@ public class ZegoRoomService {
                         if (listener != null) {
                             listener.onReceiveRoomInfoUpdate(null);
                         }
+                    } else {
+                        String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
+                        ZegoRoomListService.heartBeat(userID, roomID, false, null);
                     }
                 });
             }
