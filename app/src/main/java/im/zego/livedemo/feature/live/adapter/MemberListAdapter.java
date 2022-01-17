@@ -10,13 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import im.zego.live.ZegoRoomManager;
 import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.model.ZegoRoomUserRole;
 import im.zego.live.model.ZegoUserInfo;
@@ -47,7 +46,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     public void onBindViewHolder(@NonNull UserListHolder holder, int position) {
         final ZegoUserInfo userInfo = userListInRoom.get(position);
 
-        holder.ivUserAvatar.setImageDrawable(AvatarHelper.getAvatarByUserName(userInfo.getUserName()));
+        int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
+        holder.ivUserAvatar.setImageBitmap(ImageUtils.toRound(ImageUtils.getBitmap(avatarId), true));
         holder.tvUserName.setText(userInfo.getUserName());
         holder.ivInvite.setVisibility(View.GONE);
         holder.tvUserInfo.setVisibility(View.GONE);
@@ -56,21 +56,22 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         switch (getRoleType(userInfo)) {
             case Host:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_host);
                 break;
             case CoHost:
+            case MeCoHost:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_co_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_conneted);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
                 break;
-            case InvitedCoHost:
+            case InvitedParticipant:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_invited_co_host);
+                holder.tvUserInfo.setText(R.string.user_list_page_invited);
                 holder.tvUserInfo.setTextColor(ColorUtils.getColor(R.color.light_gray2));
                 break;
             case Me:
                 holder.tvUserInfo.setVisibility(View.VISIBLE);
-                holder.tvUserInfo.setText(R.string.room_page_me);
+                holder.tvUserInfo.setText(R.string.user_list_page_me);
                 break;
             case Participant:
                 if (UserInfoHelper.isSelfHost()) {
@@ -123,31 +124,47 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
     }
 
     private RoleType getRoleType(ZegoUserInfo userInfo) {
-        ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         if (UserInfoHelper.isUserIDHost(userInfo.getUserID())) {
             return RoleType.Host;
-        } else if (Objects.equals(selfUser.getUserID(), userInfo.getUserID())) {
-            return RoleType.Me;
+        } else if (UserInfoHelper.isUserIDSelf(userInfo.getUserID())) {
+            if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
+                return RoleType.MeCoHost;
+            } else {
+                return RoleType.Me;
+            }
         } else if (UserInfoHelper.isUserIDCoHost(userInfo.getUserID())) {
             return RoleType.CoHost;
         } else if (userInfo.getRole() == ZegoRoomUserRole.Participant && userInfo.isHasInvited()) {
-            return RoleType.InvitedCoHost;
+            return RoleType.InvitedParticipant;
         } else {
             return RoleType.Participant;
         }
     }
 
     private int getRoleWeight(ZegoUserInfo userInfo) {
-        switch (getRoleType(userInfo)) {
-            case Host:
-                return 1;
-            case CoHost:
-            case InvitedCoHost:
-                return 2;
-            case Me:
-                return 3;
-            case Participant:
-                return 4;
+        if (UserInfoHelper.isSelfHost()) {
+            switch (getRoleType(userInfo)) {
+                case Host:
+                    return 1;
+                case CoHost:
+                    return 2;
+                case InvitedParticipant:
+                case Participant:
+                    return 3;
+            }
+        } else {
+            switch (getRoleType(userInfo)) {
+                case Host:
+                    return 1;
+                case Me:
+                case MeCoHost:
+                    return 2;
+                case CoHost:
+                    return 3;
+                case InvitedParticipant:
+                case Participant:
+                    return 4;
+            }
         }
         return 5;
     }
@@ -156,7 +173,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Us
         Host,
         Participant,
         CoHost,
-        InvitedCoHost,
+        InvitedParticipant,
+        MeCoHost,
         Me
     }
 }

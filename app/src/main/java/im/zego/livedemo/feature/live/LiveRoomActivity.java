@@ -1,7 +1,7 @@
 package im.zego.livedemo.feature.live;
 
+import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,10 +13,15 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ThreadUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.List;
@@ -53,13 +58,13 @@ import im.zego.livedemo.feature.live.viewmodel.VideoConfigViewModel;
 import im.zego.livedemo.feature.login.UserLoginActivity;
 import im.zego.livedemo.helper.AvatarHelper;
 import im.zego.livedemo.helper.DialogHelper;
+import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.helper.ShareHelper;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
-import im.zego.zim.enums.ZIMErrorCode;
 
 /**
  * Created by rocket_wang on 2021/12/23.
@@ -71,18 +76,20 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     /**
      * create new room
      */
-    public static void start(Context context) {
-        Intent intent = new Intent(context, LiveRoomActivity.class);
-        context.startActivity(intent);
+    public static void start(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, LiveRoomActivity.class);
+        activity.startActivityForResult(intent, requestCode);
+//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /**
      * enter exist room
      */
-    public static void start(Context context, String roomID) {
-        Intent intent = new Intent(context, LiveRoomActivity.class);
+    public static void start(Activity activity, String roomID, int requestCode) {
+        Intent intent = new Intent(activity, LiveRoomActivity.class);
         intent.putExtra(EXTRA_KEY_ROOM_ID, roomID);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, requestCode);
+//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private LiveRoomViewModel liveRoomViewModel;
@@ -101,6 +108,13 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     private final ArrayMap<String, Dialog> requestDialogMap = new ArrayMap<>();
 
+    private final Runnable cancelApplyConnectionRunnable = () -> {
+        dismissAllToast();
+        binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+        liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
+        });
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,15 +127,18 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {
             @Override
             public void onReceiveRoomInfoUpdate(ZegoRoomInfo roomInfo) {
-                if (roomInfo == null) {
-                    new CommonDialog.Builder(LiveRoomActivity.this)
-                            .setTitle(StringUtils.getString(R.string.dialog_attetion_title))
-                            .setContent(StringUtils.getString(R.string.toast_room_has_destroyed))
-                            .setPositiveButton(StringUtils.getString(R.string.dialog_close), (dialog, which) -> {
-                                finish();
-                            })
-                            .create()
-                            .show();
+                if (roomInfo == null && !isFinishing()) {
+                    try {
+                        new CommonDialog.Builder(LiveRoomActivity.this)
+                                .setTitle(StringUtils.getString(R.string.dialog_attetion_title))
+                                .setContent(StringUtils.getString(R.string.toast_room_has_destroyed))
+                                .setPositiveButton(StringUtils.getString(R.string.dialog_close), (dialog, which) -> {
+                                    finish();
+                                })
+                                .create()
+                                .show();
+                    } catch (Exception ignore) {
+                    }
                 }
             }
 
@@ -154,34 +171,44 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             }
 
             @Override
-            public void onReceiveAddCoHostInvitation() {
+            public void onReceiveAddCoHostInvitation(String operateUserID) {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.dialog_invite_to_connect_title),
-                    StringUtils.getString(R.string.dialog_invite_to_connect_descrip),
-                    StringUtils.getString(R.string.dialog_accept),
-                    StringUtils.getString(R.string.dialog_refuse),
+                    StringUtils.getString(R.string.dialog_invition_title),
+                    StringUtils.getString(R.string.dialog_invition_descrip),
+                    StringUtils.getString(R.string.dialog_room_page_agree),
+                    StringUtils.getString(R.string.dialog_room_page_disagree),
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.respondCoHostInvitation(true, errorCode -> {
-                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                binding.liveBottomView.toCoHost();
-                            } else {
-                                ToastHelper
-                                    .showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
-                            }
-                        });
+                        if (liveRoomViewModel.isCoHostMax()) {
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                        } else {
+                            liveRoomViewModel.respondCoHostInvitation(true, operateUserID, errorCode -> {
+                                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                                    userTakeSeat(isAllGranted -> {
+                                        if (!isAllGranted) {
+                                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
+                                            liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
+                                        }
+                                    });
+                                } else {
+                                    ToastHelper
+                                            .showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
+                                }
+                            });
+                        }
                     },
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.respondCoHostInvitation(false, null);
+                        liveRoomViewModel.respondCoHostInvitation(false, operateUserID, null);
                     }
                 );
             }
 
             @Override
-            public void onReceiveAddCoHostRespond(boolean accept) {
+            public void onReceiveAddCoHostRespond(String userID, boolean accept) {
                 if (!accept) {
-                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_invite_to_connect_refuse));
+                    String userName = UserInfoHelper.getUserName(userID);
+                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_user_list_page_rejected_invitation, userName));
                 }
             }
 
@@ -189,10 +216,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             public void onReceiveToCoHostRequest(String requestUserID) {
                 String userName = UserInfoHelper.getUserName(requestUserID);
                 Dialog alertDialog = DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.dialog_request_connect_title),
-                    StringUtils.getString(R.string.dialog_request_connect_descrip, userName),
-                    StringUtils.getString(R.string.dialog_accept),
-                    StringUtils.getString(R.string.dialog_refuse),
+                    StringUtils.getString(R.string.dialog_room_page_title_connection_request),
+                    StringUtils.getString(R.string.dialog_room_page_message_connection_request, UserInfoHelper.getUserNameShort(userName)),
+                    StringUtils.getString(R.string.dialog_room_page_agree),
+                    StringUtils.getString(R.string.dialog_room_page_disagree),
                     (dialog, which) -> {
                         dialog.dismiss();
                         liveRoomViewModel.respondToBeCoHostRequest(true, requestUserID, null);
@@ -208,7 +235,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onReceiveCancelToCoHostRequest(String requestUserID) {
                 String userName = UserInfoHelper.getUserName(requestUserID);
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_has_canceled_connection_apply, userName));
+                ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_canceled_connection_apply, userName));
                 Dialog dialog = requestDialogMap.remove(requestUserID);
                 if (dialog != null) {
                     dialog.dismiss();
@@ -217,18 +244,23 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onReceiveToCoHostRespond(boolean agree) {
+                ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
                 dismissAllToast();
                 if (agree) {
-                    liveRoomViewModel.takeCoHostSeat(errorCode -> {
-                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                            binding.liveBottomView.toCoHost();
-                        } else {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_take_seat_fail, errorCode));
-                        }
-                    });
+                    if (liveRoomViewModel.isCoHostMax()) {
+                        ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                        binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                    } else {
+                        userTakeSeat(isAllGranted -> {
+                            if (!isAllGranted) {
+                                binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_permission_error));
+                            }
+                        });
+                    }
                 } else {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_has_rejected));
+                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_rejected));
                 }
             }
 
@@ -252,6 +284,21 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         initUI();
         initUIListener();
         initData();
+    }
+
+    private void userTakeSeat(PermissionHelper.IPermissionCallback permissionCallback) {
+        PermissionHelper.requestCameraAndAudio(LiveRoomActivity.this, isAllGranted -> {
+            if (isAllGranted) {
+                liveRoomViewModel.takeSeat(errorCode -> {
+                    if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                        binding.liveBottomView.toCoHost();
+                    } else {
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
+                    }
+                });
+            }
+            permissionCallback.onRequestCallback(isAllGranted);
+        });
     }
 
     private void toTransparentStatusBar() {
@@ -284,23 +331,28 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
                     @Override
                     public void onClickProhibitConnect() {
-                        liveRoomViewModel.leaveCoHostSeat(seatModel.getUserID(), errorCode -> {
+                        liveRoomViewModel.leaveSeat(seatModel.getUserID(), errorCode -> {
                         });
                     }
                 });
             dialog.show();
         });
+        // Fix refresh flickering issue
+        SimpleItemAnimator itemAnimator = ((SimpleItemAnimator) binding.rvCoHostList.getItemAnimator());
+        if (itemAnimator != null) {
+            itemAnimator.setSupportsChangeAnimations(false);
+        }
         binding.rvCoHostList.setAdapter(coHostListAdapter);
 
         memberListDialog = new MemberListDialog(this, userInfo -> {
             if (liveRoomViewModel.isCoHostMax()) {
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_maximum));
+                ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
             } else {
-                String string = StringUtils.getString(R.string.room_page_invite_to_connect);
+                String string = StringUtils.getString(R.string.user_list_page_invite_to_speak);
                 DialogHelper.showToastDialog(this, string, dialog -> {
                     liveRoomViewModel.inviteToBeCoHost(userInfo.getUserID(), errorCode -> {
                         if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_invite_to_connect_fail));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_user_list_page_connected_failed));
                         }
                     });
                 });
@@ -322,11 +374,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onMicEnable(boolean isMicEnable) {
                 liveRoomViewModel.enableMic(isMicEnable);
-            }
-
-            @Override
-            public void onClickData() {
-
             }
 
             @Override
@@ -359,6 +406,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             binding.ivHostBg.setImageBitmap(blurBitmap);
             binding.ivHostHead.setImageBitmap(roundBitmap);
             binding.tvHostName.setText(userName);
+
+            coHostListAdapter.notifyDataSetChanged();
         });
 
         liveRoomViewModel.coHostList.observe(this, coHostList -> {
@@ -370,6 +419,12 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         toggleHostPreviewUI(seatModel.isCameraEnable());
                         break;
                     }
+                }
+            }
+
+            if (!UserInfoHelper.isSelfCoHost()) {
+                if (binding.liveBottomView.isConnecting()) {
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
                 }
             }
 
@@ -402,16 +457,18 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         liveRoomViewModel.operationAction.observe(this, action -> {
             switch (action.getType()) {
-                case LeaveCoHostSeat:
+                case LeaveSeat:
                     if (UserInfoHelper.isUserIDSelf(action.getTargetID())) {
                         binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                        if (UserInfoHelper.isUserIDHost(action.getOperatorID())) {
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_prohibited_connection));
+                        }
                     }
-                    if (UserInfoHelper.isUserIDHost(action.getOperatorID())) {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_prohibited_connection));
-                    }
-                    if (Objects.equals(action.getOperatorID(), action.getTargetID()) && !StringUtils.isTrimEmpty(action.getOperatorID())) {
-                        String userName = UserInfoHelper.getUserName(action.getTargetID());
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_ended_the_connection, userName));
+                    if (UserInfoHelper.isSelfHost() && !UserInfoHelper.isUserIDHost(action.getOperatorID())) {
+                        if (Objects.equals(action.getOperatorID(), action.getTargetID()) && !StringUtils.isTrimEmpty(action.getOperatorID())) {
+                            String userName = UserInfoHelper.getUserName(action.getTargetID());
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_ended_the_connection, userName));
+                        }
                     }
                     break;
                 case Mute:
@@ -419,7 +476,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                         ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
                         if (model != null) {
                             if (model.isMuted()) {
-                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_muted_by_host));
+                                ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_muted_by_host));
                             }
                             binding.liveBottomView.enableMicView(!model.isMuted());
                         }
@@ -444,9 +501,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             liveRoomViewModel.joinRoom(roomID, errorCode -> {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                } else if (errorCode == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
-                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_not_exist_fail));
-                    finish();
                 } else {
                     ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_join_room_fail, errorCode));
                     finish();
@@ -503,7 +557,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                         showLiveUI();
                         binding.liveBottomView.toHost();
-                        ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_create_room_success));
                     } else {
                         ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_create_room_fail, errorCode));
                     }
@@ -535,7 +588,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onShareClick() {
-                ShareHelper.startToShare(LiveRoomActivity.this, Constants.URL_GET_MORE);
+                ShareHelper.startToShare(LiveRoomActivity.this, Constants.URL_DOWNLOAD);
             }
 
             @Override
@@ -570,6 +623,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     ZegoCoHostSeatModel model = UserInfoHelper.getSelfCoHost();
                     if (model != null) {
                         if (model.isMuted()) {
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_muted_by_host));
                             binding.liveBottomView.enableMicView(false);
                             return;
                         }
@@ -580,21 +634,29 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onApplyConnection() {
-                liveRoomViewModel.requestToBeCoHost(errorCode -> {
-                    if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_request_to_connect_fail));
-                        binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
-                    } else {
-                        showNormalToastDialog(StringUtils.getString(R.string.toast_room_applied_connection));
-                    }
-                });
+                if (liveRoomViewModel.isCoHostMax()) {
+                    ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_maximum));
+                    binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                } else {
+                    liveRoomViewModel.requestToBeCoHost(errorCode -> {
+                        if (errorCode != ZegoRoomErrorCode.SUCCESS) {
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
+                            binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
+                        } else {
+                            showNormalToastDialog(StringUtils.getString(R.string.toast_room_applied_connection));
+                        }
+                    });
+                    ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
+                    ThreadUtils.runOnUiThreadDelayed(cancelApplyConnectionRunnable, 30_000L);
+                }
             }
 
             @Override
             public void onCancelApplyConnection() {
+                ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
                 liveRoomViewModel.cancelRequestToBeCoHost(errorCode -> {
                     if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_cancel_request_to_connect_fail));
+                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
                         binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_APPLYING);
                     } else {
                         dismissAllToast();
@@ -605,15 +667,15 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onEndConnection() {
                 DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                    StringUtils.getString(R.string.dialog_end_connect_title),
-                    StringUtils.getString(R.string.dialog_end_connect_descrip),
-                    StringUtils.getString(R.string.dialog_confirm),
-                    StringUtils.getString(R.string.dialog_cancel),
+                        StringUtils.getString(R.string.dialog_attetion_title),
+                    StringUtils.getString(R.string.dialog_room_message_ended_the_connection),
+                    StringUtils.getString(R.string.dialog_room_page_ok),
+                    StringUtils.getString(R.string.dialog_room_page_cancel),
                     (dialog, which) -> {
                         dialog.dismiss();
-                        liveRoomViewModel.leaveCoHostSeat(null, errorCode -> {
+                        liveRoomViewModel.leaveSeat(null, errorCode -> {
                             if (errorCode != ZegoRoomErrorCode.SUCCESS) {
-                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_end_connect_fail));
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_failed_to_operate));
                                 binding.liveBottomView.toParticipant(LiveBottomView.CONNECTING);
                             } else {
                                 binding.liveBottomView.toParticipant(LiveBottomView.CONNECTION_NOT_APPLY);
@@ -631,7 +693,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         builder2.setTitle(R.string.network_connect_failed_title);
         builder2.setMessage(R.string.network_connect_failed);
         builder2.setCancelable(false);
-        builder2.setPositiveButton(R.string.dialog_confirm, (dialog1, which1) -> {
+        builder2.setPositiveButton(R.string.dialog_room_page_ok, (dialog1, which1) -> {
             ActivityUtils.finishToActivity(UserLoginActivity.class, false);
         });
         if (!LiveRoomActivity.this.isFinishing()) {
@@ -648,6 +710,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private void showLoadingDialog() {
+        if (isFinishing()) return;
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(this);
         }
@@ -665,6 +728,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         dismissDialog(videoSettingsDialog);
         dismissDialog(moreVideoSettingsDialog);
         dismissDialog(soundEffectsDialog);
+        ThreadUtils.getMainHandler().removeCallbacks(cancelApplyConnectionRunnable);
         liveRoomViewModel.leaveRoom(errorCode -> {
         });
     }
@@ -672,30 +736,21 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     @Override
     public void onBackPressed() {
         if (UserInfoHelper.isSelfHost()) {
-            DialogHelper.showAlertDialog(LiveRoomActivity.this,
-                StringUtils.getString(R.string.room_page_destroy_room),
-                StringUtils.getString(R.string.dialog_sure_to_destroy_room),
-                StringUtils.getString(R.string.dialog_confirm),
-                null,
-                true,
-                (dialog, which) -> {
-                    //                    liveRoomViewModel.leaveRoom(errorCode -> {
-                    //                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                    //                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_destroyed));
-                    //                            dialog.dismiss();
-                    //                            super.onBackPressed();
-                    //                        } else {
-                    //                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_end_fail_tip, errorCode));
-                    //                        }
-                    //                    });
-                    dialog.dismiss();
-                    super.onBackPressed();
-                },
-                null
-            );
+            if (!isFinishing()) {
+                DialogHelper.showAlertDialog(LiveRoomActivity.this,
+                    StringUtils.getString(R.string.room_page_destroy_room),
+                    StringUtils.getString(R.string.dialog_sure_to_destroy_room),
+                    StringUtils.getString(R.string.dialog_room_page_ok),
+                        StringUtils.getString(R.string.dialog_room_page_cancel),
+                    true,
+                    (dialog, which) -> {
+                        dialog.dismiss();
+                        super.onBackPressed();
+                    },
+                    (dialog, which) -> dialog.dismiss()
+                );
+            }
         } else {
-            //            liveRoomViewModel.leaveRoom(errorCode -> {
-            //            });
             super.onBackPressed();
         }
     }

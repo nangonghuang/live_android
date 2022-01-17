@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.blankj.utilcode.util.ClickUtils;
+
 import im.zego.livedemo.R;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.LayoutLiveBottomViewBinding;
 
 public class LiveBottomView extends ConstraintLayout {
@@ -34,48 +37,48 @@ public class LiveBottomView extends ConstraintLayout {
     }
 
     private void initListener() {
-        binding.ivIm.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivIm, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             listener.onImClick();
         });
-        binding.ivShare.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivShare, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             listener.onShareClick();
         });
-        binding.ivBeauty.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivBeauty, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             listener.onBeautyClick();
         });
-        binding.ivMusic.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivMusic, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             listener.onMusicClick();
         });
-        binding.ivMore.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivMore, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             listener.onMoreClick();
         });
 
-        binding.ivFlipCamera.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivFlipCamera, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             isCameraFront = !isCameraFront;
             listener.onCameraFlip(isCameraFront);
         });
 
-        binding.ivCamera.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivCamera, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             boolean enable = !isCameraEnable;
             enableCameraView(enable);
             listener.onCameraEnable(enable);
         });
 
-        binding.ivMic.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivMic, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             boolean enable = !isMicEnable;
             enableMicView(enable);
             listener.onMicEnable(enable);
         });
 
-        binding.layoutApplyConnection.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.layoutApplyConnection, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             switch (connectionType) {
                 case CONNECTION_NOT_APPLY:
-                    listener.onApplyConnection();
                     toConnectionType(CONNECTION_APPLYING);
+                    listener.onApplyConnection();
                     break;
                 case CONNECTION_APPLYING:
-                    listener.onCancelApplyConnection();
                     toConnectionType(CONNECTION_NOT_APPLY);
+                    listener.onCancelApplyConnection();
                     break;
                 case CONNECTING:
                     listener.onEndConnection();
@@ -154,6 +157,10 @@ public class LiveBottomView extends ConstraintLayout {
 
     public void setListener(BottomViewListener listener) {
         this.listener = listener;
+    }
+
+    public boolean isConnecting() {
+        return connectionType == CONNECTING;
     }
 
     public interface BottomViewListener {

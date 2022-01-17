@@ -9,6 +9,8 @@ import im.zego.live.model.ZegoUserInfo;
  */
 public interface ZegoUserServiceListener {
 
+    void onRoomUserInfoUpdate(List<ZegoUserInfo> memberList);
+
     // receive user join room command
     void onRoomUserJoin(List<ZegoUserInfo> memberList);
 
@@ -16,10 +18,10 @@ public interface ZegoUserServiceListener {
     void onRoomUserLeave(List<ZegoUserInfo> memberList);
 
     // receive add co-host invitation
-    void onReceiveAddCoHostInvitation();
+    void onReceiveAddCoHostInvitation(String operateUserID);
 
     // receive add co-host invitation respond
-    void onReceiveAddCoHostRespond(boolean accept);
+    void onReceiveAddCoHostRespond(String userID, boolean accept);
 
     // receive request to co-host request
     void onReceiveToCoHostRequest(String requestUserID);

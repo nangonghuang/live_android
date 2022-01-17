@@ -1,24 +1,17 @@
 package im.zego.livedemo.helper;
 
-
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 
 import im.zego.livedemo.R;
 
 public class ToastHelper {
-
-    private static final Handler toastHandler = new Handler(Looper.getMainLooper());
 
     public enum ToastMessageType {
         NORMAL, WARN
@@ -41,16 +34,10 @@ public class ToastHelper {
     }
 
     private static void showToast(ToastMessageType type, String message) {
-        if (!AppUtils.isAppForeground() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            toastHandler.post(() -> Toast.makeText(Utils.getApp(), message, Toast.LENGTH_SHORT).show());
+        if (type == ToastMessageType.NORMAL) {
+            showColorToast(ToastMessageType.NORMAL, message);
         } else {
-            toastHandler.post(() -> {
-                if (type == ToastMessageType.NORMAL) {
-                    showColorToast(ToastMessageType.NORMAL, message);
-                } else {
-                    showColorToast(ToastMessageType.WARN, message);
-                }
-            });
+            showColorToast(ToastMessageType.WARN, message);
         }
     }
 
@@ -64,11 +51,8 @@ public class ToastHelper {
             textView.setBackgroundColor(Utils.getApp().getResources().getColor(R.color.light_red));
         }
 
-        Toast toast = new Toast(Utils.getApp());
-        toast.setGravity(Gravity.TOP | Gravity.FILL_HORIZONTAL, 0, -BarUtils.getStatusBarHeight());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(view);
-        toast.setMargin(0, 0);
-        toast.show();
+        ToastUtils.make()
+                .setGravity(Gravity.TOP | Gravity.FILL_HORIZONTAL, 0, -BarUtils.getStatusBarHeight())
+                .show(view);
     }
 }

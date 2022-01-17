@@ -3,6 +3,9 @@ package im.zego.live.service;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+
+import java.util.ArrayList;
+
 import im.zego.effects.ZegoEffects;
 import im.zego.effects.entity.ZegoEffectsBigEyesParam;
 import im.zego.effects.entity.ZegoEffectsEyesBrighteningParam;
@@ -14,17 +17,16 @@ import im.zego.effects.entity.ZegoEffectsSharpenParam;
 import im.zego.effects.entity.ZegoEffectsSmallMouthParam;
 import im.zego.effects.entity.ZegoEffectsSmoothParam;
 import im.zego.effects.entity.ZegoEffectsTeethWhiteningParam;
+import im.zego.effects.entity.ZegoEffectsVideoFrameParam;
 import im.zego.effects.entity.ZegoEffectsWhitenParam;
+import im.zego.effects.enums.ZegoEffectsVideoFrameFormat;
 import im.zego.live.http.APIBase;
-import im.zego.live.http.IAsyncGetCallback;
 import im.zego.live.http.IGetLicenseCallback;
 import im.zego.live.http.License;
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.live.util.EffectsSDKHelper;
-import java.util.ArrayList;
-import org.jetbrains.annotations.NotNull;
 
-public class FaceBeautifyService {
+public class ZegoFaceBeautifyService {
 
     private static final String TAG = "Beautify";
     private Context context;
@@ -32,19 +34,19 @@ public class FaceBeautifyService {
     private final static String BACKEND_API_URL = "https://aieffects-api.zego.im?Action=DescribeEffectsLicense";
     public ZegoEffects zegoEffects;
 
-    private ZegoEffectsWhitenParam skinToneEnhancementParam = new ZegoEffectsWhitenParam();
-    private ZegoEffectsSmoothParam skinSmoothingParam = new ZegoEffectsSmoothParam();
-    private ZegoEffectsSharpenParam imageSharpeningParam = new ZegoEffectsSharpenParam();
-    private ZegoEffectsRosyParam cheekBlusherParam = new ZegoEffectsRosyParam();
-    private ZegoEffectsBigEyesParam eyesEnlargingParam = new ZegoEffectsBigEyesParam();
-    private ZegoEffectsFaceLiftingParam faceSlimingParam = new ZegoEffectsFaceLiftingParam();
-    private ZegoEffectsSmallMouthParam mouthShapeAdjustmentParam = new ZegoEffectsSmallMouthParam();
-    private ZegoEffectsEyesBrighteningParam eyesBrighteningParam = new ZegoEffectsEyesBrighteningParam();
-    private ZegoEffectsNoseNarrowingParam noseSlimingParam = new ZegoEffectsNoseNarrowingParam();
-    private ZegoEffectsTeethWhiteningParam teethWhiteningParam = new ZegoEffectsTeethWhiteningParam();
-    private ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
+    private final ZegoEffectsWhitenParam skinToneEnhancementParam = new ZegoEffectsWhitenParam();
+    private final ZegoEffectsSmoothParam skinSmoothingParam = new ZegoEffectsSmoothParam();
+    private final ZegoEffectsSharpenParam imageSharpeningParam = new ZegoEffectsSharpenParam();
+    private final ZegoEffectsRosyParam cheekBlusherParam = new ZegoEffectsRosyParam();
+    private final ZegoEffectsBigEyesParam eyesEnlargingParam = new ZegoEffectsBigEyesParam();
+    private final ZegoEffectsFaceLiftingParam faceSlimingParam = new ZegoEffectsFaceLiftingParam();
+    private final ZegoEffectsSmallMouthParam mouthShapeAdjustmentParam = new ZegoEffectsSmallMouthParam();
+    private final ZegoEffectsEyesBrighteningParam eyesBrighteningParam = new ZegoEffectsEyesBrighteningParam();
+    private final ZegoEffectsNoseNarrowingParam noseSlimingParam = new ZegoEffectsNoseNarrowingParam();
+    private final ZegoEffectsTeethWhiteningParam teethWhiteningParam = new ZegoEffectsTeethWhiteningParam();
+    private final ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
 
-    public FaceBeautifyService(Context context) {
+    public ZegoFaceBeautifyService(Context context) {
         ArrayList<String> aiModeInfoList = EffectsSDKHelper.copyAiModeInfoList(context);
         ArrayList<String> resourcesInfoList = EffectsSDKHelper.copyResourcesInfoList(context);
         resourcesInfoList.addAll(aiModeInfoList);
@@ -60,28 +62,43 @@ public class FaceBeautifyService {
         builder.appendQueryParameter("AuthInfo", authInfo);
         String url = builder.build().toString();
 
-        APIBase.asyncGet(url, License.class, new IAsyncGetCallback<License>() {
-            @Override
-            public void onResponse(int code, @NotNull String message, License responseJsonBean) {
-                if (code == 0) {
-                    license = responseJsonBean.getLicense();
-                    zegoEffects = ZegoEffects.create(license, context);
-                    for (FaceBeautifyType type : FaceBeautifyType.values()) {
-                        enableBeautify(true, type);
-                    }
-                    initBeauty();
+        APIBase.asyncGet(url, License.class, (code, message, responseJsonBean) -> {
+            if (code == 0) {
+                license = responseJsonBean.getLicense();
+                zegoEffects = ZegoEffects.create(license, context);
+                for (FaceBeautifyType type : FaceBeautifyType.values()) {
+                    enableBeautify(true, type);
                 }
-                if (callback != null) {
-                    callback.onGetLicense(code, message, responseJsonBean);
-                }
+                initBeauty();
+            }
+            if (callback != null) {
+                callback.onGetLicense(code, message, responseJsonBean);
             }
         });
+    }
+
+    public void onStart() {
+        zegoEffects.initEnv(720, 1280);
+    }
+
+    public void onStop() {
+        zegoEffects.uninitEnv();
+    }
+
+    public int gainProcessedTextureID(int textureID, int width, int height) {
+        ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
+        param.format = ZegoEffectsVideoFrameFormat.BGRA32;
+        param.width = width;
+        param.height = height;
+
+        return zegoEffects.processTexture(textureID, param);
     }
 
     public void enableBeautify(boolean enable, FaceBeautifyType type) {
         if (zegoEffects == null && license != null) {
             zegoEffects = ZegoEffects.create(license, context);
         }
+        if (zegoEffects == null) return;
         switch (type) {
             case SkinToneEnhancement:
                 zegoEffects.enableWhiten(enable);
@@ -200,6 +217,7 @@ public class FaceBeautifyService {
         if (zegoEffects == null && license != null) {
             zegoEffects = ZegoEffects.create(license, context);
         }
+        if (zegoEffects == null) return;
         switch (type) {
             case SkinToneEnhancement:
                 skinToneEnhancementParam.intensity = value;

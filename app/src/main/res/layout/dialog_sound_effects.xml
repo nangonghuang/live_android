@@ -19,7 +19,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
         android:gravity="start"
-        android:text="@string/room_page_sound_effects_title"
+        android:text="@string/room_sound_page_sound_effects"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
-                android:text="@string/room_page_sound_effects_background"
+                android:text="@string/room_sound_page_sound_background"
                 android:textColor="#ffffffff"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_bg_sound"
-                app:seekbar_name="@string/room_page_sound_effects_music_volume" />
+                app:seekbar_name="@string/room_sound_page_music_volume" />
 
             <im.zego.livedemo.view.SoundEffectsSeekBar
                 android:id="@+id/voice_volume_seekbar"
@@ -77,7 +77,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/music_volume_seekbar"
-                app:seekbar_name="@string/room_page_sound_effects_voice_volume" />
+                app:seekbar_name="@string/room_sound_page_voice_volume" />
 
             <TextView
                 android:id="@+id/tv_voice_change"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="27dp"
-                android:text="@string/room_page_sound_effects_voice_change"
+                android:text="@string/room_sound_page_voice_changing"
                 android:textColor="#ffffffff"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="27dp"
-                android:text="@string/room_page_sound_effects_reverb"
+                android:text="@string/room_sound_page_audio_mixing"
                 android:textColor="#ffffffff"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"

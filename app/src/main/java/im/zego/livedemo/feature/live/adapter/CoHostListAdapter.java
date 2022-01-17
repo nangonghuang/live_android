@@ -1,6 +1,7 @@
 package im.zego.livedemo.feature.live.adapter;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import im.zego.livedemo.feature.live.viewmodel.LiveRoomViewModel;
 import im.zego.livedemo.helper.AvatarHelper;
 
 public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.ViewHolder> {
+    private static final String TAG = "CoHostListAdapter";
 
     private List<ZegoCoHostSeatModel> seatModels = new ArrayList<>();
     private ICoHostClickListener listener;
@@ -35,16 +37,18 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
     }
 
     public void setList(List<ZegoCoHostSeatModel> list) {
+        Log.d(TAG, "setList" + list);
         seatModels.clear();
         seatModels.addAll(list);
         removeHostSeat(seatModels);
+        if (needSort()) {
+            sortList(seatModels);
+        }
         notifyDataSetChanged();
     }
 
-    public void addList(List<ZegoCoHostSeatModel> list) {
-        seatModels.addAll(list);
-        removeHostSeat(seatModels);
-        notifyDataSetChanged();
+    private boolean needSort() {
+        return !UserInfoHelper.isSelfHost() && UserInfoHelper.isSelfCoHost();
     }
 
     private void removeHostSeat(List<ZegoCoHostSeatModel> seatModels) {
@@ -56,6 +60,21 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
                 break;
             }
         }
+    }
+
+    private void sortList(List<ZegoCoHostSeatModel> seatModels) {
+        if (seatModels.size() <= 1) return;
+        int index = 0;
+        ZegoCoHostSeatModel selfModel = null;
+        for (int i = 0; i < seatModels.size(); i++) {
+            selfModel = seatModels.get(i);
+            if (UserInfoHelper.isUserIDSelf(selfModel.getUserID())) {
+                index = i;
+                break;
+            }
+        }
+        seatModels.remove(index);
+        seatModels.add(0, selfModel);
     }
 
     @NonNull
@@ -91,6 +110,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         }
 
         ZegoUserInfo userInfo = ZegoRoomManager.getInstance().userService.getUserInfo(model.getUserID());
+        Log.d(TAG, "userInfo" + userInfo);
         if (userInfo == null) return;
 
         int avatarId = AvatarHelper.getAvatarIdByUserName(userInfo.getUserName());
@@ -119,6 +139,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         } else {
             liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
         }
+//        ZegoExpressEngine.getEngine().enableCamera(model.isCameraEnable());
     }
 
     @Override

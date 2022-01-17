@@ -29,6 +29,7 @@ public class ZegoRoomAttributesHelper {
     private static final String TAG = "ZegoRoomAttributes";
 
     public static Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
             .registerTypeAdapterFactory(new CustomTypeAdapterFactory())
             .create();
 
@@ -109,7 +110,7 @@ public class ZegoRoomAttributesHelper {
         operation.getAction().setTargetID(targetID);
 
         if (isTake) {
-            operation.getAction().setType(OperationActionType.TakeCoHostSeat);
+            operation.getAction().setType(OperationActionType.TakeSeat);
             // when user taking seat, we need set these default params actively
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
             model.setCamera(true);
@@ -117,7 +118,7 @@ public class ZegoRoomAttributesHelper {
             model.setUserID(targetID);
             operation.getSeatList().add(model);
         } else {
-            operation.getAction().setType(OperationActionType.LeaveCoHostSeat);
+            operation.getAction().setType(OperationActionType.LeaveSeat);
             ZegoCoHostSeatModel model = new ZegoCoHostSeatModel();
             model.setUserID(targetID);
             operation.getSeatList().remove(model);

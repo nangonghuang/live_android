@@ -75,6 +75,10 @@ public class VideoConfigViewModel extends ViewModel {
     }
 
     public boolean isDeviceSupportH265() {
-        return ZegoExpressEngine.getEngine().isVideoEncoderSupported(ZegoVideoCodecID.H265);
+        boolean tempBool = settingConfig.isHardwareEncode();
+        ZegoExpressEngine.getEngine().enableHardwareEncoder(true);
+        boolean isVideoEncoderSupported = ZegoExpressEngine.getEngine().isVideoEncoderSupported(ZegoVideoCodecID.H265);
+        ZegoExpressEngine.getEngine().enableHardwareEncoder(tempBool);
+        return isVideoEncoderSupported;
     }
 }

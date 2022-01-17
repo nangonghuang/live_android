@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_positive"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/dialog_cancel" />
+        tools:text="@string/dialog_room_page_cancel" />
 
     <TextView
         android:id="@+id/tv_positive"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/tv_negative"
-        tools:text="@string/dialog_confirm" />
+        tools:text="@string/dialog_room_page_ok" />
 
     <View
         android:layout_width="match_parent"

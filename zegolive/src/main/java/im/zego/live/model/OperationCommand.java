@@ -10,10 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import im.zego.live.constants.ZegoRoomConstants;
+import im.zego.live.helper.UserInfoHelper;
 import im.zego.live.helper.ZegoRoomAttributesHelper;
 
 /**
@@ -58,6 +60,14 @@ public class OperationCommand {
         return seq > 0 && seq > action.getSeq();
     }
 
+    public void addSeq(int requestSeq) {
+        if (requestSeq > action.getSeq()) {
+            action.setSeq(requestSeq + 1);
+        } else {
+            action.setSeq(action.getSeq() + 1);
+        }
+    }
+
     public OperationCommand copy() {
         OperationCommand command = new OperationCommand();
         command.seatList = new ArrayList<>(seatList);
@@ -67,29 +77,76 @@ public class OperationCommand {
         return command;
     }
 
-    public void update(HashMap<String, String> map) {
+    public void updateForResend(HashMap<String, String> map) {
         Gson gson = ZegoRoomAttributesHelper.gson;
         Set<String> keys = map.keySet();
+        // according to the action
+        // Modify the values of various member properties of the operation
         for (String key : keys) {
             switch (key) {
-                case ZegoRoomConstants.KEY_ACTION:
-                    OperationAction action = gson.fromJson(map.get(key), OperationAction.class);
-                    this.action.setSeq(action.getSeq());
-                    break;
                 case ZegoRoomConstants.KEY_SEAT:
-                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<List<ZegoCoHostSeatModel>>() {}.getType());
-                    if (seatList != null && !seatList.isEmpty()) {
-                        this.seatList = seatList;
+                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<ArrayList<ZegoCoHostSeatModel>>() {}.getType());
+                    if (seatList != null) {
+                        if (action.getType() == OperationActionType.TakeSeat) {
+                            // If the action is take seat,
+                            // we need to filter duplicate requests to avoid simultaneous operations
+                            this.seatList.addAll(seatList);
+                            this.seatList = removeDuplicateItem(this.seatList);
+
+                            // remove last N items when list exceed max num
+                            if (this.seatList.size() > ZegoRoomConstants.MAX_CO_HOST_LIST_SIZE) {
+                                this.seatList.subList(ZegoRoomConstants.MAX_CO_HOST_LIST_SIZE, this.seatList.size()).clear();
+                            }
+                        } else if (action.getType() == OperationActionType.LeaveSeat) {
+                            ZegoCoHostSeatModel seatModel = UserInfoHelper.getSeatModel(this.seatList, action.getTargetID());
+                            this.seatList.remove(seatModel);
+                        } else {
+                            this.seatList = removeDuplicateItem(seatList);
+                        }
                     }
                     break;
                 case ZegoRoomConstants.KEY_REQUEST_CO_HOST:
-                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<List<String>>() {}.getType());
-                    if (requestCoHostList != null && !requestCoHostList.isEmpty()) {
-                        this.requestCoHostList = requestCoHostList;
+                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<ArrayList<String>>() {}.getType());
+                    if (requestCoHostList != null) {
+                        if (action.getType() == OperationActionType.RequestToCoHost) {
+                            this.requestCoHostList.addAll(requestCoHostList);
+                            this.requestCoHostList = removeDuplicateItem(this.requestCoHostList);
+                        } else if (action.getType() == OperationActionType.CancelRequestCoHost) {
+                            this.requestCoHostList.remove(action.getOperatorID());
+                        } else {
+                            this.requestCoHostList = removeDuplicateItem(requestCoHostList);
+                        }
                     }
                     break;
             }
         }
+    }
+
+    public void update(HashMap<String, String> map) {
+        Gson gson = ZegoRoomAttributesHelper.gson;
+        Set<String> keys = map.keySet();
+        // according to the action
+        // Modify the values of various member properties of the operation
+        for (String key : keys) {
+            switch (key) {
+                case ZegoRoomConstants.KEY_SEAT:
+                    List<ZegoCoHostSeatModel> seatList = gson.fromJson(map.get(key), new TypeToken<ArrayList<ZegoCoHostSeatModel>>() {}.getType());
+                    if (seatList != null) {
+                        this.seatList = removeDuplicateItem(seatList);
+                    }
+                    break;
+                case ZegoRoomConstants.KEY_REQUEST_CO_HOST:
+                    List<String> requestCoHostList = gson.fromJson(map.get(key), new TypeToken<ArrayList<String>>() {}.getType());
+                    if (requestCoHostList != null) {
+                        this.requestCoHostList = removeDuplicateItem(requestCoHostList);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private <T> ArrayList<T> removeDuplicateItem(List<T> listWithDuplicates) {
+        return new ArrayList<>(new LinkedHashSet<>(listWithDuplicates));
     }
 
     public HashMap<String, String> getAttributes(@OperationAttributeType int type) {

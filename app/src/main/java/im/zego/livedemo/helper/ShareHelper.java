@@ -15,6 +15,6 @@ public class ShareHelper {
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, content);
         shareIntent.setType("text/plain");
-        context.startActivity(Intent.createChooser(shareIntent, context.getResources().getText(R.string.send_to_friend)));
+        context.startActivity(Intent.createChooser(shareIntent, null));
     }
 }

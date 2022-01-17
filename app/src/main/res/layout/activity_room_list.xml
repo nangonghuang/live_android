@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/room_list_page_empty"
+        android:text="@string/room_list_page_none"
         android:textColor="#ffcccccc"
         android:textSize="14sp"
         android:visibility="gone" />
@@ -62,7 +62,7 @@
       android:drawablePadding="10dp"
       android:gravity="center"
       android:textSize="16sp"
-      android:text="@string/room_list_page_create_live"
+      android:text="@string/room_list_page_create"
       android:textColor="@color/white" />
   </FrameLayout>
 

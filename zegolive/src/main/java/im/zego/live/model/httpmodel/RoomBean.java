@@ -1,4 +1,4 @@
-package im.zego.livedemo.feature.room.model;
+package im.zego.live.model.httpmodel;
 
 import com.google.gson.annotations.SerializedName;
 

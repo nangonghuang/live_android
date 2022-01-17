@@ -38,9 +38,9 @@ public class SeatMoreDialog extends BaseBottomDialog {
         tvCancel = findViewById(R.id.tv_cancel);
 
         if (seatModel.isMuted()) {
-            tvMicStatus.setText(StringUtils.getString(R.string.room_page_co_host_unmute));
+            tvMicStatus.setText(StringUtils.getString(R.string.room_page_unmute));
         } else {
-            tvMicStatus.setText(StringUtils.getString(R.string.room_page_co_host_mute));
+            tvMicStatus.setText(StringUtils.getString(R.string.room_page_mute));
         }
 
         tvCancel.setOnClickListener(v -> dismiss());

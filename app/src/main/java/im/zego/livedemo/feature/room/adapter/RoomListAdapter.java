@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.SizeUtils;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.zego.live.model.httpmodel.RoomBean;
 import im.zego.livedemo.R;
-import im.zego.livedemo.feature.room.model.RoomBean;
+import im.zego.livedemo.helper.AvatarHelper;
 
 /**
  * Created by rocket_wang on 2021/12/22.
@@ -31,7 +31,6 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     private List<RoomBean> items = new ArrayList<>();
     private OnClickListener listener;
 
-    public static final int MAX_INDEX = 6;
     public static final int[] coverList = new int[]{
         R.drawable.liveshow_room_1,
         R.drawable.liveshow_room_2,
@@ -64,8 +63,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     public void onBindViewHolder(@NonNull RoomListViewHolder holder, int position) {
         RoomBean item = items.get(position);
 
-        int index = getIndex(item.getName());
-        Log.d(TAG, "onBindViewHolder: " + index);
+        int index = AvatarHelper.getIndex(item.getName());
+        Log.d(TAG, "onBindViewHolder: name=" + item.getName() + ", index=" + index);
         Bitmap bitmap = BitmapFactory.decodeResource(holder.itemView.getResources(), coverList[index]);
         Bitmap roundBitmap = ImageUtils.toRoundCorner(bitmap, SizeUtils.dp2px(13f));
         holder.cover.setImageBitmap(roundBitmap);
@@ -82,19 +81,6 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomLi
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    private static int getIndex(String string) {
-        try {
-            final MessageDigest digest = MessageDigest.getInstance("md5");
-            digest.update(string.getBytes());
-            final byte[] bytes = digest.digest();
-            final StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%02X", bytes[0]));
-            return Integer.parseInt(sb.toString()) % MAX_INDEX;
-        } catch (Exception exc) {
-            return 0;
-        }
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {

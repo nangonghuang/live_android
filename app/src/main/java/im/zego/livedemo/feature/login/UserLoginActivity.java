@@ -63,7 +63,7 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 Pattern p = Pattern.compile(regEx);
                 Matcher m = p.matcher(binding.etUserId.getText().toString());
                 if (!m.matches()) {
-                    ToastHelper.showWarnToast(R.string.toast_user_id_error);
+                    ToastHelper.showNormalToast(R.string.toast_user_id_error);
                     return;
                 }
                 user.setUserID(userID);
@@ -79,7 +79,7 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                     });
                 }
             } else {
-                ToastHelper.showWarnToast(R.string.toast_userid_login_fail);
+                ToastHelper.showNormalToast(R.string.toast_userid_login_fail);
             }
         });
     }

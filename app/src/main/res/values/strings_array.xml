@@ -20,15 +20,15 @@
     </string-array>
 
     <string-array name="background_sound_list">
-        <item>@string/room_page_sound_effects_background_joyful</item>
-        <item>@string/room_page_sound_effects_background_romantic</item>
+        <item>@string/room_sound_page_joyful</item>
+        <item>@string/room_sound_page_romantic</item>
     </string-array>
 
     <string-array name="voice_change_list">
-        <item>@string/room_page_sound_effects_none</item>
-        <item>@string/room_page_sound_effects_lolita</item>
-        <item>@string/room_page_sound_effects_robot</item>
-        <item>@string/room_page_sound_effects_empty</item>
+        <item>@string/room_sound_page_original_voice</item>
+        <item>@string/room_sound_page_lolita</item>
+        <item>@string/room_sound_page_robot</item>
+        <item>@string/room_sound_page_empt</item>
     </string-array>
 
     <string-array name="voicePreset">
@@ -39,11 +39,11 @@
     </string-array>
 
     <string-array name="reverb_preset_list">
-        <item>@string/room_page_sound_effects_none</item>
-        <item>@string/room_page_sound_effects_ktv</item>
-        <item>@string/room_page_sound_effects_hall</item>
-        <item>@string/room_page_sound_effects_concert</item>
-        <item>@string/room_page_sound_effects_rock</item>
+        <item>@string/room_sound_page_none</item>
+        <item>@string/room_sound_page_ktv</item>
+        <item>@string/room_sound_page_hall</item>
+        <item>@string/room_sound_page_concert</item>
+        <item>@string/room_sound_page_rock</item>
     </string-array>
 
     <string-array name="reverbPreset">
@@ -57,5 +57,22 @@
     <string-array name="background_music">
         <item>happy</item>
         <item>romantic</item>
+    </string-array>
+
+    <string-array name="beauty_list">
+        <item>@string/room_beautify_page_skin_tone_enhancement</item>
+        <item>@string/room_beautify_page_skin_smoothing</item>
+        <item>@string/room_beautify_page_image_sharpening</item>
+        <item>@string/room_beautify_page_cheek_blusher</item>
+    </string-array>
+
+    <string-array name="beauty_type_list">
+        <item>@string/room_beautify_page_eyes_enlarging</item>
+        <item>@string/room_beautify_page_face_sliming</item>
+        <item>@string/room_beautify_page_mouth_shape_adjustment</item>
+        <item>@string/room_beautify_page_eyes_brightening</item>
+        <item>@string/room_beautify_page_nose_sliming</item>
+        <item>@string/room_beautify_page_teeth_whitening</item>
+        <item>@string/room_beautify_page_chin_lengthening</item>
     </string-array>
 </resources>

@@ -65,12 +65,12 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsEncodeType.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_encode_type),
+                    StringUtils.getString(R.string.room_settings_page_codec),
                     viewModel.getSettingConfig().getEncodeType(),
                     viewModel.encodingTypeStringArray,
                     encodeType -> {
                         if (VideoSettingConfig.isH265(encodeType) && !viewModel.isDeviceSupportH265()) {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_settings_device_not_support_h265));
+                            ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_page_settings_device_not_support_h265));
                             return;
                         }
 
@@ -96,7 +96,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
             viewModel.getSettingConfig().setHardwareEncode(isChecked);
 
             if (VideoSettingConfig.isH265(viewModel.getSettingConfig().getEncodeType()) && !isChecked) {
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_page_settings_h265_error));
+                ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_page_settings_h265_error));
                 settingsHardwareCoding.setChecked(true);
             }
         });
@@ -112,7 +112,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsVideoResolution.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_video_resolution),
+                    StringUtils.getString(R.string.room_settings_page_video_resolution),
                     viewModel.getSettingConfig().getVideoResolution(),
                     viewModel.videoResolutionStringArray,
                     checkedString -> {
@@ -128,7 +128,7 @@ public class VideoSettingsDialog extends BaseBottomDialog {
         settingsAudioBitrate.setListener(isChecked -> {
             CommonStringArrayDialog dialog = new CommonStringArrayDialog(
                     getContext(),
-                    StringUtils.getString(R.string.room_page_settings_audio_bitrate),
+                    StringUtils.getString(R.string.room_settings_page_audio_bitrate),
                     viewModel.getSettingConfig().getAudioBitrate(),
                     viewModel.audioBitrateStringArray,
                     checkedString -> {

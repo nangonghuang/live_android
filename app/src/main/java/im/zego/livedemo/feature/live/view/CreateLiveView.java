@@ -11,9 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.blankj.utilcode.util.ClickUtils;
 import com.blankj.utilcode.util.StringUtils;
 
 import im.zego.livedemo.R;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.LayoutCreateLiveBinding;
 import im.zego.livedemo.helper.ToastHelper;
 
@@ -54,17 +56,17 @@ public class CreateLiveView extends ConstraintLayout {
                 enableStartLiveBtn(editable.length() > 0);
             }
         });
-        binding.ivBack.setOnClickListener(v -> listener.onBackClick());
-        binding.ivFlipCamera.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.ivBack, Constants.DEBOUNCING_DEFAULT_VALUE, v -> listener.onBackClick());
+        ClickUtils.applySingleDebouncing(binding.ivFlipCamera, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             isCameraFront = !isCameraFront;
             listener.onCameraFlip(isCameraFront);
         });
-        binding.ivBeauty.setOnClickListener(v -> listener.onBeautyClick());
-        binding.ivSettings.setOnClickListener(v -> listener.onSettingsClick());
-        binding.tvStartLive.setOnClickListener(v -> {
-            String roomName = binding.etRoomName.getText().toString().trim();
+        ClickUtils.applySingleDebouncing(binding.ivBeauty, Constants.DEBOUNCING_DEFAULT_VALUE, v -> listener.onBeautyClick());
+        ClickUtils.applySingleDebouncing(binding.ivSettings, Constants.DEBOUNCING_DEFAULT_VALUE, v -> listener.onSettingsClick());
+        ClickUtils.applySingleDebouncing(binding.tvStartLive, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
+            String roomName = binding.etRoomName.getText().toString();
             if (TextUtils.isEmpty(roomName)) {
-                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_room_name_error));
+                ToastHelper.showWarnToast(StringUtils.getString(R.string.create_page_room_name));
                 return;
             }
             listener.onStartLiveClick(roomName);

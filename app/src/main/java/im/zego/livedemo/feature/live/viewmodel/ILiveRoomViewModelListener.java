@@ -19,10 +19,10 @@ public interface ILiveRoomViewModelListener {
     void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList);
 
     // receive add co-host invitation
-    void onReceiveAddCoHostInvitation();
+    void onReceiveAddCoHostInvitation(String operateUserID);
 
     // receive add co-host invitation respond
-    void onReceiveAddCoHostRespond(boolean accept);
+    void onReceiveAddCoHostRespond(String userID, boolean accept);
 
     // receive request to co-host request
     void onReceiveToCoHostRequest(String requestUserID);

@@ -10,11 +10,13 @@ import com.blankj.utilcode.util.StringUtils;
 import im.zego.effects.ZegoEffects;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
-import im.zego.live.util.EffectsSDKHelper;
 import im.zego.livedemo.BuildConfig;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivitySettingsBinding;
+import im.zego.livedemo.feature.login.UserLoginActivity;
+import im.zego.livedemo.feature.webview.WebViewActivity;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zim.ZIM;
@@ -43,6 +45,9 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
     protected void initListener() {
         binding.commonTitleView.setBackBtnClickListener(v -> finish());
         binding.tvLogout.setOnClickListener(v -> logout());
+
+        binding.layoutTermsOfService.setOnClickListener(v -> WebViewActivity.start(this, Constants.URL_TERMS_OF_SERVICE));
+        binding.layoutPrivacyPolicy.setOnClickListener(v -> WebViewActivity.start(this, Constants.URL_PRIVACY_POLICY));
         binding.layoutShareLog.setOnClickListener(v -> ZegoRoomManager.getInstance().uploadLog(errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ToastHelper.showNormalToast(R.string.toast_upload_log_success);
@@ -54,7 +59,6 @@ public class SettingsActivity extends BaseActivity<ActivitySettingsBinding> {
 
     private void logout() {
         ZegoRoomManager.getInstance().userService.logout();
-        ActivityUtils.finishAllActivities();
-        ActivityUtils.startLauncherActivity();
+        ActivityUtils.finishToActivity(UserLoginActivity.class, false);
     }
 }
