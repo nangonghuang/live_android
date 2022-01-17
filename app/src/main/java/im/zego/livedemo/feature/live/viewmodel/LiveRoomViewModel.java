@@ -422,9 +422,9 @@ public class LiveRoomViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         // reset face beautify
-//        ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
-//        beautifyService.resetBeauty();
-//        beautifyService.resetReSharp();
+        ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
+        beautifyService.resetBeauty();
+        beautifyService.resetReSharp();
 
         ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();

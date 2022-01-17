@@ -541,8 +541,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onBeautyClick() {
-//                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
-//                beautyDialog.show();
+                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
+                beautyDialog.show();
             }
 
             @Override
@@ -593,8 +593,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onBeautyClick() {
-//                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
-//                beautyDialog.show();
+                EffectsBeautyDialog beautyDialog = new EffectsBeautyDialog(LiveRoomActivity.this);
+                beautyDialog.show();
             }
 
             @Override
