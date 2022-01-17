@@ -27,16 +27,11 @@ public class CustomTypeAdapterFactory implements TypeAdapterFactory {
         Class<T> rawType = (Class<T>) type.getRawType();
         if (rawType.isEnum()) {
             Map<T, TypeAndValue> map = new HashMap<>();
-            // [Untaken,<int,0>]
-            // [Occupied,<int,1>]...
             for (T enumConstant : rawType.getEnumConstants()) {
-                // enumConstant: Untaken/Occupied/Closed
                 if (enumConstant == null) {
                     continue;
                 }
                 for (Field field : enumConstant.getClass().getDeclaredFields()) {
-                    // field :private final int im.zego.liveaudioroom.model.ZegoSpeakerSeatStatus.value
-                    // field.getType() :int
                     if (INT.equals(field.getType().getName())) {
                         field.setAccessible(true);
                         try {
@@ -51,7 +46,6 @@ public class CustomTypeAdapterFactory implements TypeAdapterFactory {
             }
             return new TypeAdapter<T>() {
                 public void write(JsonWriter out, T value) throws IOException {
-                    // value = Untaken/Occupied/Closed
                     if (value == null) {
                         out.nullValue();
                     } else {
