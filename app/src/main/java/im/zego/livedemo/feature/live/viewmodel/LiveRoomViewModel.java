@@ -31,14 +31,13 @@ import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
+import im.zego.live.model.httpmodel.RoomBean;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
+import im.zego.live.service.ZegoRoomListService;
 import im.zego.live.service.ZegoSoundEffectService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
-import im.zego.livedemo.constants.Constants;
-import im.zego.livedemo.feature.room.RoomApi;
-import im.zego.livedemo.feature.room.model.RoomBean;
 import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
@@ -211,7 +210,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoUserInfo selfUser = ZegoRoomManager.getInstance().userService.localUserInfo;
         ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
         String userID = localUserInfo.getUserID();
-        RoomApi.createRoom(roomName, userID, new IAsyncGetCallback<RoomBean>() {
+        ZegoRoomListService.createRoom(roomName, userID, new IAsyncGetCallback<RoomBean>() {
             @Override
             public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
@@ -227,13 +226,13 @@ public class LiveRoomViewModel extends ViewModel {
                             callback.onRoomCallback(errorCode);
                         }
                     });
-                    RoomApi.joinRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
+                    ZegoRoomListService.joinServerRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
                         @Override
                         public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
                             TimerTask task = new TimerTask() {
                                 @Override
                                 public void run() {
-                                    RoomApi.heartBeat(userID, roomID, true, null);
+                                    ZegoRoomListService.heartBeat(userID, roomID, true, null);
                                 }
                             };
                             timer.schedule(task, 0, 30 * 1000);
@@ -252,7 +251,7 @@ public class LiveRoomViewModel extends ViewModel {
         final ZegoUserService userService = ZegoRoomManager.getInstance().userService;
         String userID = userService.localUserInfo.getUserID();
         String token = AuthInfoManager.getInstance().generateJoinRoomToken(userID);
-        RoomApi.joinRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
+        ZegoRoomListService.joinServerRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
             @Override
             public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
@@ -276,13 +275,13 @@ public class LiveRoomViewModel extends ViewModel {
                     TimerTask task = new TimerTask() {
                         @Override
                         public void run() {
-                            RoomApi.heartBeat(userID, roomID, false, null);
+                            ZegoRoomListService.heartBeat(userID, roomID, false, null);
                         }
                     };
                     timer.schedule(task, 0,30 * 1000);
                 } else {
                     int tempErrorCode = errorCode;
-                    if (errorCode == RoomApi.ROOM_NOT_EXISTED) {
+                    if (errorCode == ZegoRoomListService.ROOM_NOT_EXISTED) {
                         tempErrorCode = ZegoRoomErrorCode.ROOM_NOT_FOUND;
                     }
                     if (callback != null) {
@@ -299,7 +298,7 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoRoomManager.getInstance().roomService.leaveRoom(callback);
         Log.d("leaveRoom", "leaveRoom() called with: selfHost = [" + selfHost + "]");
         if (selfHost) {
-            RoomApi.endRoom(roomID, new IAsyncGetCallback<RoomBean>() {
+            ZegoRoomListService.endServerRoom(roomID, new IAsyncGetCallback<RoomBean>() {
                 @Override
                 public void onResponse(int errorCode, @NonNull String message,
                     RoomBean responseJsonBean) {
@@ -308,7 +307,7 @@ public class LiveRoomViewModel extends ViewModel {
             });
         } else {
             String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
-            RoomApi.leaveRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
+            ZegoRoomListService.leaveServerRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
                 @Override
                 public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
 

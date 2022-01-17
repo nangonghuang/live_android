@@ -18,8 +18,8 @@ import com.blankj.utilcode.util.SizeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.zego.live.model.httpmodel.RoomBean;
 import im.zego.livedemo.R;
-import im.zego.livedemo.feature.room.model.RoomBean;
 import im.zego.livedemo.helper.AvatarHelper;
 
 /**

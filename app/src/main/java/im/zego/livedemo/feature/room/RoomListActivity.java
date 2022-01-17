@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.ThreadUtils;
 import com.scwang.smart.refresh.header.MaterialHeader;
 
 import im.zego.live.ZegoRoomManager;
+import im.zego.live.service.ZegoRoomListService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.constants.Constants;
@@ -89,7 +90,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
     }
 
     private void refresh(IRefreshListener listener) {
-        RoomApi.getRoomList(100, null, (errorCode, message, responseJsonBean) -> {
+        ZegoRoomListService.getRoomList(100, null, (errorCode, message, responseJsonBean) -> {
             if (listener != null) {
                 listener.onRefreshFinish();
             }
