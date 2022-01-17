@@ -13,18 +13,14 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ThreadUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
-import java.util.List;
 import java.util.Objects;
 
 import im.zego.live.ZegoRoomManager;
@@ -61,8 +57,6 @@ import im.zego.livedemo.helper.DialogHelper;
 import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.helper.ShareHelper;
 import im.zego.livedemo.helper.ToastHelper;
-import im.zego.zegoexpress.constants.ZegoUpdateType;
-import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 
@@ -72,6 +66,7 @@ import im.zego.zim.enums.ZIMConnectionState;
 public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     public static final String EXTRA_KEY_ROOM_ID = "extra_key_room_id";
+    private static final String TAG = "LiveRoomActivity";
 
     /**
      * create new room
@@ -79,7 +74,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     public static void start(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         activity.startActivityForResult(intent, requestCode);
-//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /**
@@ -89,7 +83,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         intent.putExtra(EXTRA_KEY_ROOM_ID, roomID);
         activity.startActivityForResult(intent, requestCode);
-//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private LiveRoomViewModel liveRoomViewModel;
@@ -263,22 +256,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_rejected));
                 }
             }
-
-            @Override
-            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
-                if (!UserInfoHelper.isSelfHost()) {
-                    for (ZegoStream zegoStream : streamList) {
-                        if (updateType == ZegoUpdateType.ADD) {
-                            // if I'm not host then we need play the host stream
-                            String streamID = zegoStream.streamID;
-                            Log.d("ADD", "onRoomStreamUpdate: " + streamID);
-                            if (ZegoLiveHelper.isHostStreamID(streamID)) {
-                                liveRoomViewModel.startPlayingStream(streamID, binding.textureView);
-                            }
-                        }
-                    }
-                }
-            }
         });
 
         initUI();
@@ -337,6 +314,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 });
             dialog.show();
         });
+        coHostListAdapter.setList(liveRoomViewModel.coHostList.getValue());
+
         // Fix refresh flickering issue
         SimpleItemAnimator itemAnimator = ((SimpleItemAnimator) binding.rvCoHostList.getItemAnimator());
         if (itemAnimator != null) {
@@ -412,8 +391,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         liveRoomViewModel.coHostList.observe(this, coHostList -> {
             memberListDialog.updateUserList(liveRoomViewModel.userList.getValue());
-            // if host camera/mic status change, we need update main ui
             if (!UserInfoHelper.isSelfHost()) {
+                // if I'm not host then we need play the host stream
+                String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
+                String streamID = ZegoLiveHelper.getStreamID(hostID);
+                Log.d(TAG, "coHostList.observe, host streamID=" + streamID);
+                liveRoomViewModel.startPlayingStream(streamID, binding.textureView);
+
+                // if host camera/mic status change, we need update main ui
                 for (ZegoCoHostSeatModel seatModel : coHostList) {
                     if (UserInfoHelper.isUserIDHost(seatModel.getUserID())) {
                         toggleHostPreviewUI(seatModel.isCameraEnable());

@@ -38,6 +38,7 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
 
     public void setList(List<ZegoCoHostSeatModel> list) {
         Log.d(TAG, "setList" + list);
+        if (list == null) return;
         seatModels.clear();
         seatModels.addAll(list);
         removeHostSeat(seatModels);

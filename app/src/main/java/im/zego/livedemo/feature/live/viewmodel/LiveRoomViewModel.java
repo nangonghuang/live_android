@@ -88,11 +88,6 @@ public class LiveRoomViewModel extends ViewModel {
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
                 listener.onConnectionStateChanged(state, event);
             }
-
-            @Override
-            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
-                listener.onRoomStreamUpdate(roomID, updateType, streamList);
-            }
         });
 
         ZegoRoomManager.getInstance().userService.setListener(new ZegoUserServiceListener() {

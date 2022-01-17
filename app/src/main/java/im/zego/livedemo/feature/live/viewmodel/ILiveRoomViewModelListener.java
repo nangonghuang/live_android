@@ -16,8 +16,6 @@ public interface ILiveRoomViewModelListener {
 
     void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event);
 
-    void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList);
-
     // receive add co-host invitation
     void onReceiveAddCoHostInvitation(String operateUserID);
 
