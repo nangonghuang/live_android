@@ -49,12 +49,6 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
         initListener();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ZegoRoomManager.getInstance().userService.logout();
-    }
-
     private void initData() {
         binding.etUserId.setText(DeviceUtils.getManufacturer() + (int) (100 + Math.random() * 900));
     }
