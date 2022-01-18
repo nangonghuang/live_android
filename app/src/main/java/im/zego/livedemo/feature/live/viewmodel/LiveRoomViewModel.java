@@ -53,6 +53,7 @@ import im.zego.zim.enums.ZIMErrorCode;
  * Created by rocket_wang on 2021/12/27.
  */
 public class LiveRoomViewModel extends ViewModel {
+    private static final long HEART_BEAT_PERIOD = 15_000L;
 
     public MutableLiveData<Boolean> isCameraEnable = new MutableLiveData<>();
     public MutableLiveData<Boolean> isMicEnable = new MutableLiveData<>();
@@ -225,7 +226,7 @@ public class LiveRoomViewModel extends ViewModel {
                                     ZegoRoomListService.heartBeat(userID, roomID, true, null);
                                 }
                             };
-                            timer.schedule(task, 0, 30 * 1000);
+                            timer.schedule(task, 0, HEART_BEAT_PERIOD);
                         }
                     });
                 } else {
@@ -268,7 +269,7 @@ public class LiveRoomViewModel extends ViewModel {
                             ZegoRoomListService.heartBeat(userID, roomID, false, null);
                         }
                     };
-                    timer.schedule(task, 0,30 * 1000);
+                    timer.schedule(task, 0, HEART_BEAT_PERIOD);
                 } else {
                     int tempErrorCode = errorCode;
                     if (errorCode == ZegoRoomListService.ROOM_NOT_EXISTED) {
