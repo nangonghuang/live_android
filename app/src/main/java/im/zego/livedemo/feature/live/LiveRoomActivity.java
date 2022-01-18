@@ -37,7 +37,6 @@ import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
 import im.zego.livedemo.feature.live.dialog.CommonDialog;
 import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
-import im.zego.livedemo.feature.live.dialog.LoadingDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
 import im.zego.livedemo.feature.live.dialog.MoreVideoSettingsDialog;
@@ -90,7 +89,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private MessageListAdapter messageListAdapter;
     private CoHostListAdapter coHostListAdapter;
 
-    private LoadingDialog loadingDialog;
     private IMInputDialog imInputDialog;
     private MemberListDialog memberListDialog;
     private MoreSettingDialog moreSettingDialog;
@@ -137,7 +135,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
                 if (state == ZIMConnectionState.DISCONNECTED) {
-                    dismissDialog(loadingDialog);
+                    dismissAllToast();
                     if (event == ZIMConnectionEvent.LOGIN_TIMEOUT) {
                         showDisconnectDialog();
                     } else {
@@ -156,9 +154,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
                     }
                 } else if (state == ZIMConnectionState.RECONNECTING) {
-                    showLoadingDialog();
+                    showErrorToastDialog(StringUtils.getString(R.string.network_reconnect));
                 } else if (state == ZIMConnectionState.CONNECTED) {
-                    dismissDialog(loadingDialog);
+                    dismissAllToast();
                 }
             }
 
@@ -693,19 +691,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         }
     }
 
-    private void showLoadingDialog() {
-        if (isFinishing()) return;
-        if (loadingDialog == null) {
-            loadingDialog = new LoadingDialog(this);
-        }
-        loadingDialog.updateText(R.string.network_reconnect);
-        loadingDialog.show();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismissDialog(loadingDialog);
+        dismissAllToast();
         dismissDialog(imInputDialog);
         dismissDialog(memberListDialog);
         dismissDialog(moreSettingDialog);
