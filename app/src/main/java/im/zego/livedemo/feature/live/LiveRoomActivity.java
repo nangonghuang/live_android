@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
@@ -674,17 +673,17 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private void showDisconnectDialog() {
-        AlertDialog.Builder builder2 = new AlertDialog.Builder(LiveRoomActivity.this);
-        builder2.setTitle(R.string.network_connect_failed_title);
-        builder2.setMessage(R.string.network_connect_failed);
-        builder2.setCancelable(false);
-        builder2.setPositiveButton(R.string.dialog_room_page_ok, (dialog1, which1) -> {
-            ActivityUtils.finishToActivity(UserLoginActivity.class, false);
-        });
-        if (!LiveRoomActivity.this.isFinishing()) {
-            AlertDialog alertDialog = builder2.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
+        if (!isFinishing()) {
+            new CommonDialog.Builder(LiveRoomActivity.this)
+                    .setTitle(StringUtils.getString(R.string.network_connect_failed_title))
+                    .setContent(StringUtils.getString(R.string.network_connect_failed))
+                    .setCancelable(false)
+                    .setPositiveButton(StringUtils.getString(R.string.dialog_room_page_ok), (dialog, which) -> {
+                        dialog.dismiss();
+                        ActivityUtils.finishToActivity(UserLoginActivity.class, false);
+                    })
+                    .create()
+                    .show();
         }
     }
 
