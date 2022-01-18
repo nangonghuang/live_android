@@ -72,7 +72,7 @@
     <string name="room_online_name">在线</string>
     <string name="toast_user_list_page_connected_failed">连麦失败，请重试</string>
     <string name="toast_user_list_page_rejected_invitation">%s 已拒绝您的邀请</string>
-    <string name="user_list_page_participants_num">用户列表（%d）</string>
+    <string name="user_list_page_participants_num">用户列表 · %d</string>
     <string name="user_list_page_invite_to_speak">邀请上麦</string>
     <string name="user_list_page_owner">主播</string>
     <string name="dialog_invition_title">邀请</string>

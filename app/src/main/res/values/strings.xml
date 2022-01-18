@@ -73,7 +73,7 @@
     <string name="room_online_name">Online</string>
     <string name="toast_user_list_page_connected_failed">Failed to co-host. Please try agian.</string>
     <string name="toast_user_list_page_rejected_invitation">%s has declined your invitation.</string>
-    <string name="user_list_page_participants_num">Participants (%d)</string>
+    <string name="user_list_page_participants_num">Participants · %d</string>
     <string name="user_list_page_invite_to_speak">Make co-host</string>
     <string name="user_list_page_owner">Host</string>
     <string name="dialog_invition_title">Invitation</string>
