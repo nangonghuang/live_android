@@ -6,7 +6,7 @@ import android.view.TextureView;
 import im.zego.live.model.enums.ZegoAudioBitrate;
 import im.zego.live.model.enums.ZegoDevicesType;
 import im.zego.live.model.enums.ZegoVideoCode;
-import im.zego.live.model.enums.ZegoVideoFrameRate;
+import im.zego.live.model.enums.ZegoVideoResolution;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.constants.ZegoVideoCodecID;
 import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
@@ -19,38 +19,37 @@ import im.zego.zegoexpress.entity.ZegoVideoConfig;
  * Created by rock on 2022/1/17.
  */
 public class ZegoDeviceService {
-    private ZegoVideoFrameRate videoFrameRate;
-    private ZegoAudioBitrate audioBitrate;
-    private ZegoVideoCode videoCodec;
 
-    public void setFrameRate(ZegoVideoFrameRate videoFrameRate) {
-        this.videoFrameRate = videoFrameRate;
+    public void setVideoResolution(ZegoVideoResolution videoResolution) {
+        ZegoVideoConfigPreset configPreset = ZegoVideoConfigPreset.getZegoVideoConfigPreset(videoResolution.value());
+        ZegoVideoConfig videoConfig = new ZegoVideoConfig(configPreset);
+        ZegoExpressEngine.getEngine().setVideoConfig(videoConfig);
     }
 
     public void setAudioBitrate(ZegoAudioBitrate audioBitrate) {
-        this.audioBitrate = audioBitrate;
-
         ZegoAudioConfig audioConfig = new ZegoAudioConfig();
         audioConfig.bitrate = audioBitrate.value();
         ZegoExpressEngine.getEngine().setAudioConfig(audioConfig);
     }
 
     public void setVideoCodec(ZegoVideoCode videoCodec) {
-        this.videoCodec = videoCodec;
-    }
-
-    public void setDeviceStatus(ZegoDevicesType devicesType, boolean enable) {
-        ZegoVideoConfigPreset configPreset = ZegoVideoConfigPreset.getZegoVideoConfigPreset(this.videoFrameRate.value());
-        ZegoVideoConfig videoConfig = new ZegoVideoConfig(configPreset);
-        if (this.videoCodec == ZegoVideoCode.H265) {
+        ZegoVideoConfig videoConfig = ZegoExpressEngine.getEngine().getVideoConfig();
+        if (videoCodec == ZegoVideoCode.H265) {
             videoConfig.setCodecID(ZegoVideoCodecID.H265);
         } else {
             videoConfig.setCodecID(ZegoVideoCodecID.DEFAULT);
         }
+        ZegoExpressEngine.getEngine().setVideoConfig(videoConfig);
+    }
+
+    public void setDeviceStatus(ZegoDevicesType devicesType, boolean enable) {
         switch (devicesType) {
             case LAYERED_CODING:
-                videoConfig.setCodecID(ZegoVideoCodecID.SVC);
-                ZegoExpressEngine.getEngine().setVideoConfig(videoConfig);
+                if (enable) {
+                    ZegoVideoConfig videoConfig = ZegoExpressEngine.getEngine().getVideoConfig();
+                    videoConfig.setCodecID(ZegoVideoCodecID.SVC);
+                    ZegoExpressEngine.getEngine().setVideoConfig(videoConfig);
+                }
                 break;
             case HARDWARE_ENCODER:
                 ZegoExpressEngine.getEngine().enableHardwareEncoder(enable);

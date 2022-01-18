@@ -32,6 +32,7 @@ import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.live.model.httpmodel.RoomBean;
+import im.zego.live.service.ZegoDeviceService;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomListService;
@@ -42,10 +43,8 @@ import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.constants.ZegoOrientation;
-import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.constants.ZegoViewMode;
 import im.zego.zegoexpress.entity.ZegoCanvas;
-import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -188,17 +187,13 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public void startPlayingStream(String streamID, TextureView view) {
-        ZegoCanvas zegoCanvas = new ZegoCanvas(view);
-        zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
-        ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
-    }
-
-    public void stopPlayingStream(String streamID) {
-        ZegoExpressEngine.getEngine().stopPlayingStream(streamID);
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+        deviceService.playVideoStream(streamID, view);
     }
 
     public void useFrontCamera(boolean enable) {
-        ZegoExpressEngine.getEngine().useFrontCamera(enable);
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+        deviceService.useFrontCamera(enable);
     }
 
     public void createRoom(String roomName, ZegoRoomCallback callback) {
@@ -423,6 +418,6 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();
 
-        ZegoExpressEngine.getEngine().stopPreview();
+        stopPreview();
     }
 }

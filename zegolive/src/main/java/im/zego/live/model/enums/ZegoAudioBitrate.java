@@ -19,4 +19,18 @@ public enum ZegoAudioBitrate {
     public int value() {
         return this.value;
     }
+
+    public static ZegoAudioBitrate getAudioBitrate(int value) {
+        if (AUDIO_BITRATE_16KBPS.value == value) {
+            return AUDIO_BITRATE_16KBPS;
+        } else if (AUDIO_BITRATE_48KBPS.value == value) {
+            return AUDIO_BITRATE_48KBPS;
+        } else if (AUDIO_BITRATE_56KBPS.value == value) {
+            return AUDIO_BITRATE_56KBPS;
+        } else if (AUDIO_BITRATE_128KBPS.value == value) {
+            return AUDIO_BITRATE_128KBPS;
+        } else {
+            return AUDIO_BITRATE_192KBPS.value == value ? AUDIO_BITRATE_192KBPS : null;
+        }
+    }
 }
