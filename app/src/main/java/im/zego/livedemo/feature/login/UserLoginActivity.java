@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.StringUtils;
 
@@ -57,6 +60,23 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
     }
 
     private void initListener() {
+        binding.etUserId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                enableLoginBtn(editable.length() > 0);
+            }
+        });
+
         binding.btnLogin.setOnClickListener(v -> {
             userID = binding.etUserId.getText().toString();
             userName = binding.etUserName.getText().toString();
@@ -88,5 +108,11 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 ToastHelper.showNormalToast(R.string.toast_userid_login_fail);
             }
         });
+    }
+
+    private void enableLoginBtn(boolean enable) {
+        int color = ColorUtils.getColor(R.color.white);
+        binding.btnLogin.setTextColor(enable ? color : ColorUtils.setAlphaComponent(color, 0.4F));
+        binding.btnLogin.setEnabled(enable);
     }
 }

@@ -211,7 +211,7 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:background="#0AFFFFFF"
         android:gravity="center"
         android:text="@string/setting_page_logout"

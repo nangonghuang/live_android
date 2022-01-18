@@ -20,11 +20,7 @@ public class IMInputDialog extends BaseDialog {
     private View sendButton;
 
     public IMInputDialog(@NonNull Context context) {
-        super(context);
-    }
-
-    public IMInputDialog(@NonNull Context context, int themeResId) {
-        super(context, themeResId);
+        super(context, R.style.IMDialog);
     }
 
     @Override

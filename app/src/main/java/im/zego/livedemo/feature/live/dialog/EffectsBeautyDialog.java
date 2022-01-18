@@ -1,6 +1,7 @@
 package im.zego.livedemo.feature.live.dialog;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -85,11 +86,13 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
     }
 
     private void selectView(TextView view) {
-        view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        view.setTypeface(Typeface.DEFAULT_BOLD);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         view.setTextColor(getContext().getResources().getColor(R.color.white_color));
     }
 
     private void unSelectView(TextView view) {
+        view.setTypeface(Typeface.DEFAULT);
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         view.setTextColor(getContext().getResources().getColor(R.color.white_color_30alpha));
     }

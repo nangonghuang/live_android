@@ -15,9 +15,9 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
     private static final int CORNER_RADIUS = SizeUtils.dp2px(10);
 
     private static final float PADDING_X = SizeUtils.dp2px(6);
-    private static final float PADDING_Y = SizeUtils.dp2px(2);
+    private static final float PADDING_Y = SizeUtils.dp2px(1);
 
-    private static final float MAGIC_NUMBER = SizeUtils.dp2px(2);
+    private static final float MAGIC_NUMBER = SizeUtils.dp2px(1);
 
     private int mBackgroundColor;
     private int mTextColor;
