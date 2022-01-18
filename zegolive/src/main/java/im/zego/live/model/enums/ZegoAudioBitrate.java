@@ -7,6 +7,7 @@ public enum ZegoAudioBitrate {
     AUDIO_BITRATE_16KBPS(16),
     AUDIO_BITRATE_48KBPS(48),
     AUDIO_BITRATE_56KBPS(56),
+    AUDIO_BITRATE_96KBPS(96),
     AUDIO_BITRATE_128KBPS(128),
     AUDIO_BITRATE_192KBPS(192);
 
@@ -27,6 +28,8 @@ public enum ZegoAudioBitrate {
             return AUDIO_BITRATE_48KBPS;
         } else if (AUDIO_BITRATE_56KBPS.value == value) {
             return AUDIO_BITRATE_56KBPS;
+        } else if (AUDIO_BITRATE_96KBPS.value == value) {
+            return AUDIO_BITRATE_96KBPS;
         } else if (AUDIO_BITRATE_128KBPS.value == value) {
             return AUDIO_BITRATE_128KBPS;
         } else {
