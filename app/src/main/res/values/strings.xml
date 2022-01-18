@@ -142,6 +142,6 @@
     <string name="toast_room_end_fail_tip">Failed to end the room. Error code: %d.</string>
     <string name="dialog_attetion_title">Note</string>
     <string name="dialog_close">Close</string>
-    <string name="setting_page_terms_of_service">Terms of service</string>
+    <string name="setting_page_terms_of_service">Terms of Use</string>
     <string name="setting_page_privacy_policy">Privacy Policy</string>
 </resources>
