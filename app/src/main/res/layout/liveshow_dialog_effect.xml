@@ -8,15 +8,15 @@
         android:id="@+id/seekBarWithNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="67dp"
-        android:layout_marginRight="67dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginEnd="67dp"
         android:max="100"
         android:maxHeight="3dp"
         android:progressDrawable="@drawable/liveshow_seek_bar"
         android:thumb="@drawable/liveshow_seek_thumb"
         android:visibility="invisible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:textBackground="@drawable/liveshow_icon_indicator"
         app:textColor="#ff1b1a1c"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="21dp"
         android:background="@drawable/liveshow_dailog_resolution_bg"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarWithNumber">
 
         <View
@@ -37,8 +37,8 @@
             android:layout_height="5dp"
             android:layout_marginTop="7dp"
             android:background="@drawable/liveshow_shape_3b3b3b_2_5"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,41 +51,41 @@
                 android:id="@+id/tv_beauty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="@string/room_beautify_page_face_beautification"
                 android:textColor="#ffffffff"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_beauty_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="@string/room_beautify_page_face_shape_retouch"
                 android:textColor="@color/white_color_30alpha"
-                android:textSize="14dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/tv_beauty"
+                app:layout_constraintStart_toEndOf="@+id/tv_beauty"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/resetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:paddingTop="5dp"
-                android:paddingRight="16dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="5dp"
                 android:src="@drawable/liveshow_resetting"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -94,10 +94,10 @@
             android:id="@+id/effectsBeautyView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="26dp"
+            android:layout_marginStart="26dp"
             android:layout_marginTop="22dp"
             android:paddingBottom="37dp"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_select" />
 
         <im.zego.livedemo.feature.live.view.EffectsBeautyTypeView
@@ -105,11 +105,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:paddingLeft="26dp"
-            android:paddingRight="10dp"
+            android:paddingStart="26dp"
+            android:paddingEnd="10dp"
             android:paddingBottom="37dp"
             android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_select" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

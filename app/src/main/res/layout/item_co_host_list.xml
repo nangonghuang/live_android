@@ -61,13 +61,13 @@
 
         <ImageView
             android:id="@+id/iv_mic_off"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/icon_bottom_mic_off"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="7dp"
+            android:src="@drawable/icon_item_mic_off"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tv_co_host_name"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView

@@ -11,20 +11,15 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ThreadUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.immersionbar.ImmersionBar;
 
-import java.util.List;
 import java.util.Objects;
 
 import im.zego.live.ZegoRoomManager;
@@ -42,7 +37,6 @@ import im.zego.livedemo.feature.live.adapter.MessageListAdapter;
 import im.zego.livedemo.feature.live.dialog.CommonDialog;
 import im.zego.livedemo.feature.live.dialog.EffectsBeautyDialog;
 import im.zego.livedemo.feature.live.dialog.IMInputDialog;
-import im.zego.livedemo.feature.live.dialog.LoadingDialog;
 import im.zego.livedemo.feature.live.dialog.MemberListDialog;
 import im.zego.livedemo.feature.live.dialog.MoreSettingDialog;
 import im.zego.livedemo.feature.live.dialog.MoreVideoSettingsDialog;
@@ -61,8 +55,6 @@ import im.zego.livedemo.helper.DialogHelper;
 import im.zego.livedemo.helper.PermissionHelper;
 import im.zego.livedemo.helper.ShareHelper;
 import im.zego.livedemo.helper.ToastHelper;
-import im.zego.zegoexpress.constants.ZegoUpdateType;
-import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 
@@ -72,6 +64,7 @@ import im.zego.zim.enums.ZIMConnectionState;
 public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
     public static final String EXTRA_KEY_ROOM_ID = "extra_key_room_id";
+    private static final String TAG = "LiveRoomActivity";
 
     /**
      * create new room
@@ -79,7 +72,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     public static void start(Activity activity, int requestCode) {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         activity.startActivityForResult(intent, requestCode);
-//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /**
@@ -89,7 +81,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         Intent intent = new Intent(activity, LiveRoomActivity.class);
         intent.putExtra(EXTRA_KEY_ROOM_ID, roomID);
         activity.startActivityForResult(intent, requestCode);
-//        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private LiveRoomViewModel liveRoomViewModel;
@@ -98,7 +89,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private MessageListAdapter messageListAdapter;
     private CoHostListAdapter coHostListAdapter;
 
-    private LoadingDialog loadingDialog;
     private IMInputDialog imInputDialog;
     private MemberListDialog memberListDialog;
     private MoreSettingDialog moreSettingDialog;
@@ -145,7 +135,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             @Override
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
                 if (state == ZIMConnectionState.DISCONNECTED) {
-                    dismissDialog(loadingDialog);
+                    dismissAllToast();
                     if (event == ZIMConnectionEvent.LOGIN_TIMEOUT) {
                         showDisconnectDialog();
                     } else {
@@ -164,9 +154,9 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
                     }
                 } else if (state == ZIMConnectionState.RECONNECTING) {
-                    showLoadingDialog();
+                    showErrorToastDialog(StringUtils.getString(R.string.network_reconnect));
                 } else if (state == ZIMConnectionState.CONNECTED) {
-                    dismissDialog(loadingDialog);
+                    dismissAllToast();
                 }
             }
 
@@ -263,22 +253,6 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                     ToastHelper.showNormalToast(StringUtils.getString(R.string.toast_room_has_rejected));
                 }
             }
-
-            @Override
-            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
-                if (!UserInfoHelper.isSelfHost()) {
-                    for (ZegoStream zegoStream : streamList) {
-                        if (updateType == ZegoUpdateType.ADD) {
-                            // if I'm not host then we need play the host stream
-                            String streamID = zegoStream.streamID;
-                            Log.d("ADD", "onRoomStreamUpdate: " + streamID);
-                            if (ZegoLiveHelper.isHostStreamID(streamID)) {
-                                liveRoomViewModel.startPlayingStream(streamID, binding.textureView);
-                            }
-                        }
-                    }
-                }
-            }
         });
 
         initUI();
@@ -337,6 +311,8 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
                 });
             dialog.show();
         });
+        coHostListAdapter.setList(liveRoomViewModel.coHostList.getValue());
+
         // Fix refresh flickering issue
         SimpleItemAnimator itemAnimator = ((SimpleItemAnimator) binding.rvCoHostList.getItemAnimator());
         if (itemAnimator != null) {
@@ -412,8 +388,14 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         liveRoomViewModel.coHostList.observe(this, coHostList -> {
             memberListDialog.updateUserList(liveRoomViewModel.userList.getValue());
-            // if host camera/mic status change, we need update main ui
             if (!UserInfoHelper.isSelfHost()) {
+                // if I'm not host then we need play the host stream
+                String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
+                String streamID = ZegoLiveHelper.getStreamID(hostID);
+                Log.d(TAG, "coHostList.observe, host streamID=" + streamID);
+                liveRoomViewModel.startPlayingStream(streamID, binding.textureView);
+
+                // if host camera/mic status change, we need update main ui
                 for (ZegoCoHostSeatModel seatModel : coHostList) {
                     if (UserInfoHelper.isUserIDHost(seatModel.getUserID())) {
                         toggleHostPreviewUI(seatModel.isCameraEnable());
@@ -689,17 +671,17 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     private void showDisconnectDialog() {
-        AlertDialog.Builder builder2 = new AlertDialog.Builder(LiveRoomActivity.this);
-        builder2.setTitle(R.string.network_connect_failed_title);
-        builder2.setMessage(R.string.network_connect_failed);
-        builder2.setCancelable(false);
-        builder2.setPositiveButton(R.string.dialog_room_page_ok, (dialog1, which1) -> {
-            ActivityUtils.finishToActivity(UserLoginActivity.class, false);
-        });
-        if (!LiveRoomActivity.this.isFinishing()) {
-            AlertDialog alertDialog = builder2.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
+        if (!isFinishing()) {
+            new CommonDialog.Builder(LiveRoomActivity.this)
+                    .setTitle(StringUtils.getString(R.string.network_connect_failed_title))
+                    .setContent(StringUtils.getString(R.string.network_connect_failed))
+                    .setCancelable(false)
+                    .setPositiveButton(StringUtils.getString(R.string.dialog_room_page_ok), (dialog, which) -> {
+                        dialog.dismiss();
+                        ActivityUtils.finishToActivity(UserLoginActivity.class, false);
+                    })
+                    .create()
+                    .show();
         }
     }
 
@@ -709,19 +691,10 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
         }
     }
 
-    private void showLoadingDialog() {
-        if (isFinishing()) return;
-        if (loadingDialog == null) {
-            loadingDialog = new LoadingDialog(this);
-        }
-        loadingDialog.updateText(R.string.network_reconnect);
-        loadingDialog.show();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismissDialog(loadingDialog);
+        dismissAllToast();
         dismissDialog(imInputDialog);
         dismissDialog(memberListDialog);
         dismissDialog(moreSettingDialog);

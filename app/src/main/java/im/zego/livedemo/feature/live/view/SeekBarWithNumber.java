@@ -66,7 +66,7 @@ public class SeekBarWithNumber extends AppCompatSeekBar {
         paint.setAntiAlias(true);
         paint.setTextSize(mTitleTextSize);
         paint.setColor(mTitleTextColor);
-        paint.setTypeface(Typeface.DEFAULT_BOLD);
+        paint.setTypeface(Typeface.DEFAULT);
 
         int halfBgWidth = (int) Math.ceil(img_width) / 2;
         int halfBgHeight = (int) Math.ceil(img_height) + 5;

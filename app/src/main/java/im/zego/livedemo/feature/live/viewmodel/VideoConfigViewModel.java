@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel;
 
 import com.blankj.utilcode.util.StringUtils;
 
+import im.zego.live.ZegoRoomManager;
+import im.zego.live.model.enums.ZegoAudioBitrate;
+import im.zego.live.model.enums.ZegoDevicesType;
+import im.zego.live.model.enums.ZegoVideoCode;
+import im.zego.live.model.enums.ZegoVideoResolution;
+import im.zego.live.service.ZegoDeviceService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.model.VideoSettingConfig;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.constants.ZegoVideoCodecID;
 import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
-import im.zego.zegoexpress.entity.ZegoAudioConfig;
-import im.zego.zegoexpress.entity.ZegoVideoConfig;
 
 /**
  * Created by rocket_wang on 2022/1/5.
@@ -30,7 +34,7 @@ public class VideoConfigViewModel extends ViewModel {
     public void init() {
         settingConfig.setEncodeType(encodingTypeStringArray[0]);
         settingConfig.setLayeredCoding(false);
-        settingConfig.setHardwareEncode(false);
+        settingConfig.setHardwareEncode(true);
         settingConfig.setHardwareDecode(false);
         settingConfig.setBackgroundNoiseReduction(false);
         settingConfig.setEchoCancellation(false);
@@ -40,6 +44,8 @@ public class VideoConfigViewModel extends ViewModel {
     }
 
     public void updateVideoConfig() {
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+
         int index = 0;
         for (int i = 0; i < ZegoVideoConfigPreset.values().length; i++) {
             String enumName = ZegoVideoConfigPreset.values()[i].name();
@@ -48,30 +54,27 @@ public class VideoConfigViewModel extends ViewModel {
                 break;
             }
         }
-        ZegoVideoConfigPreset configPreset = ZegoVideoConfigPreset.getZegoVideoConfigPreset(index);
-        ZegoVideoConfig videoConfig = new ZegoVideoConfig(configPreset);
+        deviceService.setVideoResolution(ZegoVideoResolution.getVideoResolution(index));
+
         if (settingConfig.isLayeredCoding()) {
-            videoConfig.setCodecID(ZegoVideoCodecID.SVC);
+            deviceService.setDeviceStatus(ZegoDevicesType.LAYERED_CODING, true);
         } else if (VideoSettingConfig.isH265(settingConfig.getEncodeType())) {
-            videoConfig.setCodecID(ZegoVideoCodecID.H265);
+            deviceService.setVideoCodec(ZegoVideoCode.H265);
         } else {
-            videoConfig.setCodecID(ZegoVideoCodecID.DEFAULT);
+            deviceService.setVideoCodec(ZegoVideoCode.H264);
         }
-        ZegoExpressEngine.getEngine().setVideoConfig(videoConfig);
 
-        ZegoAudioConfig audioConfig = new ZegoAudioConfig();
-        audioConfig.bitrate = VideoSettingConfig.calculateAudioBitrate(settingConfig.getAudioBitrate());
-        ZegoExpressEngine.getEngine().setAudioConfig(audioConfig);
+        int audioBitrate = VideoSettingConfig.calculateAudioBitrate(settingConfig.getAudioBitrate());
+        deviceService.setAudioBitrate(ZegoAudioBitrate.getAudioBitrate(audioBitrate));
 
-        ZegoExpressEngine.getEngine().enableHardwareEncoder(settingConfig.isHardwareEncode());
-        ZegoExpressEngine.getEngine().enableHardwareDecoder(settingConfig.isHardwareDecode());
+        deviceService.setDeviceStatus(ZegoDevicesType.HARDWARE_ENCODER, settingConfig.isHardwareEncode());
+        deviceService.setDeviceStatus(ZegoDevicesType.HARDWARE_DECODER, settingConfig.isHardwareDecode());
 
-        ZegoExpressEngine.getEngine().enableANS(settingConfig.isBackgroundNoiseReduction());
-        ZegoExpressEngine.getEngine().enableTransientANS(settingConfig.isBackgroundNoiseReduction());
+        deviceService.setDeviceStatus(ZegoDevicesType.NOISE_SUPPRESSION, settingConfig.isBackgroundNoiseReduction());
 
-        ZegoExpressEngine.getEngine().enableAEC(settingConfig.isEchoCancellation());
+        deviceService.setDeviceStatus(ZegoDevicesType.ECHO_CANCELLATION, settingConfig.isEchoCancellation());
 
-        ZegoExpressEngine.getEngine().enableAGC(settingConfig.isMicVolumeAutoAdjustment());
+        deviceService.setDeviceStatus(ZegoDevicesType.VOLUME_ADJUSTMENT, settingConfig.isMicVolumeAutoAdjustment());
     }
 
     public boolean isDeviceSupportH265() {

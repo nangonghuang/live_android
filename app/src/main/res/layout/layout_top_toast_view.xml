@@ -10,9 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/light_red"
+        android:ellipsize="end"
         android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
         android:textColor="@color/white"
         android:textSize="14sp"
-        tools:text="Hello" />
+        tools:text="You have applied for connection, please wait for the host’s confirmation!" />
 
 </FrameLayout>

@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="27dp"
-                android:text="@string/room_sound_page_audio_mixing"
+                android:text="@string/room_sound_page_reverb"
                 android:textColor="#ffffffff"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"

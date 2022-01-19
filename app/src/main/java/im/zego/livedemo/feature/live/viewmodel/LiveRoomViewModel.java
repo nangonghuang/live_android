@@ -32,6 +32,7 @@ import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoTextMessage;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.live.model.httpmodel.RoomBean;
+import im.zego.live.service.ZegoDeviceService;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomListService;
@@ -42,10 +43,8 @@ import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.constants.ZegoOrientation;
-import im.zego.zegoexpress.constants.ZegoUpdateType;
 import im.zego.zegoexpress.constants.ZegoViewMode;
 import im.zego.zegoexpress.entity.ZegoCanvas;
-import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -54,6 +53,7 @@ import im.zego.zim.enums.ZIMErrorCode;
  * Created by rocket_wang on 2021/12/27.
  */
 public class LiveRoomViewModel extends ViewModel {
+    private static final long HEART_BEAT_PERIOD = 15_000L;
 
     public MutableLiveData<Boolean> isCameraEnable = new MutableLiveData<>();
     public MutableLiveData<Boolean> isMicEnable = new MutableLiveData<>();
@@ -87,11 +87,6 @@ public class LiveRoomViewModel extends ViewModel {
             @Override
             public void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event) {
                 listener.onConnectionStateChanged(state, event);
-            }
-
-            @Override
-            public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
-                listener.onRoomStreamUpdate(roomID, updateType, streamList);
             }
         });
 
@@ -193,17 +188,13 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public void startPlayingStream(String streamID, TextureView view) {
-        ZegoCanvas zegoCanvas = new ZegoCanvas(view);
-        zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
-        ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
-    }
-
-    public void stopPlayingStream(String streamID) {
-        ZegoExpressEngine.getEngine().stopPlayingStream(streamID);
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+        deviceService.playVideoStream(streamID, view);
     }
 
     public void useFrontCamera(boolean enable) {
-        ZegoExpressEngine.getEngine().useFrontCamera(enable);
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+        deviceService.useFrontCamera(enable);
     }
 
     public void createRoom(String roomName, ZegoRoomCallback callback) {
@@ -235,7 +226,7 @@ public class LiveRoomViewModel extends ViewModel {
                                     ZegoRoomListService.heartBeat(userID, roomID, true, null);
                                 }
                             };
-                            timer.schedule(task, 0, 30 * 1000);
+                            timer.schedule(task, 0, HEART_BEAT_PERIOD);
                         }
                     });
                 } else {
@@ -278,7 +269,7 @@ public class LiveRoomViewModel extends ViewModel {
                             ZegoRoomListService.heartBeat(userID, roomID, false, null);
                         }
                     };
-                    timer.schedule(task, 0,30 * 1000);
+                    timer.schedule(task, 0, HEART_BEAT_PERIOD);
                 } else {
                     int tempErrorCode = errorCode;
                     if (errorCode == ZegoRoomListService.ROOM_NOT_EXISTED) {
@@ -428,6 +419,6 @@ public class LiveRoomViewModel extends ViewModel {
         ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();
 
-        ZegoExpressEngine.getEngine().stopPreview();
+        stopPreview();
     }
 }

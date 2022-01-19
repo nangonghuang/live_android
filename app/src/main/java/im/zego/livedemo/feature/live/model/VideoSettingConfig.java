@@ -8,7 +8,7 @@ import java.util.Objects;
 public class VideoSettingConfig {
     private String encodeType;
     private boolean layeredCoding;
-    private boolean hardwareEncode = true;
+    private boolean hardwareEncode;
     private boolean hardwareDecode;
     private String videoResolution;
     private String audioBitrate;

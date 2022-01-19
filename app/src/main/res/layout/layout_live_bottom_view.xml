@@ -9,9 +9,10 @@
         android:id="@+id/iv_im"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_im"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -22,6 +23,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_share"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/barrier_share" />
 
@@ -39,6 +41,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_beauty"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_music" />
 
@@ -49,6 +52,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_music"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_more" />
 
@@ -59,6 +63,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_bottom_more"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -69,6 +74,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_bottom_flip_camera"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_camera" />
 
@@ -79,6 +85,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_bottom_camera_on"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_mic" />
 
@@ -89,6 +96,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/dark_gray_round"
         android:src="@drawable/icon_bottom_mic_on"
+        android:tint="@drawable/touch_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/layout_apply_connection" />
 

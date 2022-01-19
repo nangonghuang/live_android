@@ -31,7 +31,7 @@
     <activity
       android:name=".feature.login.WelcomeActivity"
       android:exported="true"
-      android:launchMode="singleTop"
+      android:launchMode="singleTask"
       android:screenOrientation="sensorPortrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
@@ -41,10 +41,10 @@
     </activity>
 
     <activity
-      android:name=".feature.login.UserLoginActivity"
-      android:exported="true"
-      android:launchMode="singleTop"
-      android:screenOrientation="sensorPortrait"></activity>
+        android:name=".feature.login.UserLoginActivity"
+        android:exported="true"
+        android:launchMode="singleTop"
+        android:screenOrientation="sensorPortrait" />
 
     <activity
       android:name=".feature.settings.SettingsActivity"

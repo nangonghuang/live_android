@@ -24,6 +24,7 @@
         android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:textStyle="bold"
         tools:text="Hannah Hannah Hannah Hannah Hannah Hannah Hannah " />
 
     <TextView
@@ -35,9 +36,10 @@
         android:layout_weight="1"
         android:gravity="end"
         android:textColor="@color/light_gray"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:visibility="gone"
-        tools:text="Owner" />
+        tools:text="Owner"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/iv_invite"
