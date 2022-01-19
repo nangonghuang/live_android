@@ -41,10 +41,6 @@ import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
-import im.zego.zegoexpress.ZegoExpressEngine;
-import im.zego.zegoexpress.constants.ZegoOrientation;
-import im.zego.zegoexpress.constants.ZegoViewMode;
-import im.zego.zegoexpress.entity.ZegoCanvas;
 import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMErrorCode;
@@ -177,19 +173,19 @@ public class LiveRoomViewModel extends ViewModel {
     }
 
     public void startPreview(TextureView view) {
-        ZegoExpressEngine.getEngine().setAppOrientation(ZegoOrientation.ORIENTATION_0);
-        ZegoCanvas zegoCanvas = new ZegoCanvas(view);
-        zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
-        ZegoExpressEngine.getEngine().startPreview(zegoCanvas);
+        ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
+        this.startPlayingStream(localUserInfo.getUserID(), view);
     }
 
     public void stopPreview() {
-        ZegoExpressEngine.getEngine().stopPreview();
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+        ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
+        deviceService.stopPlayStream(localUserInfo.getUserID());
     }
 
-    public void startPlayingStream(String streamID, TextureView view) {
+    public void startPlayingStream(String userID, TextureView view) {
         ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
-        deviceService.playVideoStream(streamID, view);
+        deviceService.playVideoStream(userID, view);
     }
 
     public void useFrontCamera(boolean enable) {

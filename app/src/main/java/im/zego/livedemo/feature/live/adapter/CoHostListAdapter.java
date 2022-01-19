@@ -17,7 +17,6 @@ import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.helper.UserInfoHelper;
-import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.databinding.ItemCoHostListBinding;
@@ -138,9 +137,8 @@ public class CoHostListAdapter extends RecyclerView.Adapter<CoHostListAdapter.Vi
         if (UserInfoHelper.isUserIDSelf(model.getUserID())) {
             liveRoomViewModel.startPreview(binding.textureView);
         } else {
-            liveRoomViewModel.startPlayingStream(ZegoLiveHelper.getStreamID(model.getUserID()), binding.textureView);
+            liveRoomViewModel.startPlayingStream(model.getUserID(), binding.textureView);
         }
-//        ZegoExpressEngine.getEngine().enableCamera(model.isCameraEnable());
     }
 
     @Override

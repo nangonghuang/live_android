@@ -3,11 +3,14 @@ package im.zego.live.service;
 
 import android.view.TextureView;
 
+import im.zego.live.helper.UserInfoHelper;
+import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.model.enums.ZegoAudioBitrate;
 import im.zego.live.model.enums.ZegoDevicesType;
 import im.zego.live.model.enums.ZegoVideoCode;
 import im.zego.live.model.enums.ZegoVideoResolution;
 import im.zego.zegoexpress.ZegoExpressEngine;
+import im.zego.zegoexpress.constants.ZegoOrientation;
 import im.zego.zegoexpress.constants.ZegoVideoCodecID;
 import im.zego.zegoexpress.constants.ZegoVideoConfigPreset;
 import im.zego.zegoexpress.constants.ZegoViewMode;
@@ -82,9 +85,25 @@ public class ZegoDeviceService {
         ZegoExpressEngine.getEngine().useFrontCamera(isFront);
     }
 
-    public void playVideoStream(String streamID, TextureView textureView) {
+    public void playVideoStream(String userID, TextureView textureView) {
         ZegoCanvas zegoCanvas = new ZegoCanvas(textureView);
         zegoCanvas.viewMode = ZegoViewMode.ASPECT_FILL;
-        ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
+
+        if (UserInfoHelper.isUserIDSelf(userID)) {
+            ZegoExpressEngine.getEngine().setAppOrientation(ZegoOrientation.ORIENTATION_0);
+            ZegoExpressEngine.getEngine().startPreview(zegoCanvas);
+        } else {
+            String streamID = ZegoLiveHelper.getStreamID(userID);
+            ZegoExpressEngine.getEngine().startPlayingStream(streamID, zegoCanvas);
+        }
+    }
+
+    public void stopPlayStream(String userID) {
+        if (UserInfoHelper.isUserIDSelf(userID)) {
+            ZegoExpressEngine.getEngine().stopPreview();
+        } else {
+            String streamID = ZegoLiveHelper.getStreamID(userID);
+            ZegoExpressEngine.getEngine().stopPlayingStream(streamID);
+        }
     }
 }

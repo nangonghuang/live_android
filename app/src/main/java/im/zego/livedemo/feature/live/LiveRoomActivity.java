@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -25,7 +24,6 @@ import java.util.Objects;
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.helper.UserInfoHelper;
-import im.zego.live.helper.ZegoLiveHelper;
 import im.zego.live.model.ZegoCoHostSeatModel;
 import im.zego.live.model.ZegoRoomInfo;
 import im.zego.livedemo.R;
@@ -391,9 +389,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
             if (!UserInfoHelper.isSelfHost()) {
                 // if I'm not host then we need play the host stream
                 String hostID = ZegoRoomManager.getInstance().roomService.roomInfo.getHostID();
-                String streamID = ZegoLiveHelper.getStreamID(hostID);
-                Log.d(TAG, "coHostList.observe, host streamID=" + streamID);
-                liveRoomViewModel.startPlayingStream(streamID, binding.textureView);
+                liveRoomViewModel.startPlayingStream(hostID, binding.textureView);
 
                 // if host camera/mic status change, we need update main ui
                 for (ZegoCoHostSeatModel seatModel : coHostList) {
