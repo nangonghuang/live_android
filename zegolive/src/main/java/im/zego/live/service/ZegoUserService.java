@@ -182,7 +182,9 @@ public class ZegoUserService {
     public void respondCoHostRequest(boolean agree, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
             = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
-        ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
+        if (triple != null) {
+            ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
+        }
     }
 
     // Prohibit turning on the camera microphone

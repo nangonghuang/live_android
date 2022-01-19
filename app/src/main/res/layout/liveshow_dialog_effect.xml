@@ -102,7 +102,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:paddingStart="26dp"
             android:paddingEnd="10dp"
             android:paddingBottom="37dp"
             android:visibility="gone"
