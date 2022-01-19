@@ -24,7 +24,6 @@
         android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:textStyle="bold"
         tools:text="Hannah Hannah Hannah Hannah Hannah Hannah Hannah " />
 
     <TextView

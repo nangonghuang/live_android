@@ -23,7 +23,6 @@
         android:text="@string/room_settings_page_more"
         android:textColor="@color/white_color"
         android:textSize="16sp"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
