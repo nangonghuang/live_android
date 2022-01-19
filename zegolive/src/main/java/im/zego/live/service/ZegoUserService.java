@@ -226,9 +226,10 @@ public class ZegoUserService {
             = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
                 ZegoExpressEngine.getEngine().startPublishingStream(ZegoLiveHelper.getSelfStreamID());
-                ZegoExpressEngine.getEngine().enableCamera(true);
-                ZegoExpressEngine.getEngine().muteMicrophone(false);
+                deviceService.enableCamera(true);
+                deviceService.muteMic(false);
             }
             if (callback != null) {
                 callback.onRoomCallback(errorCode);
@@ -372,16 +373,17 @@ public class ZegoUserService {
             return;
         }
 
+        ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
         if (action.getType() == OperationActionType.Mic) {
-            ZegoExpressEngine.getEngine().muteMicrophone(!seat.isMicEnable());
+            deviceService.muteMic(!seat.isMicEnable());
         }
 
         if (action.getType() == OperationActionType.Camera) {
-            ZegoExpressEngine.getEngine().enableCamera(seat.isCameraEnable());
+            deviceService.enableCamera(seat.isCameraEnable());
         }
 
         if (action.getType() == OperationActionType.Mute) {
-            ZegoExpressEngine.getEngine().muteMicrophone(seat.isMuted());
+            deviceService.muteMic(seat.isMuted());
             micOperate(!seat.isMuted(), null);
         }
     }

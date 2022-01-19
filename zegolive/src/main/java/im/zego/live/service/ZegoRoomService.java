@@ -323,7 +323,8 @@ public class ZegoRoomService {
     public void onRoomStreamUpdate(String roomID, ZegoUpdateType updateType, List<ZegoStream> streamList) {
         for (ZegoStream zegoStream : streamList) {
             if (updateType == ZegoUpdateType.DELETE) {
-                ZegoExpressEngine.getEngine().stopPlayingStream(zegoStream.streamID);
+                ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
+                deviceService.stopPlayStream(zegoStream.user.userID);
             }
         }
     }

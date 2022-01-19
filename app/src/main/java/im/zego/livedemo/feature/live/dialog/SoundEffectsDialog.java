@@ -24,6 +24,8 @@ import im.zego.livedemo.feature.live.model.ReverbPresetInfo;
 import im.zego.livedemo.feature.live.model.VoiceChangeInfo;
 import im.zego.livedemo.helper.SoundEffectsHelper;
 import im.zego.livedemo.view.SoundEffectsSeekBar;
+import im.zego.zegoexpress.constants.ZegoReverbPreset;
+import im.zego.zegoexpress.constants.ZegoVoiceChangerPreset;
 
 public class SoundEffectsDialog extends BaseBottomDialog {
 
@@ -86,7 +88,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
         adapter.setList(createVoiceChangeList());
         adapter.setListener(position -> {
             String[] options = StringUtils.getStringArray(R.array.voicePreset);
-            soundEffectService.setVoiceChangeType(options[position]);
+            setVoiceChangeType(options[position]);
         });
         rvVoiceChange.setAdapter(adapter);
     }
@@ -97,7 +99,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
         adapter.setList(createReverbPresetList());
         adapter.setListener(position -> {
             String[] options = StringUtils.getStringArray(R.array.reverbPreset);
-            soundEffectService.setReverbPreset(options[position]);
+            setReverbPreset(options[position]);
         });
         rvReverb.setAdapter(adapter);
     }
@@ -142,6 +144,45 @@ public class SoundEffectsDialog extends BaseBottomDialog {
 
             }
         });
+    }
+
+    private void setVoiceChangeType(String voicePreset) {
+        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        switch (voicePreset) {
+            case "NONE":
+                soundEffectService.setVoiceChangeType(ZegoVoiceChangerPreset.NONE);
+                break;
+            case "WOMEN_TO_CHILD":
+                soundEffectService.setVoiceChangeType(ZegoVoiceChangerPreset.WOMEN_TO_CHILD);
+                break;
+            case "ANDROID":
+                soundEffectService.setVoiceChangeType(ZegoVoiceChangerPreset.ANDROID);
+                break;
+            case "ETHEREAL":
+                soundEffectService.setVoiceChangeType(ZegoVoiceChangerPreset.ETHEREAL);
+                break;
+        }
+    }
+
+    private void setReverbPreset(String reverbPreset) {
+        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        switch (reverbPreset) {
+            case "NONE":
+                soundEffectService.setReverbPreset(ZegoReverbPreset.NONE);
+                break;
+            case "KTV":
+                soundEffectService.setReverbPreset(ZegoReverbPreset.KTV);
+                break;
+            case "CONCERT_HALL":
+                soundEffectService.setReverbPreset(ZegoReverbPreset.CONCERT_HALL);
+                break;
+            case "VOCAL_CONCERT":
+                soundEffectService.setReverbPreset(ZegoReverbPreset.VOCAL_CONCERT);
+                break;
+            case "ROCK":
+                soundEffectService.setReverbPreset(ZegoReverbPreset.ROCK);
+                break;
+        }
     }
 
     private List<String> createBackgroundSoundList() {
