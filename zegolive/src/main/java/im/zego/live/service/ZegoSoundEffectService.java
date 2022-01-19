@@ -1,52 +1,76 @@
 package im.zego.live.service;
 
-import im.zego.zegoexpress.ZegoAudioEffectPlayer;
+import java.util.Objects;
+
 import im.zego.zegoexpress.ZegoExpressEngine;
+import im.zego.zegoexpress.ZegoMediaPlayer;
+import im.zego.zegoexpress.constants.ZegoMediaPlayerState;
 import im.zego.zegoexpress.constants.ZegoReverbPreset;
 import im.zego.zegoexpress.constants.ZegoVoiceChangerPreset;
-import im.zego.zegoexpress.entity.ZegoAudioEffectPlayConfig;
 
-/**
- * Created by rocket_wang on 2022/1/6.
- */
 public class ZegoSoundEffectService {
     public static final int DEFAULT_MUSIC_VOLUME = 50;
     public static final int DEFAULT_VOICE_VOLUME = 50;
 
-    private final ZegoAudioEffectPlayer effectPlayer;
+    private final ZegoMediaPlayer mediaPlayer;
+    private String currentBgmPath;
 
     public ZegoSoundEffectService(ZegoExpressEngine engine) {
-        effectPlayer = engine.createAudioEffectPlayer();
+        mediaPlayer = engine.createMediaPlayer();
+        mediaPlayer.enableAux(true);
+        mediaPlayer.enableRepeat(true);
     }
 
     public void reset() {
-        effectPlayer.stopAll();
+        currentBgmPath = "";
         setBGMVolume(DEFAULT_MUSIC_VOLUME);
         setVoiceVolume(DEFAULT_VOICE_VOLUME);
         ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.NONE);
         ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.NONE);
+        stopBGM();
     }
 
-    public void setBGM(int audioEffectID, String path, boolean stop) {
-        if (stop) {
-            effectPlayer.stop(audioEffectID);
+    public void loadBGM(String path) {
+        if (mediaPlayer.getCurrentState() == ZegoMediaPlayerState.PLAYING) {
+            if (!Objects.equals(currentBgmPath, path)) {
+                stopBGM();
+                loadResource(path);
+            }
         } else {
-            ZegoAudioEffectPlayConfig config = new ZegoAudioEffectPlayConfig();
-            config.playCount = 0;
-            config.isPublishOut = true;
-            effectPlayer.start(audioEffectID, path, config);
+            loadResource(path);
+        }
+    }
+
+    private void loadResource(String path) {
+        mediaPlayer.loadResource(path, errorCode -> {
+            if (errorCode == 0) {
+                currentBgmPath = path;
+                startBGM();
+            }
+        });
+    }
+
+    public void startBGM() {
+        if (mediaPlayer.getCurrentState() != ZegoMediaPlayerState.PLAYING) {
+            mediaPlayer.start();
+        }
+    }
+
+    public void stopBGM() {
+        if (mediaPlayer.getCurrentState() == ZegoMediaPlayerState.PLAYING) {
+            mediaPlayer.stop();
         }
     }
 
     public void setBGMVolume(int volume) {
-        effectPlayer.setVolumeAll(volume * 2);
+        mediaPlayer.setVolume(volume);
     }
 
     public void setVoiceVolume(int volume) {
         ZegoExpressEngine.getEngine().setCaptureVolume(volume * 2);
     }
 
-    public void setVoiceChangerPreset(String voicePreset) {
+    public void setVoiceChangeType(String voicePreset) {
         switch (voicePreset) {
             case "NONE":
                 ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.NONE);
@@ -81,9 +105,5 @@ public class ZegoSoundEffectService {
                 ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.ROCK);
                 break;
         }
-    }
-
-    public void destroyPlayer() {
-        ZegoExpressEngine.getEngine().destroyAudioEffectPlayer(effectPlayer);
     }
 }

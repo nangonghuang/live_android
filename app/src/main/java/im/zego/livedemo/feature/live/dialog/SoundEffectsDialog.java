@@ -34,7 +34,6 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     private RecyclerView rvReverb;
 
     private final ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
-    private int lastBGMPosition = -1;
 
     public SoundEffectsDialog(@NonNull Context context) {
         super(context);
@@ -76,15 +75,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
         adapter.setList(createBackgroundSoundList());
         adapter.setListener(position -> {
             String songPath = SoundEffectsHelper.songFileMap.get(position);
-            String lastSongPath = SoundEffectsHelper.songFileMap.get(lastBGMPosition);
-
-            soundEffectService.setBGM(lastBGMPosition, lastSongPath, true);
-            if (StringUtils.isTrimEmpty(songPath) || position == null) {
-                lastBGMPosition = -1;
-            } else {
-                soundEffectService.setBGM(position, songPath, false);
-                lastBGMPosition = position;
-            }
+            soundEffectService.loadBGM(songPath);
         });
         rvBgSound.setAdapter(adapter);
     }
@@ -95,7 +86,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
         adapter.setList(createVoiceChangeList());
         adapter.setListener(position -> {
             String[] options = StringUtils.getStringArray(R.array.voicePreset);
-            soundEffectService.setVoiceChangerPreset(options[position]);
+            soundEffectService.setVoiceChangeType(options[position]);
         });
         rvVoiceChange.setAdapter(adapter);
     }
