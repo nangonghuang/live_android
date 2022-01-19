@@ -14,7 +14,7 @@
         android:background="@drawable/gray_round_rect"
         android:gravity="center_vertical"
         android:lineSpacingMultiplier="1.2"
-        android:maxWidth="260dp"
+        android:maxWidth="230dp"
         android:paddingStart="10dp"
         android:paddingTop="5dp"
         android:paddingEnd="10dp"
@@ -23,7 +23,7 @@
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_max="260dp"
+        app:layout_constraintWidth_max="230dp"
         tools:text="hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! hello world! " />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
