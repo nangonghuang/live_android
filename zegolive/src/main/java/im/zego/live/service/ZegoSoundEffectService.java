@@ -70,40 +70,11 @@ public class ZegoSoundEffectService {
         ZegoExpressEngine.getEngine().setCaptureVolume(volume * 2);
     }
 
-    public void setVoiceChangeType(String voicePreset) {
-        switch (voicePreset) {
-            case "NONE":
-                ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.NONE);
-                break;
-            case "WOMEN_TO_CHILD":
-                ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.WOMEN_TO_CHILD);
-                break;
-            case "ANDROID":
-                ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.ANDROID);
-                break;
-            case "ETHEREAL":
-                ZegoExpressEngine.getEngine().setVoiceChangerPreset(ZegoVoiceChangerPreset.ETHEREAL);
-                break;
-        }
+    public void setVoiceChangeType(ZegoVoiceChangerPreset voicePreset) {
+        ZegoExpressEngine.getEngine().setVoiceChangerPreset(voicePreset);
     }
 
-    public void setReverbPreset(String reverbPreset) {
-        switch (reverbPreset) {
-            case "NONE":
-                ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.NONE);
-                break;
-            case "KTV":
-                ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.KTV);
-                break;
-            case "CONCERT_HALL":
-                ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.CONCERT_HALL);
-                break;
-            case "VOCAL_CONCERT":
-                ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.VOCAL_CONCERT);
-                break;
-            case "ROCK":
-                ZegoExpressEngine.getEngine().setReverbPreset(ZegoReverbPreset.ROCK);
-                break;
-        }
+    public void setReverbPreset(ZegoReverbPreset reverbPreset) {
+        ZegoExpressEngine.getEngine().setReverbPreset(reverbPreset);
     }
 }
