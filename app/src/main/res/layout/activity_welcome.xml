@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg">
+
+    <im.zego.livedemo.view.CommonTitleView
+        android:id="@+id/common_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_live_show"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/icon_live_show_entrance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/common_title_view">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintGuide_percent="0.49" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_live_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/tv_live_show_description"
+            app:layout_constraintStart_toEndOf="@id/guideline_live"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_live_show_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/welcome_page_live_description"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/guideline_live"
+            app:layout_constraintTop_toBottomOf="@+id/tv_live_show"
+            app:layout_constraintWidth_max="180dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_get_more"
+        style="@style/WelcomePageButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="107dp"
+        android:text="@string/welcome_page_get_more"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fl_sign_up"
+        style="@style/WelcomePageLayoutStyle"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toStartOf="@id/fl_contact_us"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_more">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/WelcomePageTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/icon_sign_up"
+            android:drawablePadding="5dp"
+            android:text="@string/welcome_page_sign_up" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_contact_us"
+        style="@style/WelcomePageLayoutStyle"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="23dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fl_sign_up"
+        app:layout_constraintTop_toBottomOf="@+id/tv_get_more">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/WelcomePageTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/icon_qrcode"
+            android:drawablePadding="5dp"
+            android:text="@string/welcome_page_contact_us" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

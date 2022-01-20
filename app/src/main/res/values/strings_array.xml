@@ -1,0 +1,78 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="encoding_type">
+        <item>H.264</item>
+        <item>H.265</item>
+    </string-array>
+
+    <string-array name="video_resolution">
+        <item>1080x1920</item>
+        <item>720x1280</item>
+        <item>540x960</item>
+        <item>360x640</item>
+        <item>270x480</item>
+        <item>180x320</item>
+    </string-array>
+
+    <string-array name="audio_bitrate">
+        <item>48kbps</item>
+        <item>96kbps</item>
+        <item>128kbps</item>
+    </string-array>
+
+    <string-array name="background_sound_list">
+        <item>@string/room_sound_page_joyful</item>
+        <item>@string/room_sound_page_romantic</item>
+    </string-array>
+
+    <string-array name="voice_change_list">
+        <item>@string/room_sound_page_original_voice</item>
+        <item>@string/room_sound_page_lolita</item>
+        <item>@string/room_sound_page_robot</item>
+        <item>@string/room_sound_page_empt</item>
+    </string-array>
+
+    <string-array name="voicePreset">
+        <item>NONE</item>
+        <item>WOMEN_TO_CHILD</item>
+        <item>ANDROID</item>
+        <item>ETHEREAL</item>
+    </string-array>
+
+    <string-array name="reverb_preset_list">
+        <item>@string/room_sound_page_none</item>
+        <item>@string/room_sound_page_ktv</item>
+        <item>@string/room_sound_page_hall</item>
+        <item>@string/room_sound_page_concert</item>
+        <item>@string/room_sound_page_rock</item>
+    </string-array>
+
+    <string-array name="reverbPreset">
+        <item>NONE</item>
+        <item>KTV</item>
+        <item>CONCERT_HALL</item>
+        <item>VOCAL_CONCERT</item>
+        <item>ROCK</item>
+    </string-array>
+
+    <string-array name="background_music">
+        <item>happy</item>
+        <item>romantic</item>
+    </string-array>
+
+    <string-array name="beauty_list">
+        <item>@string/room_beautify_page_skin_tone_enhancement</item>
+        <item>@string/room_beautify_page_skin_smoothing</item>
+        <item>@string/room_beautify_page_image_sharpening</item>
+        <item>@string/room_beautify_page_cheek_blusher</item>
+    </string-array>
+
+    <string-array name="beauty_type_list">
+        <item>@string/room_beautify_page_eyes_enlarging</item>
+        <item>@string/room_beautify_page_face_sliming</item>
+        <item>@string/room_beautify_page_mouth_shape_adjustment</item>
+        <item>@string/room_beautify_page_eyes_brightening</item>
+        <item>@string/room_beautify_page_nose_sliming</item>
+        <item>@string/room_beautify_page_teeth_whitening</item>
+        <item>@string/room_beautify_page_chin_lengthening</item>
+    </string-array>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg">
+
+    <im.zego.livedemo.view.CommonTitleView
+        android:id="@+id/common_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:common_back_btn_visible="true"
+        app:common_settings_btn_visible="true"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/common_title_view">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp" />
+
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/room_list_page_none"
+                android:textColor="#ffcccccc"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_create_live"
+        android:layout_width="170dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/bg_purple_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/icon_create_live"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:text="@string/room_list_page_create"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
