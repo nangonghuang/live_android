@@ -110,6 +110,7 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
         videoConfigViewModel = new ViewModelProvider(this).get(VideoConfigViewModel.class);
         videoConfigViewModel.init();
+        videoConfigViewModel.updateVideoConfig();
 
         liveRoomViewModel = new ViewModelProvider(this).get(LiveRoomViewModel.class);
         liveRoomViewModel.init(new ILiveRoomViewModelListener() {

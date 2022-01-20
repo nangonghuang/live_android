@@ -102,7 +102,7 @@ public class ZegoFaceBeautifyService {
 
     public int gainProcessedTextureID(int textureID, int width, int height) {
         ZegoEffectsVideoFrameParam param = new ZegoEffectsVideoFrameParam();
-        param.format = ZegoEffectsVideoFrameFormat.BGRA32;
+        param.format = ZegoEffectsVideoFrameFormat.RGBA32;
         param.width = width;
         param.height = height;
 
