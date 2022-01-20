@@ -90,7 +90,7 @@
     <string name="room_settings_page_audio_bitrate">Audio bitrate</string>
     <string name="room_settings_page_more">More</string>
     <string name="toast_room_page_settings_device_not_support_h265">This device does not support H.265 encoding type</string>
-    <string name="toast_room_page_settings_h265_error">H.265 encoding type does not support software encoding.</string>
+    <string name="toast_room_page_settings_h265_error">H.265 does not support software encoding.</string>
     <string name="room_more_flip">Flip</string>
     <string name="room_more_mic">Mic</string>
     <string name="room_more_camera">Camera</string>
