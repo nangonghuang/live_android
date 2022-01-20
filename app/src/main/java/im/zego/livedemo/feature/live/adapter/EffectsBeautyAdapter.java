@@ -34,8 +34,5 @@ public class EffectsBeautyAdapter extends BaseSelectAdapter<BeautyInfo, BaseView
             voiceIcon.setImageResource(item.getBeautyIconUnSelect());
             voiceName.setTextColor(Color.parseColor("#ffcccccc"));
         }
-
     }
-
-
 }

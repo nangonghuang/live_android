@@ -8,8 +8,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 
+import com.blankj.utilcode.util.ClickUtils;
 import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.DeviceUtils;
+import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.StringUtils;
 
 import java.util.regex.Matcher;
@@ -20,6 +22,7 @@ import im.zego.live.constants.ZegoRoomErrorCode;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.livedemo.R;
 import im.zego.livedemo.base.BaseActivity;
+import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivityUserLoginBinding;
 import im.zego.livedemo.feature.room.RoomListActivity;
 import im.zego.livedemo.helper.AuthInfoManager;
@@ -71,7 +74,7 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
             }
         });
 
-        binding.btnLogin.setOnClickListener(v -> {
+        ClickUtils.applySingleDebouncing(binding.btnLogin, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
             userID = binding.etUserId.getText().toString();
             userName = binding.etUserName.getText().toString();
             if (TextUtils.isEmpty(userName)) {
@@ -90,11 +93,17 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 user.setUserName(userName);
                 String token = AuthInfoManager.getInstance().generateLoginToken(userID);
                 if (!TextUtils.isEmpty(token)) {
-                    ZegoRoomManager.getInstance().userService.login(user, token, errorCode -> {
-                        if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                            RoomListActivity.start(this);
+                    NetworkUtils.isAvailableByPingAsync(isAvailable -> {
+                        if (isAvailable) {
+                            ZegoRoomManager.getInstance().userService.login(user, token, errorCode -> {
+                                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                                    RoomListActivity.start(this);
+                                } else {
+                                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_login_fail, errorCode));
+                                }
+                            });
                         } else {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_login_fail, errorCode));
+                            ToastHelper.showWarnToast(StringUtils.getString(R.string.network_connect_failed_title));
                         }
                     });
                 }
