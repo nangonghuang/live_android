@@ -45,7 +45,7 @@ The app module implements the business and UI interaction logic, including login
 
 Directory path: 
 {your_project_root_path}/live_android/app/src/main/java/im/zego/live:
-
+```
 .
 ├── App.java                ------ App resources, and SDK initialization
 ├── base
@@ -58,12 +58,15 @@ Directory path:
 │ └── webview                ------ Web pages presented within the app
 ├── helper                ------ Utilities
 └── view                ------ Customizable UI
+```
 
 #### zegolive
 The zegolive improves reusability and further encapsulates the RTC, IM, and Effects for you to integrate easier. The following shows the structure:
 
 Directory path: 
 {your_project_root_path}/live_android/zegolive/src/main/java/im/zego/live:
+
+```
 .
 ├── ZegoRoomManager.java                ------ Room related instances that used to initialize the SDK, and provide the capabilities for service implementation.
 ├── ZegoZIMManager.java                ------ The ZIM instances for the SDK use.
@@ -82,6 +85,7 @@ Directory path:
 │ ├── ZegoSoundEffectService.java                ------  Sound effects service
 │ └── ZegoUserService.java                ------ User related service, such as take/leave a seat, turn on/off the microphone/camera, make co-host, and more.
 └── util
+```
 
 ## More documentation
 You can find more documentation on our official website: [ZEGO Live (RTC + IM + Effects)](https://docs.zegocloud.com/article/13812).
