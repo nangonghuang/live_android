@@ -7,8 +7,10 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import im.zego.effects.ZegoEffects;
+import im.zego.effects.callback.ZegoEffectsEventHandler;
 import im.zego.effects.entity.ZegoEffectsBigEyesParam;
 import im.zego.effects.entity.ZegoEffectsEyesBrighteningParam;
+import im.zego.effects.entity.ZegoEffectsFaceDetectionResult;
 import im.zego.effects.entity.ZegoEffectsFaceLiftingParam;
 import im.zego.effects.entity.ZegoEffectsLongChinParam;
 import im.zego.effects.entity.ZegoEffectsNoseNarrowingParam;
@@ -66,6 +68,19 @@ public class ZegoFaceBeautifyService {
             if (code == 0) {
                 license = responseJsonBean.getLicense();
                 zegoEffects = ZegoEffects.create(license, context);
+                zegoEffects.setEventHandler(new ZegoEffectsEventHandler() {
+                    @Override
+                    public void onError(ZegoEffects effects, int errorCode, String desc) {
+                        super.onError(effects, errorCode, desc);
+                        Log.d(TAG, "onError() called with: effects = [" + effects + "], errorCode = [" + errorCode + "], desc = [" + desc + "]");
+                    }
+
+                    @Override
+                    public void onFaceDetectionResult(ZegoEffectsFaceDetectionResult[] results, ZegoEffects effects) {
+                        super.onFaceDetectionResult(results, effects);
+                        Log.d(TAG, "onFaceDetectionResult() called with: results = [" + results + "], effects = [" + effects + "]");
+                    }
+                });
                 for (FaceBeautifyType type : FaceBeautifyType.values()) {
                     enableBeautify(true, type);
                 }
