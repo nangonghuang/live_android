@@ -1,7 +1,9 @@
 package im.zego.live.model.enums;
 
 /**
- * Created by rock on 2022/1/17.
+ * Class device settings
+ * <p>
+ * Description: This class contains the device settings related information for you to configure different device settings.
  */
 public enum ZegoDevicesType {
     LAYERED_CODING,

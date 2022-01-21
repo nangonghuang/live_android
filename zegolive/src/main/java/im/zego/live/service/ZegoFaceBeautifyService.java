@@ -28,12 +28,18 @@ import im.zego.live.http.License;
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.live.util.EffectsSDKHelper;
 
+/**
+ * Class face beautify management
+ * Description: This class contains the enabling/disabling logic, and the parameter setting logic of the face beautify feature.
+ */
 public class ZegoFaceBeautifyService {
 
     private static final String TAG = "Beautify";
     private Context context;
     private String license;
     private final static String BACKEND_API_URL = "https://aieffects-api.zego.im?Action=DescribeEffectsLicense";
+
+    // Class ZegoEffects SDK instances
     public ZegoEffects zegoEffects;
 
     private final ZegoEffectsWhitenParam skinToneEnhancementParam = new ZegoEffectsWhitenParam();
@@ -109,6 +115,16 @@ public class ZegoFaceBeautifyService {
         return zegoEffects.processTexture(textureID, param);
     }
 
+    /**
+     * Enable the face beautify feature (include the face beautification and face shape retouch).
+     * <p>
+     * Description: When this method gets called, the captured video streams will be processed before publishing to the remote users.
+     * <p>
+     * Call this method at: When joining a room
+     *
+     * @param enable determines whether to enable or disable the the face beautify feature.  true: enable.  false: disable.
+     * @param type   refers to the specific face beautify type that has been enabled
+     */
     public void enableBeautify(boolean enable, FaceBeautifyType type) {
         if (zegoEffects == null && license != null) {
             zegoEffects = ZegoEffects.create(license, context);
@@ -227,6 +243,16 @@ public class ZegoFaceBeautifyService {
         return value;
     }
 
+    /**
+     * Set the intensity of the specific face beautify feature
+     * <p>
+     * Description: After the face beautify feature is enabled, you can specify the parameters to set the intensity of the specific feature as needed.
+     * <p>
+     * Call this method at: After enabling the face beautify feature.
+     *
+     * @param value refers to the range value of the specific face beautification feature or face shape retouch feature.
+     * @param type  refers to the specific face beautification feature or face shape retouch feature.
+     */
     public void setBeautifyValue(int value, FaceBeautifyType type) {
         Log.d(TAG, "setBeautifyValue() called with: value = [" + value + "], type = [" + type + "]");
         if (zegoEffects == null && license != null) {
