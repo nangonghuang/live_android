@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
@@ -44,18 +45,35 @@ import im.zego.zim.enums.ZIMRoomEvent;
 import im.zego.zim.enums.ZIMRoomState;
 
 /**
- * Created by rocket_wang on 2021/12/14.
+ * Class ZEGOLive information management
+ * <p>
+ * Description: This class contains the room information management logic, such as the logic of create a room, join a room, leave a room, disable the text chat in room, etc.
  */
 public class ZegoRoomService {
 
+    // The listener related to the room status
     private ZegoRoomServiceListener listener;
-    // room info object
+
+    // Room information, it will be assigned after join the room successfully.
+    // And it will be updated synchronously when the room status updates.
     public ZegoRoomInfo roomInfo = new ZegoRoomInfo();
+
     public OperationCommand operation = new OperationCommand();
 
     private static final String TAG = "ZegoRoomService";
 
-    // create a room
+    /**
+     * Create a room
+     * <p>
+     * Description: This method can be used to create a room. The room creator will be the Host by default when the room is created successfully.
+     * <p>
+     * Call this method at: After user logs in
+     *
+     * @param roomID   refers to the room ID, the unique identifier of the room. This is required to join a room and cannot be null.
+     * @param roomName refers to the room name. This is used for display in the room and cannot be null.
+     * @param token    refers to the authentication token. To get this, see the documentation: https://docs.zegocloud.com/article/11648
+     * @param callback refers to the callback for create a room.
+     */
     public void createRoom(String roomID, String roomName, final String token,
                            final ZegoRoomCallback callback) {
         ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
@@ -84,7 +102,17 @@ public class ZegoRoomService {
         });
     }
 
-    // join a room
+    /**
+     * Join a room
+     * <p>
+     * Description: This method can be used to join a room, the room must be an existing room.
+     * <p>
+     * Call this method at: After user logs in
+     *
+     * @param roomID   refers to the ID of the room you want to join, and cannot be null.
+     * @param token    refers to the authentication token. To get this, see the documentation: https://docs.zegocloud.com/article/11648
+     * @param callback refers to the callback for join a room.
+     */
     public void joinRoom(String roomID, final String token, final ZegoRoomCallback callback) {
         ZegoUserInfo localUserInfo = ZegoRoomManager.getInstance().userService.localUserInfo;
         localUserInfo.setRole(ZegoRoomUserRole.Participant);
@@ -94,9 +122,22 @@ public class ZegoRoomService {
                 loginRTCRoom(roomID, token, localUserInfo);
                 this.roomInfo.setRoomID(roomInfo.baseInfo.roomID);
                 this.roomInfo.setRoomName(roomInfo.baseInfo.roomName);
-            }
-            if (callback != null) {
-                callback.onRoomCallback(errorInfo.code.value());
+                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomAttributes, errorInfo2) -> {
+                    Set<String> keys = roomAttributes.keySet();
+                    for (String key : keys) {
+                        if (key.equals(ZegoRoomConstants.KEY_ROOM_INFO)) {
+                            this.roomInfo = new Gson().fromJson(roomAttributes.get(key), ZegoRoomInfo.class);
+                        }
+                    }
+
+                    if (callback != null) {
+                        callback.onRoomCallback(errorInfo2.code.value());
+                    }
+                });
+            } else {
+                if (callback != null) {
+                    callback.onRoomCallback(errorInfo.code.value());
+                }
             }
         });
     }
@@ -109,7 +150,15 @@ public class ZegoRoomService {
         ZegoExpressEngine.getEngine().startSoundLevelMonitor(1000);
     }
 
-    // leave the room
+    /**
+     * Leave the room
+     * <p>
+     * Description: This method can be used to leave the room you joined. The room will be ended when the Host leaves, and all users in the room will be forced to leave the room.
+     * <p>
+     * Call this method at: After joining a room
+     *
+     * @param callback refers to the callback for leave a room.
+     */
     public void leaveRoom(final ZegoRoomCallback callback) {
         if (UserInfoHelper.isSelfInRequestedCoHost()) {
             ZegoRoomManager.getInstance().userService.cancelRequestToCoHost(errorCode -> {
@@ -188,7 +237,7 @@ public class ZegoRoomService {
                         + "]");
         if (info.action == ZIMRoomAttributesUpdateAction.DELETE) {
             String roomJson = info.roomAttributes.get(ZegoRoomConstants.KEY_ROOM_INFO);
-            if(TextUtils.isEmpty(roomJson)){
+            if (TextUtils.isEmpty(roomJson)) {
                 if (listener != null) {
                     listener.onReceiveRoomInfoUpdate(null);
                 }

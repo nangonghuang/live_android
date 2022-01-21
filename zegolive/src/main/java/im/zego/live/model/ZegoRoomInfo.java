@@ -9,9 +9,11 @@ public class ZegoRoomInfo {
     // room ID
     @SerializedName("id")
     private String roomID;
+
     // room name
     @SerializedName("name")
     private String roomName;
+
     // host user ID
     @SerializedName("host_id")
     private String hostID;

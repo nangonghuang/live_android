@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import im.zego.live.ZegoRoomManager;
-import im.zego.live.service.ZegoSoundEffectService;
+import im.zego.live.service.ZegoSoundEffectsService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.adapter.BackgroundSoundAdapter;
 import im.zego.livedemo.feature.live.adapter.ReverbPresetAdapter;
@@ -35,7 +35,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     private RecyclerView rvVoiceChange;
     private RecyclerView rvReverb;
 
-    private final ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+    private final ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
 
     public SoundEffectsDialog(@NonNull Context context) {
         super(context);
@@ -105,7 +105,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     }
 
     private void initMusicVolume() {
-        musicVolumeSeekbar.setProgress(ZegoSoundEffectService.DEFAULT_MUSIC_VOLUME);
+        musicVolumeSeekbar.setProgress(ZegoSoundEffectsService.DEFAULT_MUSIC_VOLUME);
         musicVolumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -126,7 +126,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     }
 
     private void initVoiceVolume() {
-        voiceVolumeSeekbar.setProgress(ZegoSoundEffectService.DEFAULT_VOICE_VOLUME);
+        voiceVolumeSeekbar.setProgress(ZegoSoundEffectsService.DEFAULT_VOICE_VOLUME);
         voiceVolumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -147,7 +147,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     }
 
     private void setVoiceChangeType(String voicePreset) {
-        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         switch (voicePreset) {
             case "NONE":
                 soundEffectService.setVoiceChangeType(ZegoVoiceChangerPreset.NONE);
@@ -165,7 +165,7 @@ public class SoundEffectsDialog extends BaseBottomDialog {
     }
 
     private void setReverbPreset(String reverbPreset) {
-        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         switch (reverbPreset) {
             case "NONE":
                 soundEffectService.setReverbPreset(ZegoReverbPreset.NONE);

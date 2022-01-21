@@ -44,32 +44,46 @@ import im.zego.zim.enums.ZIMErrorCode;
 import im.zego.zim.enums.ZIMMessageType;
 
 /**
- * Created by rocket_wang on 2021/12/14.
+ * Class user information management
+ * <p>
+ * Description: This class contains the user information management logic,
+ * such as the logic of log in, log out, get the logged-in user info, get the in-room user list, and add co-hosts, etc.
  */
 public class ZegoUserService {
-
     private static final String TAG = "ZegoUserService";
-
     private static final long RESET_INVITED_DELAY_TIME = 60 * 1000L;
 
-    public List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
+    // The listener related to user status
+    private ZegoUserServiceListener listener;
+
+    // The local logged-in user information.
     public ZegoUserInfo localUserInfo;
+    // In-room user list, can be used when displaying the user list in the room.
+    private final List<ZegoUserInfo> userList = new ArrayList<>();
+    // Co-host list, can be used when display the co-host list in the room.
+    public List<ZegoCoHostSeatModel> coHostList = new ArrayList<>();
 
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private ZegoUserServiceListener listener;
-    // local login user info
-    // room member list
-    private final List<ZegoUserInfo> userList = new ArrayList<>();
     private final Map<String, ZegoUserInfo> userMap = new HashMap<>();
 
-    // user login
+    /**
+     * User to log in
+     * <p>
+     * Description: Call this method with user ID and username to log in to the ZEGO Live service.
+     * <p>
+     * Call this method at: After the SDK initialization
+     *
+     * @param userInfo refers to the user information. You only need to enter the user ID and username.
+     * @param token    refers to the authentication token. To get this, refer to the documentation: https://docs.zegocloud.com/article/11648
+     * @param callback refers to the callback for log in.
+     */
     public void login(ZegoUserInfo userInfo, String token, final ZegoRoomCallback callback) {
         ZIMUserInfo zimUserInfo = new ZIMUserInfo();
         zimUserInfo.userID = userInfo.getUserID();
         zimUserInfo.userName = userInfo.getUserName();
         ZegoZIMManager.getInstance().zim.login(zimUserInfo, token, errorInfo -> {
             Log.d(TAG, "onLoggedIn() called with: errorInfo = [" + errorInfo.code + ", "
-                + errorInfo.message + "]");
+                    + errorInfo.message + "]");
             if (errorInfo.code == ZIMErrorCode.SUCCESS) {
                 localUserInfo = new ZegoUserInfo();
                 localUserInfo.setUserID(userInfo.getUserID());
@@ -81,7 +95,13 @@ public class ZegoUserService {
         });
     }
 
-    // user logout
+    /**
+     * User to log out
+     * <p>
+     * Description: This method can be used to log out from the current user account.
+     * <p>
+     * Call this method at: After the user login
+     */
     public void logout() {
         Log.d(TAG, "logout() called");
         ZegoZIMManager.getInstance().zim.logout();
@@ -94,23 +114,42 @@ public class ZegoUserService {
         coHostList.clear();
     }
 
-    // get online room users list
-    public void getOnlineRoomUsers(ZegoOnlineRoomUserListCallback callback) {
+    /**
+     * Get the in-room user list
+     * <p>
+     * Description: This method can be called to get the in-room user list.
+     * <p>
+     * Call this method at:  After joining the room
+     *
+     * @param nextFlag Passing a null value to nextFlag will get the 100 people who recently joined the room.
+     *                 Passing in the nextFlag value returned from the last query retrieves the list of users since the last query.
+     * @param callback refers to the callback for get the in-room user list.
+     */
+    public void getOnlineRoomUsers(String nextFlag, ZegoOnlineRoomUserListCallback callback) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
         ZIMQueryMemberConfig config = new ZIMQueryMemberConfig();
         config.count = 1000;
+        config.nextFlag = nextFlag;
         ZegoZIMManager.getInstance().zim.queryRoomMember(roomInfo.getRoomID(), config, new ZIMMemberQueriedCallback() {
             @Override
             public void onMemberQueried(ArrayList<ZIMUserInfo> memberList, String nextFlag, ZIMError errorInfo) {
                 if (callback != null) {
                     List<ZegoUserInfo> userList = generateRoomUsers(memberList);
-                    callback.onUserListCallback(errorInfo.code.value(), userList);
+                    callback.onUserListCallback(errorInfo.code.value(), userList, nextFlag);
                 }
             }
         });
     }
 
-    // get online room users num
+    /**
+     * Get the total number of in-room users
+     * <p>
+     * Description: This method can be called to get the total number of the in-room users.
+     * <p>
+     * Call this method at: After joining a room
+     *
+     * @param callback refers to the callback for get the total number of in-room users.
+     */
     public void getOnlineRoomUsersNum(ZegoOnlineRoomUsersNumCallback callback) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
         ZegoZIMManager.getInstance().zim.queryRoomOnlineMemberCount(roomInfo.getRoomID(), (count, errorInfo) -> {
@@ -120,7 +159,17 @@ public class ZegoUserService {
         });
     }
 
-    // send an invitation message to add Co-Host
+    /**
+     * Make co-hosts
+     * <p>
+     * Description: This method can be called to invite an existing participant to co-host,
+     * the invited participant will receive a invitation.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param userID   refers to the ID of the user that you want to invite to be a co-host.
+     * @param callback refers to the callback for make a co-host.
+     */
     public void addCoHost(String userID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.Invitation;
@@ -150,7 +199,16 @@ public class ZegoUserService {
         });
     }
 
-    // Respond to the co-host invitation
+    /**
+     * Respond to the co-host invitation
+     * <p>
+     * Description: This method can be used to accept or decline the co-host invitation sent by the host.
+     * <p>
+     * Call this method at: After joining a room
+     *
+     * @param accept:  Pass true or false to accept or decline the invitation.
+     * @param callback refers to the callback for respond to the co-host invitation.
+     */
     public void respondCoHostInvitation(boolean accept, String operateUserID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
@@ -165,41 +223,89 @@ public class ZegoUserService {
         });
     }
 
-    // Request to co-host
+    /**
+     * Request to co-host
+     * <p>
+     * Description: This method can be used to send a co-host request to the host.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param callback refers to the callback for request to co-host.
+     */
     public void requestToCoHost(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(true);
+                = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
+    /**
+     * Cancel the co-host request
+     * <p>
+     * Description: This method can be used when a participant wants to cancel the co-host request.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param callback refers to the callback for cancel the co-host request.
+     */
     public void cancelRequestToCoHost(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(false);
+                = ZegoRoomAttributesHelper.getRequestOrCancelToHostParameters(false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
     }
 
-    // Respond to the co-host request
+    /**
+     * Respond to the co-host request
+     * <p>
+     * Description: This method can be called when the host responds to the co-host request sent by participants.
+     * The participants can call the takeSeat to be a co-host when the co-host request has been accept.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param callback refers to the callback for respond to the co-host request.
+     */
     public void respondCoHostRequest(boolean agree, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
+                = ZegoRoomAttributesHelper.getRespondCoHostParameters(agree, userID);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
         }
     }
 
-    // Prohibit turning on the camera microphone
+    /**
+     * Mute co-hosts
+     * <p>
+     * Description: This method can be used to mute or unmute a co-host. Once a co-host is muted by the host,
+     * he can only speak again until the host's next unmute operation.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param isMuted  determines whether to mute or unmute a co-host.  true: mute. false: unmute.
+     * @param userID   refers to the ID of the co-host that the host want to mute.
+     * @param callback refers to the callback for mute a co-host.
+     */
     public void muteUser(boolean isMuted, String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 2);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(userID, isMuted, 2);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, callback);
         }
     }
 
-    // Microphone operate
+    /**
+     * Microphone related operations
+     * <p>
+     * Description: This method can be used to turn on/off the microphone.
+     * The audio streams will be published to remote users when the microphone is on, and the audio stream publishing stops when the microphone is off.
+     * This method will failed to be called when you have been muted.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param open     determines whether to turn on or turn off the microphone. true: turn on. false: turn off.
+     * @param callback refers to the callback for turn on or turn off the microphone.
+     */
     public void micOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 0);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 0);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (callback != null) {
@@ -209,10 +315,20 @@ public class ZegoUserService {
         }
     }
 
-    // Camera operate
+    /**
+     * Camera related operations
+     * <p>
+     * Description: This method can be used to turn on/off the camera.
+     * The video streams will be published to remote users, and the video stream publishing stops when the camera is turned off.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param open     determines whether to turn on or turn off the camera. true: turn on. false: turn off.
+     * @param callback refers to the callback for turn on or turn off the camera.
+     */
     public void cameraOperate(boolean open, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
+                = ZegoRoomAttributesHelper.getSeatChangeParameters(localUserInfo.getUserID(), open, 1);
         if (triple != null) {
             ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
                 if (callback != null) {
@@ -222,10 +338,20 @@ public class ZegoUserService {
         }
     }
 
-    // take seat
+    /**
+     * Take a seat
+     * <p>
+     * Description: This method can be used to take a co-host seat.
+     * All participants in the room receive a notification when this gets called.
+     * And the number of co-hosts changes, the streams of the participant who just take the seat will be played.
+     * <p>
+     * Call this method at:  After joining a room
+     *
+     * @param callback refers to the callback for take a co-host seat.
+     */
     public void takeSeat(ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
+                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(null, true);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                 ZegoDeviceService deviceService = ZegoRoomManager.getInstance().deviceService;
@@ -239,10 +365,20 @@ public class ZegoUserService {
         });
     }
 
-    // Leave seat
+    /**
+     * Leave a seat
+     * <p>
+     * Description: This method can be used to leave the current seat.
+     * All participants in the room receive a notification when this gets called,
+     * and the UI shows a notification, the streams of the participant who just left the seat will not be played.
+     * <p>
+     * Call this method at: After joining a room
+     *
+     * @param callback refers to the callback for leave a co-host seat.
+     */
     public void leaveSeat(String userID, ZegoRoomCallback callback) {
         Triple<HashMap<String, String>, String, ZIMRoomAttributesSetConfig> triple
-            = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
+                = ZegoRoomAttributesHelper.getTakeOrLeaveSeatParameters(userID, false);
         ZegoRoomAttributesHelper.setRoomAttributes(triple.first, triple.second, triple.third, errorCode -> {
             if (errorCode == ZegoRoomErrorCode.SUCCESS && UserInfoHelper.isUserIDSelf(userID)) {
                 ZegoExpressEngine.getEngine().stopPublishingStream();
