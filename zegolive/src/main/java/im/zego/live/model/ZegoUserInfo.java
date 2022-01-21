@@ -3,20 +3,22 @@ package im.zego.live.model;
 import java.util.Objects;
 
 /**
- * Created by rocket_wang on 2021/12/14.
+ * Class user information
+ * <p>
+ * Description: This class contains the user related information.
  */
 public class ZegoUserInfo {
-    // user ID
+    // User ID, refers to the user unique ID, can only contains numbers and letters.
     private String userID;
-    // user name
+    // User name, cannot be null.
     private String userName;
 
     // local property
     // user role
     private ZegoRoomUserRole role;
-    // has request to co-host
+    // Indicates whether the user has taken a co-host seat.
     private boolean hasRequestedCoHost;
-    // has Add co-hosts
+    // Indicates whether the user has requested to co-host.
     private boolean hasInvited;
 
     public String getUserID() {

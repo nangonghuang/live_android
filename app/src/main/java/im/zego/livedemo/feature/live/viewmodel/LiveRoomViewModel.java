@@ -36,7 +36,7 @@ import im.zego.live.service.ZegoDeviceService;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomListService;
-import im.zego.live.service.ZegoSoundEffectService;
+import im.zego.live.service.ZegoSoundEffectsService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.helper.AuthInfoManager;
@@ -246,7 +246,7 @@ public class LiveRoomViewModel extends ViewModel {
                         ZegoRoomManager.getInstance().roomService.joinRoom(roomID, token, errorCode1 -> {
                             Log.d("Room", "joinRoom: " + errorCode1 + ",roomID:" + roomID);
                             if (errorCode1 == ZegoRoomErrorCode.SUCCESS) {
-                                userService.getOnlineRoomUsers((errorCode2, userList1) -> {
+                                userService.getOnlineRoomUsers("", (errorCode2, userList1, nextFlag) -> {
                                     updateUserList();
                                 });
                             }
@@ -412,7 +412,7 @@ public class LiveRoomViewModel extends ViewModel {
         beautifyService.resetBeauty();
         beautifyService.resetReSharp();
 
-        ZegoSoundEffectService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
+        ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();
 
         stopPreview();

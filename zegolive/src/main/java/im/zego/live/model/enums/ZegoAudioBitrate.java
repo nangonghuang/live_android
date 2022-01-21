@@ -1,7 +1,9 @@
 package im.zego.live.model.enums;
 
 /**
- * Created by rock on 2022/1/17.
+ * Class audio bitrate
+ * <p>
+ * Description: This class contains the audio bitrate information. To set the audio bitrate, call the setAudioBitrate method.
  */
 public enum ZegoAudioBitrate {
     AUDIO_BITRATE_16KBPS(16),

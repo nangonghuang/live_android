@@ -5,19 +5,29 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 /**
- * Created by rocket_wang on 2021/12/21.
+ * Class co-host seat status information
+ * <p>
+ * Description: This class contains the co-host seat status information.
  */
 public class ZegoCoHostSeatModel {
     @SerializedName("id")
     private String userID;
+
+    // Indicates whether the user has been muted.
+    // Once the participant has been muted, the participant can only keep camera on and send text messages to chat.
     @SerializedName("mute")
     private boolean isMuted;
+
+    // Indicates the microphone status.
     @SerializedName("mic")
     private boolean mic;
+
+    // Indicates the camera status.
     @SerializedName("cam")
     private boolean camera;
 
     // local property
+    // Volume value, a local record attribute, used for displaying the sound level.
     private float soundLevel;
     private float network;
 

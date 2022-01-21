@@ -15,7 +15,7 @@ import im.zego.live.service.ZegoDeviceService;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
 import im.zego.live.service.ZegoRoomService;
-import im.zego.live.service.ZegoSoundEffectService;
+import im.zego.live.service.ZegoSoundEffectsService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zegoexpress.callback.IZegoCustomVideoProcessHandler;
@@ -40,7 +40,9 @@ import im.zego.zim.enums.ZIMRoomEvent;
 import im.zego.zim.enums.ZIMRoomState;
 
 /**
- * Created by rocket_wang on 2021/12/14.
+ * Class ZEGO Live business logic management
+ *
+ * Description: This class contains the ZEGO Live business logic, manages the service instances of different modules, and also distributing the data delivered by the SDK.
  */
 public class ZegoRoomManager {
 
@@ -49,6 +51,15 @@ public class ZegoRoomManager {
     private ZegoRoomManager() {
     }
 
+    /**
+     * Get the ZegoRoomManager singleton instance
+     *
+     * Description: This method can be used to get the ZegoRoomManager singleton instance.
+     *
+     * Call this method at: Any time
+     *
+     * @return ZegoRoomManager singleton instance
+     */
     public static ZegoRoomManager getInstance() {
         if (singleton == null) {
             synchronized (ZegoRoomManager.class) {
@@ -61,13 +72,40 @@ public class ZegoRoomManager {
     }
 
     private static final String TAG = "ZegoRoomManager";
+
+    // The room information management instance,
+    // contains the room information, room status and other business logic.
     public ZegoRoomService roomService;
+
+    // The user information management instance,
+    // contains the in-room user information management, logged-in user information and other business logic.
     public ZegoUserService userService;
+
+    // The message management instance, contains the IM messages management logic.
     public ZegoMessageService messageService;
+
+    // The face beautify management instance,
+    // contains the enabling/disabling logic and parameter setting logic of the face beautification and face shape retouch feature.
     public ZegoFaceBeautifyService faceBeautifyService;
-    public ZegoSoundEffectService soundEffectService;
+
+    // The sound effects management instance,
+    // contains the sound effects business logic.
+    public ZegoSoundEffectsService soundEffectService;
+
+    // The device management instance,
+    // contains the video capturing, rendering, related parameters, stream playing, and other business logic.
     public ZegoDeviceService deviceService;
 
+    /**
+     * Initialize the SDK
+     *
+     * Description: This method can be used to initialize the ZIM SDK and the Express-audio SDK.
+     *
+     * Call this method at: Before you log in. We recommend you call this method when the application starts.
+     *
+     * @param appID refers to the project ID. To get this, go to <a href="https://console.zegocloud.com/dashboard?lang=en">ZEGOCLOUD Admin Console</a>
+     * @param appSign refers to the secret key for authentication. To get this, go to <a href="https://console.zegocloud.com/dashboard?lang=en">ZEGOCLOUD Admin Console</a>
+     */
     public void init(long appID, String appSign, Application application) {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
@@ -107,7 +145,7 @@ public class ZegoRoomManager {
                 }
             }
         });
-        soundEffectService = new ZegoSoundEffectService(engine);
+        soundEffectService = new ZegoSoundEffectsService(engine);
 
         ZegoZIMManager.getInstance().createZIM(appID, application);
         // distribute to specific services which listening what they want
@@ -223,6 +261,13 @@ public class ZegoRoomManager {
         });
     }
 
+    /**
+     * The method to deinitialize the SDK
+     *
+     * Description: This method can be used to deinitialize the SDK and release the resources it occupies.
+     *
+     * Call this method at: When the SDK is no longer be used. We recommend you call this method when the application exits.
+     */
     public void unInit() {
         ZegoZIMManager.getInstance().destroyZIM();
         ZegoExpressEngine.destroyEngine(null);
@@ -231,6 +276,15 @@ public class ZegoRoomManager {
         }
     }
 
+    /**
+     * Upload local logs to the ZEGOCLOUD server
+     *
+     * Description: You can call this method to upload the local logs to the ZEGOCLOUD Server for troubleshooting when exception occurs.
+     *
+     * Call this method at: When exceptions occur.
+     *
+     * @param callback refers to the callback that be triggered when the logs are upload successfully or failed to upload logs.
+     */
     public void uploadLog(final ZegoRoomCallback callback) {
         ZegoZIMManager.getInstance().zim
             .uploadLog(errorInfo -> callback.onRoomCallback(errorInfo.code.value()));
