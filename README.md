@@ -38,7 +38,7 @@ Before getting started with the ZEGO Live application, **contact us to activate 
 <img height="500px" src="images/app_android.jpg"/>
 
 ### Project structure
-The project consists of two modules: **app and zegoive**.
+The project consists of two modules: **app and zegolive**.
 
 #### app
 The app module implements the business and UI interaction logic, including login, room list, live streaming, face beautify, sound effects feature, and more. The following shows the structure:
