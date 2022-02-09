@@ -473,6 +473,11 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     private void initUI() {
         String roomID = getIntent().getStringExtra(EXTRA_KEY_ROOM_ID);
         if (StringUtils.isTrimEmpty(roomID)) {
+            PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
+                if (isAllGranted) {
+                    liveRoomViewModel.startPreview(binding.textureView);
+                }
+            });
             showCreateRoomUI();
             liveRoomViewModel.startPreview(binding.textureView);
         } else {
@@ -533,13 +538,18 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
 
             @Override
             public void onStartLiveClick(String roomName) {
-                videoConfigViewModel.updateVideoConfig();
-                liveRoomViewModel.createRoom(roomName, errorCode -> {
-                    if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                        showLiveUI();
-                        binding.liveBottomView.toHost();
-                    } else {
-                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_create_room_fail, errorCode));
+                PermissionHelper.requestCameraAndAudio(LiveRoomActivity.this, isAllGranted -> {
+                    if (isAllGranted) {
+                        liveRoomViewModel.startPreview(binding.textureView);
+                        videoConfigViewModel.updateVideoConfig();
+                        liveRoomViewModel.createRoom(roomName, errorCode -> {
+                            if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                                showLiveUI();
+                                binding.liveBottomView.toHost();
+                            } else {
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_create_room_fail, errorCode));
+                            }
+                        });
                     }
                 });
             }
