@@ -71,7 +71,6 @@ public class SeekBarWithNumber extends AppCompatSeekBar {
         int halfBgWidth = (int) Math.ceil(img_width) / 2;
         int halfBgHeight = (int) Math.ceil(img_height) + 5;
         setPadding(halfBgWidth, halfBgHeight, halfBgWidth, 0);
-
     }
 
     private void getImgWH() {
