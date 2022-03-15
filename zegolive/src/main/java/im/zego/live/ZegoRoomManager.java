@@ -72,6 +72,7 @@ public class ZegoRoomManager {
     }
 
     private static final String TAG = "ZegoRoomManager";
+    private static final String CONSTANT_APP_SIGN = "your_app_sign";
 
     // The room information management instance,
     // contains the room information, room status and other business logic.
@@ -104,9 +105,8 @@ public class ZegoRoomManager {
      * Call this method at: Before you log in. We recommend you call this method when the application starts.
      *
      * @param appID refers to the project ID. To get this, go to <a href="https://console.zegocloud.com/dashboard?lang=en">ZEGOCLOUD Admin Console</a>
-     * @param appSign refers to the secret key for authentication. To get this, go to <a href="https://console.zegocloud.com/dashboard?lang=en">ZEGOCLOUD Admin Console</a>
      */
-    public void init(long appID, String appSign, Application application) {
+    public void init(long appID, Application application) {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
         messageService = new ZegoMessageService();
@@ -115,7 +115,6 @@ public class ZegoRoomManager {
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
         profile.appID = appID;
-        profile.appSign = appSign;
         profile.scenario = ZegoScenario.COMMUNICATION;
         profile.application = application;
         ZegoExpressEngine engine = ZegoExpressEngine.createEngine(profile, new IZegoEventHandler() {
@@ -225,7 +224,7 @@ public class ZegoRoomManager {
             }
         });
 
-        faceBeautifyService.init(application, appID, appSign, new IGetLicenseCallback() {
+        faceBeautifyService.init(application, appID, CONSTANT_APP_SIGN, new IGetLicenseCallback() {
             @Override
             public void onGetLicense(int code, String message, License license) {
                 Log.d("Beautify", "onGetLicense() called with: code = [" + code + "], message = [" + message);

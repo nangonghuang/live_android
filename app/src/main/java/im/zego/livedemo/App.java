@@ -21,8 +21,7 @@ public class App extends Application {
         AuthInfoManager.getInstance().init(this);
         // init LiveAudioRoom SDK
         long appID = AuthInfoManager.getInstance().getAppID();
-        String appSign = AuthInfoManager.getInstance().getAppSign();
-        ZegoRoomManager.getInstance().init(appID, appSign, this);
+        ZegoRoomManager.getInstance().init(appID, this);
 
         SoundEffectsHelper.initLocalAudioEffectList(this);
     }

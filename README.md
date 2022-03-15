@@ -25,7 +25,7 @@ Before getting started with the ZEGO Live application, **contact us to activate 
 2. Put the ZegoEffects SDK you get in the previous step into the `zegolive/libs` file, and put the resources, and models into the `zegolive/src/main/assets/effects` file.  
 <img width="500px" src="images/effect_files.png"/>
 3. Open Terminal, navigate to the cloned project repository.
-4. Run the configuration script with the `./configure.sh` command. And fill in the AppID, AppSign, and ServerSecret, which can be obtained in the [ZEGO Admin Console](https://console.zegocloud.com/).  
+4. Run the configuration script with the `./configure.sh` command. And fill in the AppID, ServerSecret, which can be obtained in the [ZEGO Admin Console](https://console.zegocloud.com/).  
 **Note**: If you are using Windows system, double-click the `configure.bat` to run the configuration script.   
 <img width="700px" src="images/configure_android.png"/>
 

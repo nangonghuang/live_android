@@ -1,15 +1,17 @@
 package im.zego.livedemo.helper;
 
 import android.content.Context;
-import im.zego.live.util.TokenServerAssistant;
-import im.zego.live.util.ZegoRTCServerAssistant;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import im.zego.live.util.TokenServerAssistant;
 
 public class AuthInfoManager {
 
@@ -28,15 +30,10 @@ public class AuthInfoManager {
 
     private String serverSecret;
     private long appID;
-    private String appSign;
     private Context context;
 
     public long getAppID() {
         return appID;
-    }
-
-    public String getAppSign() {
-        return appSign;
     }
 
     public void init(Context context) {
@@ -46,7 +43,6 @@ public class AuthInfoManager {
         try {
             jsonObject = new JSONObject(fileJson);
             appID = jsonObject.getLong("appID");
-            appSign = jsonObject.getString("appSign");
             serverSecret = jsonObject.getString("serverSecret");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -73,25 +69,7 @@ public class AuthInfoManager {
         }
     }
 
-    public String generateCreateRoomToken(String roomID, String userID) {
-        ZegoRTCServerAssistant.Privileges privileges = new ZegoRTCServerAssistant.Privileges();
-        privileges.canLoginRoom = true;
-        privileges.canPublishStream = true;
-        long appID = AuthInfoManager.getInstance().getAppID();
-        String appSign = AuthInfoManager.getInstance().getAppSign();
-        return ZegoRTCServerAssistant.generateToken(appID, roomID, userID, privileges, appSign, 660).data;
-    }
-
-    public String generateJoinRoomToken(String userID) {
-        try {
-            return TokenServerAssistant.generateToken(appID, userID, serverSecret, 60 * 60 * 24).data;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    public String generateLoginToken(String userID) {
+    public String generateToken(String userID) {
         try {
             return TokenServerAssistant.generateToken(appID, userID, serverSecret, 60 * 60 * 24).data;
         } catch (JSONException e) {

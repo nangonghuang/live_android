@@ -202,7 +202,7 @@ public class LiveRoomViewModel extends ViewModel {
             public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {
                 if (errorCode == ZegoRoomErrorCode.SUCCESS) {
                     String roomID = responseJsonBean.getRoomID();
-                    String token = AuthInfoManager.getInstance().generateCreateRoomToken(roomID, selfUser.getUserID());
+                    String token = AuthInfoManager.getInstance().generateToken(selfUser.getUserID());
                     ZegoRoomManager.getInstance().roomService.createRoom(roomID, roomName, token, errorCode1 -> {
                         Log.d("Room", "createRoom: " + errorCode1 + ",roomID:" + roomID);
                         if (errorCode1 == ZegoRoomErrorCode.SUCCESS) {
@@ -237,7 +237,7 @@ public class LiveRoomViewModel extends ViewModel {
     public void joinRoom(String roomID, ZegoRoomCallback callback) {
         final ZegoUserService userService = ZegoRoomManager.getInstance().userService;
         String userID = userService.localUserInfo.getUserID();
-        String token = AuthInfoManager.getInstance().generateJoinRoomToken(userID);
+        String token = AuthInfoManager.getInstance().generateToken(userID);
         ZegoRoomListService.joinServerRoom(userID, roomID, new IAsyncGetCallback<RoomBean>() {
             @Override
             public void onResponse(int errorCode, @NonNull String message, RoomBean responseJsonBean) {

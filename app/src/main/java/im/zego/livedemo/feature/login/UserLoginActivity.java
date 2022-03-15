@@ -91,7 +91,7 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 }
                 user.setUserID(userID);
                 user.setUserName(userName);
-                String token = AuthInfoManager.getInstance().generateLoginToken(userID);
+                String token = AuthInfoManager.getInstance().generateToken(userID);
                 if (!TextUtils.isEmpty(token)) {
                     NetworkUtils.isAvailableByPingAsync(isAvailable -> {
                         if (isAvailable) {
