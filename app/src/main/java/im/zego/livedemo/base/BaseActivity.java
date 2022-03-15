@@ -52,7 +52,7 @@ public abstract class BaseActivity<VB extends ViewBinding> extends BaseBindingAc
                 needRestart = false;
             }
         }
-        Log.d(TAG, "BaseActivity onResume() called with: " + sb.toString());
+        Log.d(TAG, "BaseActivity onResume() called with: " + sb);
 
         if (needRestart) {
             AppUtils.relaunchApp(true);

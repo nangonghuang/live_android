@@ -50,7 +50,7 @@ public class ReverbPresetAdapter extends RecyclerView.Adapter<ReverbPresetAdapte
         boolean isCurrentSelect = position == currentSelectItemPosition;
         Bitmap bitmap = ImageUtils.toRound(ImageUtils.getBitmap(item.getIcon()), true);
         if (isCurrentSelect) {
-            holder.reverbPresetIcon.setImageBitmap(ImageUtils.addCircleBorder(bitmap, SizeUtils.dp2px(2F), Color.parseColor("#ffa653ff"), true));
+            holder.reverbPresetIcon.setImageBitmap(ImageUtils.addCircleBorder(bitmap, SizeUtils.dp2px(3F), Color.parseColor("#ffa653ff"), true));
             holder.reverbPresetName.setTextColor(Color.parseColor("#ffa653ff"));
         } else {
             holder.reverbPresetIcon.setImageBitmap(bitmap);
