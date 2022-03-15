@@ -30,10 +30,15 @@ public class AuthInfoManager {
 
     private String serverSecret;
     private long appID;
+    private String appSign;
     private Context context;
 
     public long getAppID() {
         return appID;
+    }
+
+    public String getAppSign() {
+        return appSign;
     }
 
     public void init(Context context) {
@@ -43,6 +48,7 @@ public class AuthInfoManager {
         try {
             jsonObject = new JSONObject(fileJson);
             appID = jsonObject.getLong("appID");
+            appSign = jsonObject.getString("appSign");
             serverSecret = jsonObject.getString("serverSecret");
         } catch (JSONException e) {
             e.printStackTrace();
