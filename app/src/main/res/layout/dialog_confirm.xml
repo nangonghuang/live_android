@@ -9,11 +9,11 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="49dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/bg_purple_btn"
+        android:background="@drawable/bg_purple_round_btn"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="14sp"

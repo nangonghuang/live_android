@@ -80,11 +80,7 @@ public class RoomListActivity extends BaseActivity<ActivityRoomListBinding> {
         binding.commonTitleView.setBackBtnClickListener(v -> onBackPressed());
         binding.commonTitleView.setSettingsBtnClickListener(v -> SettingsActivity.start(this));
         ClickUtils.applySingleDebouncing(binding.flCreateLive, Constants.DEBOUNCING_DEFAULT_VALUE, v -> {
-            PermissionHelper.requestCameraAndAudio(this, isAllGranted -> {
-                if (isAllGranted) {
-                    LiveRoomActivity.start(this, REQUEST_CODE_LEAVE_ROOM);
-                }
-            });
+            LiveRoomActivity.start(this, REQUEST_CODE_LEAVE_ROOM);
         });
         binding.smartRefreshLayout.setOnRefreshListener(refreshLayout -> refresh(refreshLayout::finishRefresh));
     }
