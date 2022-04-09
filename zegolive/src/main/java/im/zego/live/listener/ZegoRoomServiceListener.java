@@ -39,4 +39,6 @@ public interface ZegoRoomServiceListener {
      * @param event refers to the the event that causes the connection status changes.
      */
     void onConnectionStateChanged(ZIMConnectionState state, ZIMConnectionEvent event);
+
+    void onRoomTokenWillExpire(int remainTimeInSecond, String roomID);
 }

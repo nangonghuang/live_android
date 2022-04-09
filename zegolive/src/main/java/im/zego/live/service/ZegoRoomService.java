@@ -34,6 +34,8 @@ import im.zego.zegoexpress.entity.ZegoRoomConfig;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zegoexpress.entity.ZegoUser;
 import im.zego.zim.ZIM;
+import im.zego.zim.callback.ZIMTokenRenewedCallback;
+import im.zego.zim.entity.ZIMError;
 import im.zego.zim.entity.ZIMRoomAdvancedConfig;
 import im.zego.zim.entity.ZIMRoomAttributesUpdateInfo;
 import im.zego.zim.entity.ZIMRoomInfo;
@@ -188,6 +190,15 @@ public class ZegoRoomService {
             Log.d(TAG, "leaveRoom() called with: errorInfo = [" + errorInfo.code + "]" + errorInfo.message);
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
+            }
+        });
+    }
+
+    public void renewToken(String token, String roomID) {
+        ZegoZIMManager.getInstance().zim.renewToken(token, new ZIMTokenRenewedCallback() {
+            @Override
+            public void onTokenRenewed(String token, ZIMError errorInfo) {
+
             }
         });
     }
@@ -366,6 +377,12 @@ public class ZegoRoomService {
                                          JSONObject extendedData) {
         if (listener != null) {
             listener.onConnectionStateChanged(state, event);
+        }
+    }
+
+    public void onRoomTokenWillExpire(int remainTimeInSecond, String roomID) {
+        if (listener != null) {
+            listener.onRoomTokenWillExpire(remainTimeInSecond, roomID);
         }
     }
 
