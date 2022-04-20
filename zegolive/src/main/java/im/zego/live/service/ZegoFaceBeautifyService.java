@@ -47,10 +47,10 @@ public class ZegoFaceBeautifyService {
     private final ZegoEffectsSharpenParam imageSharpeningParam = new ZegoEffectsSharpenParam();
     private final ZegoEffectsRosyParam cheekBlusherParam = new ZegoEffectsRosyParam();
     private final ZegoEffectsBigEyesParam eyesEnlargingParam = new ZegoEffectsBigEyesParam();
-    private final ZegoEffectsFaceLiftingParam faceSlimingParam = new ZegoEffectsFaceLiftingParam();
+    private final ZegoEffectsFaceLiftingParam faceSlimmingParam = new ZegoEffectsFaceLiftingParam();
     private final ZegoEffectsSmallMouthParam mouthShapeAdjustmentParam = new ZegoEffectsSmallMouthParam();
     private final ZegoEffectsEyesBrighteningParam eyesBrighteningParam = new ZegoEffectsEyesBrighteningParam();
-    private final ZegoEffectsNoseNarrowingParam noseSlimingParam = new ZegoEffectsNoseNarrowingParam();
+    private final ZegoEffectsNoseNarrowingParam noseSlimmingParam = new ZegoEffectsNoseNarrowingParam();
     private final ZegoEffectsTeethWhiteningParam teethWhiteningParam = new ZegoEffectsTeethWhiteningParam();
     private final ZegoEffectsLongChinParam chinLengtheningParam = new ZegoEffectsLongChinParam();
 
@@ -146,7 +146,7 @@ public class ZegoFaceBeautifyService {
             case EyesEnlarging:
                 zegoEffects.enableBigEyes(enable);
                 break;
-            case FaceSliming:
+            case FaceSlimming:
                 zegoEffects.enableFaceLifting(enable);
                 break;
             case MouthShapeAdjustment:
@@ -155,7 +155,7 @@ public class ZegoFaceBeautifyService {
             case EyesBrightening:
                 zegoEffects.enableEyesBrightening(enable);
                 break;
-            case NoseSliming:
+            case NoseSlimming:
                 zegoEffects.enableNoseNarrowing(enable);
                 break;
             case ChinLengthening:
@@ -175,10 +175,10 @@ public class ZegoFaceBeautifyService {
         setBeautifyValue(50, FaceBeautifyType.ImageSharpening);
         setBeautifyValue(5, FaceBeautifyType.CheekBlusher);
         setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
-        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
+        setBeautifyValue(50, FaceBeautifyType.FaceSlimming);
         setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
         setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
-        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
+        setBeautifyValue(50, FaceBeautifyType.NoseSlimming);
         setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
         setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
     }
@@ -192,10 +192,10 @@ public class ZegoFaceBeautifyService {
 
     public void resetReSharp() {
         setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
-        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
+        setBeautifyValue(50, FaceBeautifyType.FaceSlimming);
         setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
         setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
-        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
+        setBeautifyValue(50, FaceBeautifyType.NoseSlimming);
         setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
         setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
     }
@@ -218,8 +218,8 @@ public class ZegoFaceBeautifyService {
             case EyesEnlarging:
                 value = eyesEnlargingParam.intensity;
                 break;
-            case FaceSliming:
-                value = faceSlimingParam.intensity;
+            case FaceSlimming:
+                value = faceSlimmingParam.intensity;
                 break;
             case MouthShapeAdjustment:
                 value = mouthShapeAdjustmentParam.intensity;
@@ -227,8 +227,8 @@ public class ZegoFaceBeautifyService {
             case EyesBrightening:
                 value = eyesBrighteningParam.intensity;
                 break;
-            case NoseSliming:
-                value = noseSlimingParam.intensity;
+            case NoseSlimming:
+                value = noseSlimmingParam.intensity;
                 break;
             case ChinLengthening:
                 value = chinLengtheningParam.intensity;
@@ -280,9 +280,9 @@ public class ZegoFaceBeautifyService {
                 eyesEnlargingParam.intensity = value;
                 zegoEffects.setBigEyesParam(eyesEnlargingParam);
                 break;
-            case FaceSliming:
-                faceSlimingParam.intensity = value;
-                zegoEffects.setFaceLiftingParam(faceSlimingParam);
+            case FaceSlimming:
+                faceSlimmingParam.intensity = value;
+                zegoEffects.setFaceLiftingParam(faceSlimmingParam);
                 break;
             case MouthShapeAdjustment:
                 mouthShapeAdjustmentParam.intensity = value;
@@ -292,9 +292,9 @@ public class ZegoFaceBeautifyService {
                 eyesBrighteningParam.intensity = value;
                 zegoEffects.setEyesBrighteningParam(eyesBrighteningParam);
                 break;
-            case NoseSliming:
-                noseSlimingParam.intensity = value;
-                zegoEffects.setNoseNarrowingParam(noseSlimingParam);
+            case NoseSlimming:
+                noseSlimmingParam.intensity = value;
+                zegoEffects.setNoseNarrowingParam(noseSlimmingParam);
                 break;
             case ChinLengthening:
                 chinLengtheningParam.intensity = value;

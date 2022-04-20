@@ -68,10 +68,10 @@
 
     <string-array name="beauty_type_list">
         <item>@string/room_beautify_page_eyes_enlarging</item>
-        <item>@string/room_beautify_page_face_sliming</item>
+        <item>@string/room_beautify_page_face_slimming</item>
         <item>@string/room_beautify_page_mouth_shape_adjustment</item>
         <item>@string/room_beautify_page_eyes_brightening</item>
-        <item>@string/room_beautify_page_nose_sliming</item>
+        <item>@string/room_beautify_page_nose_slimming</item>
         <item>@string/room_beautify_page_teeth_whitening</item>
         <item>@string/room_beautify_page_chin_lengthening</item>
     </string-array>

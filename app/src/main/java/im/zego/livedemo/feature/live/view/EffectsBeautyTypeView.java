@@ -10,13 +10,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import im.zego.livedemo.feature.live.model.BeautyInfo;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.adapter.EffectsBeautyAdapter;
+import im.zego.livedemo.feature.live.model.BeautyInfo;
 
 public class EffectsBeautyTypeView extends ConstraintLayout {
 
@@ -63,7 +63,7 @@ public class EffectsBeautyTypeView extends ConstraintLayout {
                 break;
             case 1:
                 if (callBack != null) {
-                    callBack.onClickBeautyType(FaceBeautifyType.FaceSliming, 0, position);
+                    callBack.onClickBeautyType(FaceBeautifyType.FaceSlimming, 0, position);
                 }
                 break;
             case 2:
@@ -78,7 +78,7 @@ public class EffectsBeautyTypeView extends ConstraintLayout {
                 break;
             case 4:
                 if (callBack != null) {
-                    callBack.onClickBeautyType(FaceBeautifyType.NoseSliming, 0, position);
+                    callBack.onClickBeautyType(FaceBeautifyType.NoseSlimming, 0, position);
                 }
                 break;
             case 5:
