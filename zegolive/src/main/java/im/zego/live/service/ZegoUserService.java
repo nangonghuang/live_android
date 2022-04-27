@@ -3,15 +3,6 @@ package im.zego.live.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoOnlineRoomUserListCallback;
@@ -33,15 +24,24 @@ import im.zego.live.model.ZegoUserInfo;
 import im.zego.live.util.Triple;
 import im.zego.zegoexpress.ZegoExpressEngine;
 import im.zego.zim.ZIM;
-import im.zego.zim.callback.ZIMMemberQueriedCallback;
-import im.zego.zim.entity.ZIMCustomMessage;
+import im.zego.zim.callback.ZIMMessageSentCallback;
+import im.zego.zim.callback.ZIMRoomMemberQueriedCallback;
+import im.zego.zim.entity.ZIMCommandMessage;
 import im.zego.zim.entity.ZIMError;
 import im.zego.zim.entity.ZIMMessage;
-import im.zego.zim.entity.ZIMQueryMemberConfig;
+import im.zego.zim.entity.ZIMMessageSendConfig;
 import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
+import im.zego.zim.entity.ZIMRoomMemberQueryConfig;
 import im.zego.zim.entity.ZIMUserInfo;
 import im.zego.zim.enums.ZIMErrorCode;
 import im.zego.zim.enums.ZIMMessageType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class user information management
@@ -127,12 +127,13 @@ public class ZegoUserService {
      */
     public void getOnlineRoomUsers(String nextFlag, ZegoOnlineRoomUserListCallback callback) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
-        ZIMQueryMemberConfig config = new ZIMQueryMemberConfig();
+        ZIMRoomMemberQueryConfig config = new ZIMRoomMemberQueryConfig();
         config.count = 1000;
         config.nextFlag = nextFlag;
-        ZegoZIMManager.getInstance().zim.queryRoomMember(roomInfo.getRoomID(), config, new ZIMMemberQueriedCallback() {
+        ZegoZIMManager.getInstance().zim.queryRoomMemberList(roomInfo.getRoomID(), config, new ZIMRoomMemberQueriedCallback() {
             @Override
-            public void onMemberQueried(ArrayList<ZIMUserInfo> memberList, String nextFlag, ZIMError errorInfo) {
+            public void onRoomMemberQueried(String roomID, ArrayList<ZIMUserInfo> memberList, String nextFlag,
+                ZIMError errorInfo) {
                 if (callback != null) {
                     List<ZegoUserInfo> userList = generateRoomUsers(memberList);
                     callback.onUserListCallback(errorInfo.code.value(), userList, nextFlag);
@@ -152,11 +153,12 @@ public class ZegoUserService {
      */
     public void getOnlineRoomUsersNum(ZegoOnlineRoomUsersNumCallback callback) {
         ZegoRoomInfo roomInfo = ZegoRoomManager.getInstance().roomService.roomInfo;
-        ZegoZIMManager.getInstance().zim.queryRoomOnlineMemberCount(roomInfo.getRoomID(), (count, errorInfo) -> {
-            if (callback != null) {
-                callback.onUserCountCallback(errorInfo.code.value(), count);
-            }
-        });
+        ZegoZIMManager.getInstance().zim.queryRoomOnlineMemberCount(roomInfo.getRoomID(),
+            (roomID, count, errorInfo) -> {
+                if (callback != null) {
+                    callback.onUserCountCallback(errorInfo.code.value(), count);
+                }
+            });
     }
 
     /**
@@ -173,30 +175,31 @@ public class ZegoUserService {
     public void addCoHost(String userID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.Invitation;
-        command.userID = localUserInfo.getUserID();
+        command.senderUserID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(userID);
         command.toJson();
-        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, userID, (message, errorInfo) -> {
-            if (errorInfo.code.value() == ZegoRoomErrorCode.SUCCESS) {
-                List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
-                for (ZegoUserInfo zegoUserInfo : userInfoList) {
-                    if (Objects.equals(userID, zegoUserInfo.getUserID())) {
-                        zegoUserInfo.setHasInvited(true);
-                        handler.postDelayed(() -> {
-                            zegoUserInfo.setHasInvited(false);
-                            if (listener != null) {
-                                listener.onRoomUserInfoUpdate(userInfoList);
-                            }
-                        }, RESET_INVITED_DELAY_TIME);
-                        break;
+        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, userID, new ZIMMessageSendConfig(),
+            (message, errorInfo) -> {
+                if (errorInfo.code.value() == ZegoRoomErrorCode.SUCCESS) {
+                    List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
+                    for (ZegoUserInfo zegoUserInfo : userInfoList) {
+                        if (Objects.equals(userID, zegoUserInfo.getUserID())) {
+                            zegoUserInfo.setHasInvited(true);
+                            handler.postDelayed(() -> {
+                                zegoUserInfo.setHasInvited(false);
+                                if (listener != null) {
+                                    listener.onRoomUserInfoUpdate(userInfoList);
+                                }
+                            }, RESET_INVITED_DELAY_TIME);
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (callback != null) {
-                callback.onRoomCallback(errorInfo.code.value());
-            }
-        });
+                if (callback != null) {
+                    callback.onRoomCallback(errorInfo.code.value());
+                }
+            });
     }
 
     /**
@@ -212,15 +215,19 @@ public class ZegoUserService {
     public void respondCoHostInvitation(boolean accept, String operateUserID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
-        command.userID = localUserInfo.getUserID();
+        command.senderUserID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(operateUserID);
         command.content = new ZegoCustomCommand.CustomCommandContent(accept);
         command.toJson();
-        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, operateUserID, (message, errorInfo) -> {
-            if (callback != null) {
-                callback.onRoomCallback(errorInfo.code.value());
-            }
-        });
+        ZegoZIMManager.getInstance().zim.sendPeerMessage(command, operateUserID, new ZIMMessageSendConfig(),
+            new ZIMMessageSentCallback() {
+                @Override
+                public void onMessageSent(ZIMMessage message, ZIMError errorInfo) {
+                    if (callback != null) {
+                        callback.onRoomCallback(errorInfo.code.value());
+                    }
+                }
+            });
     }
 
     /**
@@ -528,15 +535,15 @@ public class ZegoUserService {
 
     public void onReceivePeerMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromUserID) {
         for (ZIMMessage zimMessage : messageList) {
-            if (zimMessage.type == ZIMMessageType.CUSTOM) {
-                ZIMCustomMessage zimCustomMessage = (ZIMCustomMessage) zimMessage;
+            if (zimMessage.type == ZIMMessageType.COMMAND) {
+                ZIMCommandMessage zimCustomMessage = (ZIMCommandMessage) zimMessage;
                 ZegoCustomCommand command = new ZegoCustomCommand();
                 command.type = zimCustomMessage.type;
-                command.userID = zimCustomMessage.userID;
+                command.senderUserID = zimCustomMessage.senderUserID;
                 command.fromJson(zimCustomMessage.message);
                 if (command.actionType == ZegoCustomCommand.CustomCommandType.Invitation) {
                     if (listener != null) {
-                        listener.onReceiveAddCoHostInvitation(zimCustomMessage.userID);
+                        listener.onReceiveAddCoHostInvitation(zimCustomMessage.senderUserID);
                     }
                 } else {
                     ZegoCustomCommand.CustomCommandContent content = command.content;
@@ -545,14 +552,14 @@ public class ZegoUserService {
                     }
                     List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
                     for (ZegoUserInfo zegoUserInfo : userInfoList) {
-                        if (Objects.equals(command.userID, zegoUserInfo.getUserID())) {
+                        if (Objects.equals(command.senderUserID, zegoUserInfo.getUserID())) {
                             zegoUserInfo.setHasInvited(false);
                             break;
                         }
                     }
 
                     if (listener != null) {
-                        listener.onReceiveAddCoHostRespond(command.userID, content.accept);
+                        listener.onReceiveAddCoHostRespond(command.senderUserID, content.accept);
                     }
                 }
             }
