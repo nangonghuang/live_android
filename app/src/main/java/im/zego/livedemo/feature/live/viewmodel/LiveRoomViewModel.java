@@ -121,7 +121,7 @@ public class LiveRoomViewModel extends ViewModel {
                 if (containsSelf) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
                     textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
-                    textMessage.userID = localUserInfo.getUserID();
+                    textMessage.senderUserID = localUserInfo.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
@@ -129,7 +129,7 @@ public class LiveRoomViewModel extends ViewModel {
                     for (ZegoUserInfo user : memberList) {
                         ZegoTextMessage textMessage = new ZegoTextMessage();
                         textMessage.userName = user.getUserName();
-                        textMessage.userID = user.getUserID();
+                        textMessage.senderUserID = user.getUserID();
                         textMessage.timestamp = System.currentTimeMillis();
                         textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                         joinLeaveMessages.add(textMessage);
@@ -144,7 +144,7 @@ public class LiveRoomViewModel extends ViewModel {
                 for (ZegoUserInfo user : memberList) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
                     textMessage.userName = user.getUserName();
-                    textMessage.userID = user.getUserID();
+                    textMessage.senderUserID = user.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_has_left_the_room);
                     textMessage.timestamp = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
@@ -266,7 +266,7 @@ public class LiveRoomViewModel extends ViewModel {
                                     });
                                 }
                                 int tempErrorCode = errorCode;
-                                if (errorCode1 == ZIMErrorCode.ROOM_NOT_EXIST.value()) {
+                                if (errorCode1 == ZIMErrorCode.ROOM_DOES_NOT_EXIST.value()) {
                                     tempErrorCode = ZegoRoomErrorCode.ROOM_NOT_FOUND;
                                 }
                                 if (callback != null) {

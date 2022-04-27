@@ -1,16 +1,8 @@
 package im.zego.live.helper;
 
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Objects;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
@@ -21,6 +13,10 @@ import im.zego.live.model.ZegoRoomInfo;
 import im.zego.live.model.ZegoUserInfo;
 import im.zego.live.util.Triple;
 import im.zego.zim.entity.ZIMRoomAttributesSetConfig;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Objects;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by rocket_wang on 2021/12/14.
@@ -174,14 +170,15 @@ public class ZegoRoomAttributesHelper {
     }
 
     public static void setRoomAttributes(HashMap<String, String> roomAttributes, String roomID, ZIMRoomAttributesSetConfig config, ZegoRoomCallback callback) {
-        ZegoZIMManager.getInstance().zim.setRoomAttributes(roomAttributes, roomID, config, errorInfo -> {
-            Log.d(TAG, "setRoomAttributes() called with: roomAttributes = [" + Collections.singletonList(roomAttributes) + "]," +
-                    " roomID = [" + roomID + "]," +
+        ZegoZIMManager.getInstance().zim.setRoomAttributes(roomAttributes, roomID, config,
+            (roomID1, errorKeys, errorInfo) -> {
+                Log.d(TAG, "setRoomAttributes() called with: roomAttributes = [" + Collections.singletonList(roomAttributes) + "]," +
+                    " roomID = [" + roomID1 + "]," +
                     " config = [" + config + "]," +
                     " errorInfo = [" + errorInfo.code + "]");
-            if (callback != null) {
-                callback.onRoomCallback(errorInfo.code.value());
-            }
-        });
+                if (callback != null) {
+                    callback.onRoomCallback(errorInfo.code.value());
+                }
+            });
     }
 }

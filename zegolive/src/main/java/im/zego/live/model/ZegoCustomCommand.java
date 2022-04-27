@@ -2,14 +2,14 @@ package im.zego.live.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import im.zego.zim.entity.ZIMCommandMessage;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.zego.live.helper.ZegoRoomAttributesHelper;
-import im.zego.zim.entity.ZIMCustomMessage;
 
-public class ZegoCustomCommand extends ZIMCustomMessage {
+public class ZegoCustomCommand extends ZIMCommandMessage {
 
     @SerializedName("action_type")
     public CustomCommandType actionType;
