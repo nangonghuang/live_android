@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.StringUtils;
 
+import im.zego.zegoexpress.ZegoExpressEngine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -426,7 +427,6 @@ public class LiveRoomViewModel extends ViewModel {
         // reset face beautify
         ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
         beautifyService.resetBeauty();
-        beautifyService.resetReSharp();
 
         ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();
