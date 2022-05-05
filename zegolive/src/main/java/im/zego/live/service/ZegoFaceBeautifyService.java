@@ -1,6 +1,5 @@
 package im.zego.live.service;
 
-import android.content.Context;
 import android.util.Log;
 import im.zego.live.model.FaceBeautifyType;
 import im.zego.zegoexpress.ZegoExpressEngine;
@@ -17,7 +16,6 @@ public class ZegoFaceBeautifyService {
 
     public ZegoFaceBeautifyService() {
         ZegoExpressEngine.getEngine().startEffectsEnv();
-        enableBeautify(true);
         initBeauty();
     }
 
@@ -39,13 +37,6 @@ public class ZegoFaceBeautifyService {
         setBeautifyValue(50, FaceBeautifyType.SkinSmoothing);
         setBeautifyValue(50, FaceBeautifyType.ImageSharpening);
         setBeautifyValue(5, FaceBeautifyType.CheekBlusher);
-        setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
-        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
-        setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
-        setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
-        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
-        setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
-        setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
     }
 
     public void resetBeauty() {
@@ -56,13 +47,7 @@ public class ZegoFaceBeautifyService {
     }
 
     public void resetReSharp() {
-        setBeautifyValue(50, FaceBeautifyType.EyesEnlarging);
-        setBeautifyValue(50, FaceBeautifyType.FaceSliming);
-        setBeautifyValue(0, FaceBeautifyType.MouthShapeAdjustment);
-        setBeautifyValue(50, FaceBeautifyType.EyesBrightening);
-        setBeautifyValue(50, FaceBeautifyType.NoseSliming);
-        setBeautifyValue(50, FaceBeautifyType.TeethWhitening);
-        setBeautifyValue(0, FaceBeautifyType.ChinLengthening);
+
     }
 
     public int getBeautifyValue(FaceBeautifyType type) {
@@ -79,20 +64,6 @@ public class ZegoFaceBeautifyService {
                 break;
             case CheekBlusher:
                 value = beautyParam.rosyIntensity;
-                break;
-            case EyesEnlarging:
-                break;
-            case FaceSliming:
-                break;
-            case MouthShapeAdjustment:
-                break;
-            case EyesBrightening:
-                break;
-            case NoseSliming:
-                break;
-            case ChinLengthening:
-                break;
-            case TeethWhitening:
                 break;
             default:
                 break;
@@ -125,20 +96,6 @@ public class ZegoFaceBeautifyService {
                 break;
             case CheekBlusher:
                 beautyParam.rosyIntensity = value;
-                break;
-            case EyesEnlarging:
-                break;
-            case FaceSliming:
-                break;
-            case MouthShapeAdjustment:
-                break;
-            case EyesBrightening:
-                break;
-            case NoseSliming:
-                break;
-            case ChinLengthening:
-                break;
-            case TeethWhitening:
                 break;
             default:
                 break;

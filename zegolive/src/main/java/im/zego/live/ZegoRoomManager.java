@@ -144,6 +144,7 @@ public class ZegoRoomManager {
         });
         soundEffectService = new ZegoSoundEffectsService();
         faceBeautifyService = new ZegoFaceBeautifyService();
+        faceBeautifyService.enableBeautify(true);
 
         ZegoZIMManager.getInstance().createZIM(appID, application);
         // distribute to specific services which listening what they want

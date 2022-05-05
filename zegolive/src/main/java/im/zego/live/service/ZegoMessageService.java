@@ -51,8 +51,8 @@ public class ZegoMessageService {
         ZegoTextMessage textMessage = new ZegoTextMessage();
         textMessage.message = text;
         textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
-        textMessage.senderUserID = localUserInfo.getUserID();
-        textMessage.timestamp = System.currentTimeMillis();
+        textMessage.fromUserID = localUserInfo.getUserID();
+        textMessage.messageTime = System.currentTimeMillis();
         String roomID = ZegoRoomManager.getInstance().roomService.roomInfo.getRoomID();
         ZegoZIMManager.getInstance().zim.sendRoomMessage(textMessage, roomID, new ZIMMessageSendConfig(),
             (message, errorInfo) -> {
@@ -67,15 +67,13 @@ public class ZegoMessageService {
 
     public void onReceiveRoomMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromRoomID) {
         for (ZIMMessage zimMessage : messageList) {
-            if (zimMessage.type == ZIMMessageType.TEXT) {
+            if (zimMessage.getType() == ZIMMessageType.TEXT) {
                 ZIMTextMessage zimTextMessage = (ZIMTextMessage) zimMessage;
                 ZegoTextMessage textMessage = new ZegoTextMessage();
                 textMessage.message = zimTextMessage.message;
-                textMessage.userName = UserInfoHelper.getUserName(zimTextMessage.senderUserID);
-                textMessage.senderUserID = zimTextMessage.senderUserID;
-                textMessage.messageID = zimTextMessage.messageID;
-                textMessage.type = zimTextMessage.type;
-                textMessage.timestamp = zimTextMessage.timestamp;
+                textMessage.userName = UserInfoHelper.getUserName(zimTextMessage.getSenderUserID());
+                textMessage.fromUserID = zimTextMessage.getSenderUserID();
+                textMessage.messageTime = zimTextMessage.getTimestamp();
                 this.messageList.add(textMessage);
                 if (messageServiceListener != null) {
                     messageServiceListener.onReceiveTextMessage(textMessage);

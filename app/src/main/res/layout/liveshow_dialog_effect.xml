@@ -98,17 +98,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_select" />
 
-        <im.zego.livedemo.feature.live.view.EffectsBeautyTypeView
-            android:id="@+id/effectsBeautyTypeView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="37dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_select" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
