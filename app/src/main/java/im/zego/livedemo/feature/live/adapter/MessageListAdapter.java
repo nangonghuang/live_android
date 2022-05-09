@@ -59,7 +59,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     @Override
     public void onBindViewHolder(@NonNull MessageHolder holder, int position) {
         ZegoTextMessage message = messageList.get(position);
-        boolean isHostMessage = UserInfoHelper.isUserIDHost(message.userID);
+        boolean isHostMessage = UserInfoHelper.isUserIDHost(message.fromUserID);
         String fromUserName = message.userName;
         String content = message.message;
         Context context = holder.itemView.getContext();

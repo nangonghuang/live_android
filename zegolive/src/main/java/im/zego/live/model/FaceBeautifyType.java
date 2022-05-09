@@ -10,11 +10,4 @@ public enum FaceBeautifyType {
     SkinSmoothing,
     ImageSharpening,
     CheekBlusher,
-    EyesEnlarging,
-    FaceSlimming,
-    MouthShapeAdjustment,
-    EyesBrightening,
-    NoseSlimming,
-    TeethWhitening,
-    ChinLengthening
 }

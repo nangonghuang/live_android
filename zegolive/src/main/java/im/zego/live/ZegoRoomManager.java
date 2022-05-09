@@ -1,16 +1,7 @@
 package im.zego.live;
 
 import android.app.Application;
-import android.util.Log;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import im.zego.live.callback.ZegoRoomCallback;
-import im.zego.live.http.IGetLicenseCallback;
-import im.zego.live.http.License;
 import im.zego.live.service.ZegoDeviceService;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.live.service.ZegoMessageService;
@@ -18,14 +9,10 @@ import im.zego.live.service.ZegoRoomService;
 import im.zego.live.service.ZegoSoundEffectsService;
 import im.zego.live.service.ZegoUserService;
 import im.zego.zegoexpress.ZegoExpressEngine;
-import im.zego.zegoexpress.callback.IZegoCustomVideoProcessHandler;
 import im.zego.zegoexpress.callback.IZegoEventHandler;
-import im.zego.zegoexpress.constants.ZegoPublishChannel;
 import im.zego.zegoexpress.constants.ZegoScenario;
 import im.zego.zegoexpress.constants.ZegoStreamQualityLevel;
 import im.zego.zegoexpress.constants.ZegoUpdateType;
-import im.zego.zegoexpress.constants.ZegoVideoBufferType;
-import im.zego.zegoexpress.entity.ZegoCustomVideoProcessConfig;
 import im.zego.zegoexpress.entity.ZegoEngineProfile;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zim.ZIM;
@@ -38,6 +25,9 @@ import im.zego.zim.enums.ZIMConnectionEvent;
 import im.zego.zim.enums.ZIMConnectionState;
 import im.zego.zim.enums.ZIMRoomEvent;
 import im.zego.zim.enums.ZIMRoomState;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.json.JSONObject;
 
 /**
  * Class ZEGO Live business logic management
@@ -110,7 +100,6 @@ public class ZegoRoomManager {
         roomService = new ZegoRoomService();
         userService = new ZegoUserService();
         messageService = new ZegoMessageService();
-        faceBeautifyService = new ZegoFaceBeautifyService(application);
         deviceService = new ZegoDeviceService();
 
         ZegoEngineProfile profile = new ZegoEngineProfile();
@@ -144,8 +133,18 @@ public class ZegoRoomManager {
                     roomService.onRoomStreamUpdate(roomID, updateType, streamList);
                 }
             }
+
+            @Override
+            public void onRoomTokenWillExpire(String roomID, int remainTimeInSecond) {
+                super.onRoomTokenWillExpire(roomID, remainTimeInSecond);
+                if (roomService != null) {
+                    roomService.onRoomTokenWillExpire(remainTimeInSecond, roomID);
+                }
+            }
         });
-        soundEffectService = new ZegoSoundEffectsService(engine);
+        soundEffectService = new ZegoSoundEffectsService();
+        faceBeautifyService = new ZegoFaceBeautifyService();
+        faceBeautifyService.enableBeautify(true);
 
         ZegoZIMManager.getInstance().createZIM(appID, application);
         // distribute to specific services which listening what they want
@@ -167,6 +166,9 @@ public class ZegoRoomManager {
             @Override
             public void onTokenWillExpire(ZIM zim, int second) {
                 super.onTokenWillExpire(zim, second);
+                if (roomService != null) {
+                    roomService.onRoomTokenWillExpire(second, roomService.roomInfo.getRoomID());
+                }
             }
 
             @Override
@@ -224,41 +226,6 @@ public class ZegoRoomManager {
                 super.onRoomAttributesBatchUpdated(zim, infos, roomID);
             }
         });
-
-        faceBeautifyService.init(application, appID, appSign, new IGetLicenseCallback() {
-            @Override
-            public void onGetLicense(int code, String message, License license) {
-                Log.d("Beautify", "onGetLicense() called with: code = [" + code + "], message = [" + message);
-
-                ZegoCustomVideoProcessConfig config = new ZegoCustomVideoProcessConfig();
-                config.bufferType = ZegoVideoBufferType.GL_TEXTURE_2D;
-                ZegoExpressEngine.getEngine().enableCustomVideoProcessing(true, config, ZegoPublishChannel.MAIN);
-                ZegoExpressEngine.getEngine().setCustomVideoProcessHandler(new IZegoCustomVideoProcessHandler() {
-
-                    @Override
-                    public void onStart(ZegoPublishChannel channel) {
-//                        faceBeautifyService.onStart();
-                    }
-
-                    @Override
-                    public void onStop(ZegoPublishChannel channel) {
-                        faceBeautifyService.onStop();
-                    }
-
-                    @Override
-                    public void onCapturedUnprocessedTextureData(int textureID, int width, int height,
-                        long referenceTimeMillisecond, ZegoPublishChannel channel) {
-
-                        // Process buffer by ZegoEffects
-                        int processedTextureID = faceBeautifyService.gainProcessedTextureID(textureID, width, height);
-
-                        // Send processed texture to ZegoExpressEngine
-                        ZegoExpressEngine.getEngine().sendCustomVideoProcessedTextureData(processedTextureID, width, height,
-                                referenceTimeMillisecond);
-                    }
-                });
-            }
-        });
     }
 
     /**
@@ -271,9 +238,6 @@ public class ZegoRoomManager {
     public void unInit() {
         ZegoZIMManager.getInstance().destroyZIM();
         ZegoExpressEngine.destroyEngine(null);
-        if (faceBeautifyService != null) {
-            faceBeautifyService.zegoEffects.destroy();
-        }
     }
 
     /**

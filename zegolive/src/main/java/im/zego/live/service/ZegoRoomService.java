@@ -2,18 +2,7 @@ package im.zego.live.service;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.google.gson.Gson;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
 import im.zego.live.ZegoRoomManager;
 import im.zego.live.ZegoZIMManager;
 import im.zego.live.callback.ZegoRoomCallback;
@@ -34,6 +23,8 @@ import im.zego.zegoexpress.entity.ZegoRoomConfig;
 import im.zego.zegoexpress.entity.ZegoStream;
 import im.zego.zegoexpress.entity.ZegoUser;
 import im.zego.zim.ZIM;
+import im.zego.zim.callback.ZIMTokenRenewedCallback;
+import im.zego.zim.entity.ZIMError;
 import im.zego.zim.entity.ZIMRoomAdvancedConfig;
 import im.zego.zim.entity.ZIMRoomAttributesUpdateInfo;
 import im.zego.zim.entity.ZIMRoomInfo;
@@ -43,6 +34,12 @@ import im.zego.zim.enums.ZIMErrorCode;
 import im.zego.zim.enums.ZIMRoomAttributesUpdateAction;
 import im.zego.zim.enums.ZIMRoomEvent;
 import im.zego.zim.enums.ZIMRoomState;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 /**
  * Class ZEGOLive information management
@@ -122,18 +119,16 @@ public class ZegoRoomService {
                 loginRTCRoom(roomID, token, localUserInfo);
                 this.roomInfo.setRoomID(roomInfo.baseInfo.roomID);
                 this.roomInfo.setRoomName(roomInfo.baseInfo.roomName);
-                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomAttributes, errorInfo2) -> {
-                    Set<String> keys = roomAttributes.keySet();
-                    for (String key : keys) {
-                        if (key.equals(ZegoRoomConstants.KEY_ROOM_INFO)) {
-                            this.roomInfo = new Gson().fromJson(roomAttributes.get(key), ZegoRoomInfo.class);
-                        }
-                    }
+                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomID1, roomAttributes, errorInfo1) -> {
+                        ZIMRoomAttributesUpdateInfo updateInfo = new ZIMRoomAttributesUpdateInfo();
+                        updateInfo.roomAttributes = roomAttributes;
+                        updateInfo.action = ZIMRoomAttributesUpdateAction.SET;
+                        onRoomAttributesUpdated(ZegoZIMManager.getInstance().zim,updateInfo,roomID);
 
-                    if (callback != null) {
-                        callback.onRoomCallback(errorInfo2.code.value());
-                    }
-                });
+                        if (callback != null) {
+                            callback.onRoomCallback(errorInfo.code.value());
+                        }
+                    });
             } else {
                 if (callback != null) {
                     callback.onRoomCallback(errorInfo.code.value());
@@ -184,10 +179,27 @@ public class ZegoRoomService {
 
         ZegoExpressEngine.getEngine().logoutRoom(roomInfo.getRoomID());
 
-        ZegoZIMManager.getInstance().zim.leaveRoom(roomInfo.getRoomID(), errorInfo -> {
+        ZegoZIMManager.getInstance().zim.leaveRoom(roomInfo.getRoomID(), (roomID, errorInfo) -> {
             Log.d(TAG, "leaveRoom() called with: errorInfo = [" + errorInfo.code + "]" + errorInfo.message);
             if (callback != null) {
                 callback.onRoomCallback(errorInfo.code.value());
+            }
+        });
+    }
+
+    /**
+     * Renew token.
+     * <p>
+     * Description: After the developer receives [onRoomTokenWillExpire], they can use this API to update the token to ensure that the subsequent RTC&ZIM functions are normal.
+     *
+     * @param token  The token that needs to be renew.
+     * @param roomID Room ID.
+     */
+    public void renewToken(String token, String roomID) {
+        ZegoZIMManager.getInstance().zim.renewToken(token, new ZIMTokenRenewedCallback() {
+            @Override
+            public void onTokenRenewed(String token, ZIMError errorInfo) {
+
             }
         });
     }
@@ -209,19 +221,19 @@ public class ZegoRoomService {
         if (state == ZIMRoomState.CONNECTED) {
             boolean newInRoom = StringUtils.isEmpty(this.roomInfo.getHostID());
             if (!newInRoom && !TextUtils.isEmpty(roomID)) {
-                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomAttributes, errorInfo) -> {
-                    boolean hostLeft = errorInfo.getCode() == ZIMErrorCode.SUCCESS
+                ZegoZIMManager.getInstance().zim.queryRoomAllAttributes(roomID, (roomID1, roomAttributes, errorInfo) -> {
+                        boolean hostLeft = errorInfo.getCode() == ZIMErrorCode.SUCCESS
                             && !roomAttributes.keySet().contains(ZegoRoomConstants.KEY_ROOM_INFO);
-                    boolean roomNotExisted = errorInfo.getCode() == ZIMErrorCode.ROOM_NOT_EXIST;
-                    if (hostLeft || roomNotExisted) {
-                        if (listener != null) {
-                            listener.onReceiveRoomInfoUpdate(null);
+                        boolean roomNotExisted = errorInfo.getCode() == ZIMErrorCode.ROOM_DOES_NOT_EXIST;
+                        if (hostLeft || roomNotExisted) {
+                            if (listener != null) {
+                                listener.onReceiveRoomInfoUpdate(null);
+                            }
+                        } else {
+                            String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
+                            ZegoRoomListService.heartBeat(userID, roomID1, false, null);
                         }
-                    } else {
-                        String userID = ZegoRoomManager.getInstance().userService.localUserInfo.getUserID();
-                        ZegoRoomListService.heartBeat(userID, roomID, false, null);
-                    }
-                });
+                    });
             }
         } else if (state == ZIMRoomState.DISCONNECTED) {
             if (listener != null) {
@@ -366,6 +378,12 @@ public class ZegoRoomService {
                                          JSONObject extendedData) {
         if (listener != null) {
             listener.onConnectionStateChanged(state, event);
+        }
+    }
+
+    public void onRoomTokenWillExpire(int remainTimeInSecond, String roomID) {
+        if (listener != null) {
+            listener.onRoomTokenWillExpire(remainTimeInSecond, roomID);
         }
     }
 
