@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.StringUtils;
 
+import im.zego.zegoexpress.ZegoExpressEngine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,16 +122,16 @@ public class LiveRoomViewModel extends ViewModel {
                 if (containsSelf) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
                     textMessage.userName = UserInfoHelper.getUserName(localUserInfo.getUserID());
-                    textMessage.senderUserID = localUserInfo.getUserID();
+                    textMessage.fromUserID = localUserInfo.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
-                    textMessage.timestamp = System.currentTimeMillis();
+                    textMessage.messageTime = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
                 } else {
                     for (ZegoUserInfo user : memberList) {
                         ZegoTextMessage textMessage = new ZegoTextMessage();
                         textMessage.userName = user.getUserName();
-                        textMessage.senderUserID = user.getUserID();
-                        textMessage.timestamp = System.currentTimeMillis();
+                        textMessage.fromUserID = user.getUserID();
+                        textMessage.messageTime = System.currentTimeMillis();
                         textMessage.message = StringUtils.getString(R.string.room_page_joined_the_room);
                         joinLeaveMessages.add(textMessage);
                     }
@@ -144,9 +145,9 @@ public class LiveRoomViewModel extends ViewModel {
                 for (ZegoUserInfo user : memberList) {
                     ZegoTextMessage textMessage = new ZegoTextMessage();
                     textMessage.userName = user.getUserName();
-                    textMessage.senderUserID = user.getUserID();
+                    textMessage.fromUserID = user.getUserID();
                     textMessage.message = StringUtils.getString(R.string.room_page_has_left_the_room);
-                    textMessage.timestamp = System.currentTimeMillis();
+                    textMessage.messageTime = System.currentTimeMillis();
                     joinLeaveMessages.add(textMessage);
                     updateMessageLiveData();
                 }
@@ -426,7 +427,6 @@ public class LiveRoomViewModel extends ViewModel {
         // reset face beautify
         ZegoFaceBeautifyService beautifyService = ZegoRoomManager.getInstance().faceBeautifyService;
         beautifyService.resetBeauty();
-        beautifyService.resetReSharp();
 
         ZegoSoundEffectsService soundEffectService = ZegoRoomManager.getInstance().soundEffectService;
         soundEffectService.reset();

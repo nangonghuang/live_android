@@ -175,7 +175,6 @@ public class ZegoUserService {
     public void addCoHost(String userID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.Invitation;
-        command.senderUserID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(userID);
         command.toJson();
         ZegoZIMManager.getInstance().zim.sendPeerMessage(command, userID, new ZIMMessageSendConfig(),
@@ -215,7 +214,6 @@ public class ZegoUserService {
     public void respondCoHostInvitation(boolean accept, String operateUserID, ZegoRoomCallback callback) {
         ZegoCustomCommand command = new ZegoCustomCommand();
         command.actionType = ZegoCustomCommand.CustomCommandType.RespondInvitation;
-        command.senderUserID = localUserInfo.getUserID();
         command.targetUserIDs = Collections.singletonList(operateUserID);
         command.content = new ZegoCustomCommand.CustomCommandContent(accept);
         command.toJson();
@@ -535,15 +533,13 @@ public class ZegoUserService {
 
     public void onReceivePeerMessage(ZIM zim, ArrayList<ZIMMessage> messageList, String fromUserID) {
         for (ZIMMessage zimMessage : messageList) {
-            if (zimMessage.type == ZIMMessageType.COMMAND) {
+            if (zimMessage.getType() == ZIMMessageType.COMMAND) {
                 ZIMCommandMessage zimCustomMessage = (ZIMCommandMessage) zimMessage;
                 ZegoCustomCommand command = new ZegoCustomCommand();
-                command.type = zimCustomMessage.type;
-                command.senderUserID = zimCustomMessage.senderUserID;
                 command.fromJson(zimCustomMessage.message);
                 if (command.actionType == ZegoCustomCommand.CustomCommandType.Invitation) {
                     if (listener != null) {
-                        listener.onReceiveAddCoHostInvitation(zimCustomMessage.senderUserID);
+                        listener.onReceiveAddCoHostInvitation(zimMessage.getSenderUserID());
                     }
                 } else {
                     ZegoCustomCommand.CustomCommandContent content = command.content;
@@ -552,14 +548,14 @@ public class ZegoUserService {
                     }
                     List<ZegoUserInfo> userInfoList = ZegoRoomManager.getInstance().userService.getUserList();
                     for (ZegoUserInfo zegoUserInfo : userInfoList) {
-                        if (Objects.equals(command.senderUserID, zegoUserInfo.getUserID())) {
+                        if (Objects.equals(zimMessage.getSenderUserID(), zegoUserInfo.getUserID())) {
                             zegoUserInfo.setHasInvited(false);
                             break;
                         }
                     }
 
                     if (listener != null) {
-                        listener.onReceiveAddCoHostRespond(command.senderUserID, content.accept);
+                        listener.onReceiveAddCoHostRespond(zimMessage.getSenderUserID(), content.accept);
                     }
                 }
             }

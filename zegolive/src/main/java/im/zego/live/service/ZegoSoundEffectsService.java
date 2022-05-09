@@ -20,8 +20,8 @@ public class ZegoSoundEffectsService {
     private final ZegoMediaPlayer mediaPlayer;
     private String currentBgmPath;
 
-    public ZegoSoundEffectsService(ZegoExpressEngine engine) {
-        mediaPlayer = engine.createMediaPlayer();
+    public ZegoSoundEffectsService() {
+        mediaPlayer = ZegoExpressEngine.getEngine().createMediaPlayer();
         mediaPlayer.enableAux(true);
         mediaPlayer.enableRepeat(true);
     }

@@ -9,9 +9,11 @@ import im.zego.zim.entity.ZIMTextMessage;
  */
 public class ZegoTextMessage extends ZIMTextMessage implements Comparable<ZegoTextMessage> {
     public String userName;
+    public String fromUserID;
+    public long messageTime;
 
     @Override
     public int compareTo(ZegoTextMessage o) {
-        return (int) (timestamp - o.timestamp);
+        return (int) (messageTime - o.messageTime);
     }
 }
