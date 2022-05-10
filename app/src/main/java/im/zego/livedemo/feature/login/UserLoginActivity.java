@@ -25,8 +25,8 @@ import im.zego.livedemo.base.BaseActivity;
 import im.zego.livedemo.constants.Constants;
 import im.zego.livedemo.databinding.ActivityUserLoginBinding;
 import im.zego.livedemo.feature.room.RoomListActivity;
-import im.zego.livedemo.helper.AuthInfoManager;
 import im.zego.livedemo.helper.ToastHelper;
+import im.zego.livedemo.token.ZegoTokenManager;
 
 public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
 
@@ -91,22 +91,23 @@ public class UserLoginActivity extends BaseActivity<ActivityUserLoginBinding> {
                 }
                 user.setUserID(userID);
                 user.setUserName(userName);
-                String token = AuthInfoManager.getInstance().generateToken(userID);
-                if (!TextUtils.isEmpty(token)) {
-                    NetworkUtils.isAvailableByPingAsync(isAvailable -> {
-                        if (isAvailable) {
-                            ZegoRoomManager.getInstance().userService.login(user, token, errorCode -> {
-                                if (errorCode == ZegoRoomErrorCode.SUCCESS) {
-                                    RoomListActivity.start(this);
-                                } else {
-                                    ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_login_fail, errorCode));
-                                }
-                            });
-                        } else {
-                            ToastHelper.showWarnToast(StringUtils.getString(R.string.network_connect_failed_title));
-                        }
-                    });
-                }
+                ZegoTokenManager.getInstance().getToken(userID, (errorCode1, token) -> {
+                    if (!TextUtils.isEmpty(token)) {
+                        NetworkUtils.isAvailableByPingAsync(isAvailable -> {
+                            if (isAvailable) {
+                                ZegoRoomManager.getInstance().userService.login(user, token, errorCode -> {
+                                    if (errorCode == ZegoRoomErrorCode.SUCCESS) {
+                                        RoomListActivity.start(this);
+                                    } else {
+                                        ToastHelper.showWarnToast(StringUtils.getString(R.string.toast_login_fail, errorCode));
+                                    }
+                                });
+                            } else {
+                                ToastHelper.showWarnToast(StringUtils.getString(R.string.network_connect_failed_title));
+                            }
+                        });
+                    }
+                });
             } else {
                 ToastHelper.showNormalToast(R.string.toast_userid_login_fail);
             }

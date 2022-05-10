@@ -15,8 +15,6 @@ import im.zego.live.model.FaceBeautifyType;
 import im.zego.live.service.ZegoFaceBeautifyService;
 import im.zego.livedemo.R;
 import im.zego.livedemo.feature.live.dialog.base.BaseBottomDialog;
-import im.zego.livedemo.feature.live.view.EffectsBeautyTypeView;
-import im.zego.livedemo.feature.live.view.EffectsBeautyTypeView.IBeautyTypeCallBack;
 import im.zego.livedemo.feature.live.view.EffectsBeautyView;
 import im.zego.livedemo.feature.live.view.EffectsBeautyView.IBeautyCallBack;
 import im.zego.livedemo.feature.live.view.SeekBarWithNumber;
@@ -27,7 +25,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
     private TextView mTvBeautyType;
     private ImageView mResetting;
     private EffectsBeautyView mEffectsBeautyView;
-    private EffectsBeautyTypeView mEffectsBeautyTypeView;
     private SeekBarWithNumber seekBarWithNumber;
 
     private FaceBeautifyType selectType;
@@ -47,7 +44,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
         mTvBeautyType = findViewById(R.id.tv_beauty_type);
         mResetting = findViewById(R.id.resetting);
         mEffectsBeautyView = findViewById(R.id.effectsBeautyView);
-        mEffectsBeautyTypeView = findViewById(R.id.effectsBeautyTypeView);
         seekBarWithNumber = findViewById(R.id.seekBarWithNumber);
 
         mTvBeauty.setOnClickListener(this);
@@ -57,7 +53,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
         selectView(mTvBeauty);
         unSelectView(mTvBeautyType);
         mEffectsBeautyView.setVisibility(View.VISIBLE);
-        mEffectsBeautyTypeView.setVisibility(View.GONE);
 
         mEffectsBeautyView.setCallBack(new IBeautyCallBack() {
             @Override
@@ -67,15 +62,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
                 setSeekBarProgress(type, 0, minProgress);
             }
         });
-        mEffectsBeautyTypeView.setCallBack(new IBeautyTypeCallBack() {
-            @Override
-            public void onClickBeautyType(FaceBeautifyType type, int minProgress, int position) {
-                selectType = type;
-                setSeekBarProgress(type, 1, minProgress);
-                beautyTypePosition = position;
-            }
-        });
-
         setSeekBar();
 
     }
@@ -104,9 +90,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
             selectIndex = 0;
             selectView(mTvBeauty);
             unSelectView(mTvBeautyType);
-            mEffectsBeautyTypeView.notifyData();
             mEffectsBeautyView.setVisibility(View.VISIBLE);
-            mEffectsBeautyTypeView.setVisibility(View.GONE);
             seekBarWithNumber.setVisibility(View.INVISIBLE);
             mEffectsBeautyView.setAdaptet();
 
@@ -116,9 +100,7 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
             unSelectView(mTvBeauty);
             mEffectsBeautyView.notifyData();
             mEffectsBeautyView.setVisibility(View.GONE);
-            mEffectsBeautyTypeView.setVisibility(View.VISIBLE);
             seekBarWithNumber.setVisibility(View.INVISIBLE);
-            mEffectsBeautyTypeView.setAdapter();
 
         } else if (id == R.id.resetting) {
             seekBarWithNumber.setVisibility(View.INVISIBLE);
@@ -128,7 +110,6 @@ public class EffectsBeautyDialog extends BaseBottomDialog implements View.OnClic
                 beautyPosition = -1;
                 beautifyService.resetBeauty();
             } else {
-                mEffectsBeautyTypeView.notifyPosition(beautyTypePosition);
                 beautyTypePosition = -1;
                 beautifyService.resetReSharp();
             }

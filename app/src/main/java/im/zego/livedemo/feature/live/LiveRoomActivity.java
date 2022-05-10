@@ -701,8 +701,20 @@ public class LiveRoomActivity extends BaseActivity<ActivityLiveRoomBinding> {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing()) {
+            unInit();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        unInit();
+    }
+
+    private void unInit() {
         dismissAllToast();
         dismissDialog(imInputDialog);
         dismissDialog(memberListDialog);
